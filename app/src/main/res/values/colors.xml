@@ -10,7 +10,7 @@
 
 
     <color name="app_theme">#565d91</color>
-    <color name="background_color">#C1BEBE</color>
+    <color name="background_color">#ececec</color>
     <color name="table_row">#96c896</color>
     <color name="line_color">#CCCCCC</color>
     <color name="line_text_color">#787a7d</color>
@@ -22,7 +22,6 @@
     <color name="color_button">#00ae65</color>
     <color name="button_text_color">#FFFFFFFF</color>
     <color name="default_color">#787a7d</color>
-    <color name="Login_theme">#00ae65</color>
     <color name="action_text_color">#FFFFFFFF</color>
     <color name="change_button_color">#f5570f</color>
 

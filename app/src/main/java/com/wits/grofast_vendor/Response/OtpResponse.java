@@ -1,21 +1,21 @@
 package com.wits.grofast_vendor.Response;
 
 import com.google.gson.annotations.SerializedName;
-import com.wits.grofast_vendor.Model.UserModel;
+import com.wits.grofast_vendor.Model.SupplierModel;
 
 public class OtpResponse {
     @SerializedName("access_token")
     private String accessToken;
     private String message;
     @SerializedName("supplier")
-    private UserModel user;
+    private SupplierModel user;
     private long status;
 
     public String getAccessToken() {
         return accessToken;
     }
 
-    public UserModel getUser() {
+    public SupplierModel getUser() {
         return user;
     }
     public String getMessage() {
