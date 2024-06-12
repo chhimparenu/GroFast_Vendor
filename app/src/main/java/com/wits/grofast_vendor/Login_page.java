@@ -1,0 +1,299 @@
+package com.wits.grofast_vendor;
+
+import static android.content.ContentValues.TAG;
+
+import static com.wits.grofast_vendor.CommonUtilities.handleApiError;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.AppCompatButton;
+
+import android.annotation.SuppressLint;
+import android.app.AlertDialog;
+import android.content.Context;
+import android.content.Intent;
+import android.nfc.Tag;
+import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.util.Log;
+import android.view.KeyEvent;
+import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import com.wits.grofast_vendor.Homepage.Home_page;
+import com.wits.grofast_vendor.Interface.APIinterface;
+import com.wits.grofast_vendor.Model.UserModel;
+import com.wits.grofast_vendor.Response.LoginResponse;
+import com.wits.grofast_vendor.Response.OtpResponse;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
+public class Login_page extends AppCompatActivity {
+    AppCompatButton Login;
+    EditText phoneNo;
+    String enteredPhone, enteredOtp = "";
+    //    LinearLayout loadingOverlay;
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
+        this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        getSupportActionBar().hide();
+        setContentView(R.layout.activity_login_page);
+
+        Login = findViewById(R.id.login_button);
+        phoneNo = findViewById(R.id.phone_no);
+
+        Login.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //Retrieve Phone Number
+                enteredPhone = phoneNo.getText().toString().trim();
+                //Validation
+                if (enteredPhone.isEmpty()) {
+                    showToastAndFocus(getString(R.string.toast_message_enter_number));
+                } else if (!isValidPhoneNumber(enteredPhone)) {
+                    showToastAndFocus(getString(R.string.toast_message_valid_number));
+                } else {
+                    Log.e(TAG, "onClick: phone no " + enteredPhone);    //Log Phone number
+                    APIinterface userInterface = Retrofirinstance.getUnAuthorizedClient().create(APIinterface.class);  //API call
+                    Call<LoginResponse> call = userInterface.Login(enteredPhone);
+
+                    //   loadingOverlay.setVisibility(View.VISIBLE);
+
+                    call.enqueue(new Callback<LoginResponse>() {
+                        @Override
+                        public void onResponse(Call<LoginResponse> call, Response<LoginResponse> response) {
+//                            loadingOverlay.setVisibility(View.GONE);
+                            if (response.isSuccessful()) {
+                                LoginResponse loginResponse = response.body();
+                                Toast.makeText(getApplicationContext(), "" + loginResponse.getMessage(), Toast.LENGTH_SHORT).show();
+                                Log.i(TAG, "onResponse: message " + loginResponse.getMessage());
+                                Log.i(TAG, "onResponse: phoneNo " + loginResponse.getPhone_no());
+                                openOtpPage(enteredPhone);
+                            } else {
+                                handleApiError(TAG, response, getApplicationContext());
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<LoginResponse> call, Throwable t) {
+                            t.printStackTrace();
+                            // loadingOverlay.setVisibility(View.GONE);
+                        }
+                    });
+
+                }
+            }
+        });
+    }
+
+    EditText digit1, digit2, digit3, digit4;
+    AppCompatButton Continue_otp_page;
+
+    private void openOtpPage(String phone) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(Login_page.this);
+        View dialogView = getLayoutInflater().inflate(R.layout.otp_page, null);
+        builder.setView(dialogView);
+        AlertDialog dialog = builder.create();
+        dialog.setCanceledOnTouchOutside(false);
+        ImageView close_change_phone_number;
+        TextView textphone = dialogView.findViewById(R.id.otp_phone_no);
+        textphone.setText(phone);
+
+        digit1 = dialogView.findViewById(R.id.otp_digit1);
+        digit2 = dialogView.findViewById(R.id.otp_digit2);
+        digit3 = dialogView.findViewById(R.id.otp_digit3);
+        digit4 = dialogView.findViewById(R.id.otp_digit4);
+        Continue_otp_page = dialogView.findViewById(R.id.Continue_otp_page);
+        setEditTextListeners();
+
+        close_change_phone_number = dialogView.findViewById(R.id.close_change_phone_number);
+        close_change_phone_number.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+
+        Continue_otp_page.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent in = new Intent(getApplicationContext(), Home_page.class);
+                in.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                enteredOtp = digit1.getText().toString().trim() + digit2.getText().toString().trim() + digit3.getText().toString().trim() + digit4.getText().toString().trim();
+                Log.e(TAG, "onCreate: enteredOtp " + enteredOtp);
+                Log.e(TAG, "onCreate: enteredPhone_no " + phone);
+                if (isOtpValid()) {
+                    Integer userOtp = Integer.parseInt(enteredOtp);
+                    Call<OtpResponse> call = Retrofirinstance.getUnAuthorizedClient().create(APIinterface.class).Otp(phone, userOtp);
+                    call.enqueue(new Callback<OtpResponse>() {
+                        @Override
+                        public void onResponse(Call<OtpResponse> call, Response<OtpResponse> response) {
+                            if (response.isSuccessful()) {
+                                OtpResponse otpVerifyResponse = response.body();
+                                UserModel userModel = otpVerifyResponse.getUser();
+
+                                Log.e(TAG, "id " + userModel.getId());
+                                Log.e(TAG, "phone no " + userModel.getPhone_no());
+                                Toast.makeText(Login_page.this, ""+ otpVerifyResponse.getMessage(), Toast.LENGTH_SHORT).show();
+                            } else {
+                                Log.e(TAG,"code " + response.code());
+                                handleApiError(TAG, response, getApplicationContext());
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<OtpResponse> call, Throwable t) {
+                            t.printStackTrace();
+                        }
+                    });
+                } else {
+                    showToastAndFocus(getString(R.string.toast_message_enter_otp));
+                }
+            }
+
+        });
+
+        if (dialog.getWindow() != null) {
+            dialog.getWindow().setBackgroundDrawableResource(R.drawable.dialoguebox_baclground);
+        }
+        dialog.show();
+    }
+
+    private boolean isOtpValid() {
+        boolean valid = true;
+        if (digit1.getText().toString().trim().isEmpty()) {
+            valid = false;
+        }
+
+        if (digit2.getText().toString().trim().isEmpty()) {
+            valid = false;
+        }
+        if (digit3.getText().toString().trim().isEmpty()) {
+            valid = false;
+        }
+
+        if (digit4.getText().toString().trim().isEmpty()) {
+            valid = false;
+        }
+
+        return valid;
+    }
+
+    private void setEditTextListeners() {
+        digit1.requestFocus();
+        digit1.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (count > 0) {
+                    digit2.requestFocus();
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+            }
+        });
+
+        digit2.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (count > 0) {
+                    digit3.requestFocus();
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+            }
+        });
+
+        digit3.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (count > 0) {
+                    digit4.requestFocus();
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+            }
+        });
+
+        digit2.setOnKeyListener(new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+                if (event.getAction() == KeyEvent.ACTION_DOWN && keyCode == KeyEvent.KEYCODE_DEL) {
+                    if (digit2.getText().toString().isEmpty()) {
+                        digit1.requestFocus();
+                    }
+                }
+                return false;
+            }
+        });
+
+        digit3.setOnKeyListener(new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+                if (event.getAction() == KeyEvent.ACTION_DOWN && keyCode == KeyEvent.KEYCODE_DEL) {
+                    if (digit3.getText().toString().isEmpty()) {
+                        digit2.requestFocus();
+                    }
+                }
+                return false;
+            }
+        });
+
+        digit4.setOnKeyListener(new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+                if (event.getAction() == KeyEvent.ACTION_DOWN && keyCode == KeyEvent.KEYCODE_DEL) {
+                    if (digit4.getText().toString().isEmpty()) {
+                        digit3.requestFocus();
+                    }
+                }
+                return false;
+            }
+        });
+    }
+
+    private boolean isValidPhoneNumber(String phone) {
+        return phone != null && phone.length() == 10 && phone.matches("\\d+");
+    }
+
+    private void showToastAndFocus(String message) {
+        Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
+        phoneNo.requestFocus();
+        showKeyboard(phoneNo);
+    }
+
+    private void showKeyboard(View view) {
+        if (view.requestFocus()) {
+            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.showSoftInput(view, InputMethodManager.SHOW_IMPLICIT);
+        }
+    }
+}
+
