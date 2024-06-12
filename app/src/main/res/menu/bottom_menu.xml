@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/venhome"
+        android:icon="@drawable/baseline_home_24"
+        android:iconTint="@color/app_theme"
+        android:title="@string/home_page" />
+
+    <item
+        android:id="@+id/venproduct"
+        android:icon="@drawable/product"
+        android:iconTint="@color/app_theme"
+        android:title="@string/product_history" />
+
+    <item
+        android:id="@+id/venorder"
+        android:icon="@drawable/product"
+        android:iconTint="@color/app_theme"
+        android:title="@string/order_history"/>
+
+<!--    <item-->
+<!--        android:id="@+id/venpayment"-->
+<!--        android:icon="@drawable/baseline_payment_24"-->
+<!--        android:iconTint="@color/app_theme"-->
+<!--        android:title="@string/Payment_history"/>-->
+
+</menu>
