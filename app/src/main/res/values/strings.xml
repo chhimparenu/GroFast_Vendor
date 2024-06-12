@@ -1,0 +1,125 @@
+<resources>
+    <string name="app_name">Grofast Vendor App</string>
+    <string name="company_name">Wingers It Services Pvt.Ltd</string>
+    <string name="pvt">Powered by</string>
+    <string name="add_profile_button">Add profile</string>
+    <string name="edit_profile_button">Edit profile</string>
+    <string name="change_button">Change</string>
+    <string name="save_change_button">Save Changes</string>
+
+    //Slider Layout
+    <string name="user_name">Your Name</string>
+
+    <string name="edit_profile_page_name">Edit Profile</string>
+    <string name="notification_page_name">Notification</string>
+    <string name="notification_setting_page_name">Notification Preferences</string>
+
+    //Main Activity
+    <string name="Log_in_usename">Enter Username</string>
+    <string name="login">Login</string>
+    <string name="phonenumberhint">Enter phone number</string>
+    <string name="continue_button">Continue</string>
+    <string name="login_end_title">By continuing you agree to our</string>
+    <string name="privacy_policy">Privacy Policy</string>
+    <string name="terms_and_condition">T and C</string>
+    <string name="content_policy">Content Policy</string>
+
+    //Menu
+    <string name="home_page">Vendor App </string>
+    <string name="product_history"> Product </string>
+    <string name="order_history"> Order </string>
+    <string name="Payment_history"> Payment </string>
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    //Home_Fragment
+    <string name="Fragment_product_history">Product History</string>
+    <string name="Fragment_product_price">Product History</string>
+    <string name="Fragment_order_history">Order History</string>
+    <string name="Fragment_order_price">Order History</string>
+    <string name="Fragment_payment_history">Payment History</string>
+    <string name="Fragment_payment_price">Payment History</string>
+
+    //Product_Fragment
+    <string name="Add_new_product">Add new Product</string>
+
+    //Product_row_list
+    <string name="Product_name">Name</string>
+    <string name="Product_description">Description</string>
+    <string name="Product_price">Price</string>
+    <string name="Product_Quantity">Quantity</string>
+
+    //Add_product_list
+    <string name="Product_list_name">Product Name</string>
+    <string name="Product_list_Quantity">Product Name</string>
+    <string name="Product_list_Price">Product Name</string>
+    <string name="Product_list_discount">Product Name</string>
+
+    //Toast
+    <string name="toast_message_enter_number">Enter a phone number</string>
+    <string name="toast_message_valid_number">Enter a valid number</string>
+    <string name="toast_message_enter_otp">Please enter the OTP</string>
+    <string name="toast_message_correct_otp">Please enter correct otp</string>
+    <string name="toast_message_resend_otp">Wait for resend code</string>
+
+    //Otp Page
+    <string name="otp_title">OTP Verification</string>
+    <string name="otp_message">We have sent a verification code to</string>
+    <string name="otp_resed_button">Resend SMS</string>
+    <string name="otp_time">Time</string>
+
+    //Menu Item
+    <string name="menu_home">HomePage</string>
+    <string name="menu_offers">Offers</string>
+    <string name="menu_coupon">Coupon</string>
+    <string name="menu_wallet">Wallet</string>
+    <string name="menu_notification_setting">Notification Setting</string>
+    <string name="menu_notification">Notification</string>
+    <string name="menu_setting">Setting</string>
+    <string name="menu_search_list">Search List</string>
+    <string name="menu_edit_profile">Profile</string>
+    <string name="menu_my_address">My Address</string>
+    <string name="locations">Location</string>
+    <string name="menu_log_out">Log Out</string>
+    <string name="menu_menu">Menu</string>
+    <string name="menu_language">Language</string>
+    <string name="menu_language_english">English</string>
+    <string name="menu_language_hindi">Hindi</string>
+    <string name="menu_cart">Cart</string>
+
+    //Edit Page Details
+    <string name="name">Name</string>
+    <string name="phone_number">Phone Number</string>
+    <string name="email">Email</string>
+    <string name="email_hint">example@gmail.com</string>
+    <string name="location">Location</string>
+    <string name="location_hint">Your Location</string>
+    <string name="gender">Gender</string>
+    <string name="gender_male">Male</string>
+    <string name="gender_female">Female</string>
+    <string name="gender_other">Other</string>
+    <string name="add_product_name">Add item which not found in menu</string>
+    <string name="add_coupon_name">Enter Coupon code</string>
+
+    //Notification Setting
+    <string name="notification_1_heading">Push Notifications</string>
+    <string name="notification_1_sub_heading">Tap to enable notification</string>
+    <string name="notification_2_heading">Enable all</string>
+    <string name="notification_2_sub_heading">Activate all notification</string>
+    <string name="notification_3_heading">Newsletters</string>
+    <string name="notification_3_sub_heading">Receive newsletter to stay up-to date with whats brewing in food industry</string>
+    <string name="notification_4_heading">Promos and offers</string>
+    <string name="notification_4_sub_heading">Receive updates about coupons, promotions and money saving offers</string>
+    <string name="notification_5_heading">Social notifications</string>
+    <string name="notification_5_sub_heading">Get notified when someone follows your profile, or when you get likes and comments on reviews and photos posted by you</string>
+    <string name="notification_email">Email</string>
+    <string name="notification_push">Push</string>
+
+    //Privacy and policy
+    <string name="privacypolicy">Privacy Policy</string>
+    <string name="Termandcondition">Term and Condition</string>
+    <string name="Sales_Policy">Sales Policy</string>
+    <string name="Refund_policy">Refund Policy</string>
+    <string name="Delete_account">Delete Account</string>
+    <string name="canclelation">Cancellation Policy</string>
+
+</resources>
