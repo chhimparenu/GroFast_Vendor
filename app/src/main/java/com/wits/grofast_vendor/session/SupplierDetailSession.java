@@ -1,4 +1,4 @@
-package com.wits.session;
+package com.wits.grofast_vendor.session;
 
 import static com.wits.grofast_vendor.Retrofirinstance.domain;
 

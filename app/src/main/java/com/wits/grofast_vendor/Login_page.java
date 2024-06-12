@@ -29,8 +29,8 @@ import com.wits.grofast_vendor.Interface.userinterface;
 import com.wits.grofast_vendor.Model.SupplierModel;
 import com.wits.grofast_vendor.Response.LoginResponse;
 import com.wits.grofast_vendor.Response.OtpResponse;
-import com.wits.session.SupplierActivitySession;
-import com.wits.session.SupplierDetailSession;
+import com.wits.grofast_vendor.session.SupplierActivitySession;
+import com.wits.grofast_vendor.session.SupplierDetailSession;
 
 import retrofit2.Call;
 import retrofit2.Callback;
