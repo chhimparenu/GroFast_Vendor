@@ -21,7 +21,7 @@
     <string name="continue_button">Continue</string>
     <string name="login_end_title">By continuing you agree to our</string>
     <string name="privacy_policy">Privacy Policy</string>
-    <string name="terms_and_condition">T and C</string>
+    <string name="terms_and_condition">T &amp; C</string>
     <string name="content_policy">Content Policy</string>
 
     //Menu

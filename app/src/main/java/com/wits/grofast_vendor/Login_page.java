@@ -7,11 +7,9 @@ import static com.wits.grofast_vendor.CommonUtilities.handleApiError;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatButton;
 
-import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.nfc.Tag;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -27,10 +25,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.wits.grofast_vendor.Homepage.Home_page;
-import com.wits.grofast_vendor.Interface.APIinterface;
-import com.wits.grofast_vendor.Model.UserModel;
+import com.wits.grofast_vendor.Interface.userinterface;
+import com.wits.grofast_vendor.Model.SupplierModel;
 import com.wits.grofast_vendor.Response.LoginResponse;
 import com.wits.grofast_vendor.Response.OtpResponse;
+import com.wits.session.SupplierActivitySession;
+import com.wits.session.SupplierDetailSession;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -40,7 +40,9 @@ public class Login_page extends AppCompatActivity {
     AppCompatButton Login;
     EditText phoneNo;
     String enteredPhone, enteredOtp = "";
-    //    LinearLayout loadingOverlay;
+    SupplierActivitySession session;
+    SupplierDetailSession supplierDetailSession;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -51,6 +53,8 @@ public class Login_page extends AppCompatActivity {
 
         Login = findViewById(R.id.login_button);
         phoneNo = findViewById(R.id.phone_no);
+        session = new SupplierActivitySession(getApplicationContext());
+        supplierDetailSession = new SupplierDetailSession(getApplicationContext());
 
         Login.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -64,7 +68,7 @@ public class Login_page extends AppCompatActivity {
                     showToastAndFocus(getString(R.string.toast_message_valid_number));
                 } else {
                     Log.e(TAG, "onClick: phone no " + enteredPhone);    //Log Phone number
-                    APIinterface userInterface = Retrofirinstance.getUnAuthorizedClient().create(APIinterface.class);  //API call
+                    userinterface userInterface = Retrofirinstance.getUnAuthorizedClient().create(userinterface.class);  //API call
                     Call<LoginResponse> call = userInterface.Login(enteredPhone);
 
                     //   loadingOverlay.setVisibility(View.VISIBLE);
@@ -134,19 +138,39 @@ public class Login_page extends AppCompatActivity {
                 Log.e(TAG, "onCreate: enteredPhone_no " + phone);
                 if (isOtpValid()) {
                     Integer userOtp = Integer.parseInt(enteredOtp);
-                    Call<OtpResponse> call = Retrofirinstance.getUnAuthorizedClient().create(APIinterface.class).Otp(phone, userOtp);
+                    Call<OtpResponse> call = Retrofirinstance.getUnAuthorizedClient().create(userinterface.class).Otp(phone, userOtp);
                     call.enqueue(new Callback<OtpResponse>() {
                         @Override
                         public void onResponse(Call<OtpResponse> call, Response<OtpResponse> response) {
                             if (response.isSuccessful()) {
                                 OtpResponse otpVerifyResponse = response.body();
-                                UserModel userModel = otpVerifyResponse.getUser();
+                                SupplierModel supplierModel = otpVerifyResponse.getUser();
 
-                                Log.e(TAG, "id " + userModel.getId());
-                                Log.e(TAG, "phone no " + userModel.getPhone_no());
-                                Toast.makeText(Login_page.this, ""+ otpVerifyResponse.getMessage(), Toast.LENGTH_SHORT).show();
+                                Log.e(TAG, "id " + supplierModel.getId());
+                                Log.e(TAG, "phone no " + supplierModel.getMobile_number());
+                                session.setLoginStaus(true);
+                                session.setToken(otpVerifyResponse.getAccessToken());
+
+                                supplierDetailSession.setUserId(supplierModel.getId());
+                                supplierDetailSession.setUuid(supplierModel.getUuid());
+                                supplierDetailSession.setImage(supplierModel.getImage());
+                                supplierDetailSession.setName(supplierModel.getName());
+                                supplierDetailSession.setStorrname(supplierModel.getStore_name());
+                                supplierDetailSession.setEmail(supplierModel.getEmail());
+                                supplierDetailSession.setPhoneNo(supplierModel.getMobile_number());
+                                supplierDetailSession.setDescription(supplierModel.getDescription());
+                                supplierDetailSession.setStoreAddress(supplierModel.getStore_address());
+                                supplierDetailSession.setPincode(supplierModel.getPin_code());
+                                supplierDetailSession.setCiy(supplierModel.getCity());
+                                supplierDetailSession.setState(supplierModel.getState());
+                                supplierDetailSession.setCountry(supplierModel.getCountry());
+                                supplierDetailSession.setStatus(supplierModel.getStatus());
+                                supplierDetailSession.setGender(supplierModel.getGender());
+
+                                startActivity(in);
+                                Toast.makeText(Login_page.this, "" + otpVerifyResponse.getMessage(), Toast.LENGTH_SHORT).show();
                             } else {
-                                Log.e(TAG,"code " + response.code());
+                                Log.e(TAG, "code " + response.code());
                                 handleApiError(TAG, response, getApplicationContext());
                             }
                         }
