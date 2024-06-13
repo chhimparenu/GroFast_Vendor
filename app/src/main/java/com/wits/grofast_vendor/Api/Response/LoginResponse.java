@@ -1,4 +1,4 @@
-package com.wits.grofast_vendor.Response;
+package com.wits.grofast_vendor.Api.Response;
 
 public class LoginResponse {
     private String phone_no;

@@ -25,10 +25,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.wits.grofast_vendor.Homepage.Home_page;
-import com.wits.grofast_vendor.Interface.userinterface;
-import com.wits.grofast_vendor.Model.SupplierModel;
-import com.wits.grofast_vendor.Response.LoginResponse;
-import com.wits.grofast_vendor.Response.OtpResponse;
+import com.wits.grofast_vendor.Api.Interface.userinterface;
+import com.wits.grofast_vendor.Api.Model.SupplierModel;
+import com.wits.grofast_vendor.Api.Response.LoginResponse;
+import com.wits.grofast_vendor.Api.Response.OtpResponse;
 import com.wits.grofast_vendor.session.SupplierActivitySession;
 import com.wits.grofast_vendor.session.SupplierDetailSession;
 

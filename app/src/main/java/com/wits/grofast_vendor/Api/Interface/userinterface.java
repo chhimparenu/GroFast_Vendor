@@ -1,7 +1,7 @@
-package com.wits.grofast_vendor.Interface;
+package com.wits.grofast_vendor.Api.Interface;
 
-import com.wits.grofast_vendor.Response.LoginResponse;
-import com.wits.grofast_vendor.Response.OtpResponse;
+import com.wits.grofast_vendor.Api.Response.LoginResponse;
+import com.wits.grofast_vendor.Api.Response.OtpResponse;
 
 import retrofit2.Call;
 import retrofit2.http.POST;

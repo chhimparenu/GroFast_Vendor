@@ -17,7 +17,7 @@ import android.view.ViewGroup;
 import com.wits.grofast_vendor.Adapter.BannerAdapter;
 import com.wits.grofast_vendor.Adapter.HomeOrderHistoryAdapter;
 import com.wits.grofast_vendor.Details.AllResentOrderHistory;
-import com.wits.grofast_vendor.Model.HomeOrderHistoryModel;
+import com.wits.grofast_vendor.Api.Model.HomeOrderHistoryModel;
 import com.wits.grofast_vendor.R;
 
 import java.util.ArrayList;

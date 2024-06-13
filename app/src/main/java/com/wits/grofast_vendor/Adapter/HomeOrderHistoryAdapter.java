@@ -10,7 +10,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.wits.grofast_vendor.Model.HomeOrderHistoryModel;
+import com.wits.grofast_vendor.Api.Model.HomeOrderHistoryModel;
 import com.wits.grofast_vendor.R;
 
 import java.util.ArrayList;

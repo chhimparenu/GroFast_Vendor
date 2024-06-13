@@ -1,7 +1,7 @@
-package com.wits.grofast_vendor.Response;
+package com.wits.grofast_vendor.Api.Response;
 
 import com.google.gson.annotations.SerializedName;
-import com.wits.grofast_vendor.Model.SupplierModel;
+import com.wits.grofast_vendor.Api.Model.SupplierModel;
 
 public class OtpResponse {
     @SerializedName("access_token")
