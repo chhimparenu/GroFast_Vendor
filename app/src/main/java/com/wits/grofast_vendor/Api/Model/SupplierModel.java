@@ -1,4 +1,4 @@
-package com.wits.grofast_vendor.Model;
+package com.wits.grofast_vendor.Api.Model;
 
 import java.io.Serializable;
 

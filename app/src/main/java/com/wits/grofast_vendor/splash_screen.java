@@ -9,7 +9,7 @@ import android.view.Window;
 import android.view.WindowManager;
 
 import com.wits.grofast_vendor.Homepage.Home_page;
-import com.wits.session.SupplierActivitySession;
+import com.wits.grofast_vendor.session.SupplierActivitySession;
 
 public class splash_screen extends AppCompatActivity {
     private static final int SPLASH_SCREEN = 2000;

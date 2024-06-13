@@ -25,19 +25,17 @@
     <string name="content_policy">Content Policy</string>
 
     //Menu
-    <string name="home_page">Vendor App </string>
+    <string name="home_page">Home</string>
     <string name="product_history"> Product </string>
     <string name="order_history"> Order </string>
     <string name="Payment_history"> Payment </string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
 
     //Home_Fragment
-    <string name="Fragment_product_history">Product History</string>
-    <string name="Fragment_product_price">Product History</string>
-    <string name="Fragment_order_history">Order History</string>
-    <string name="Fragment_order_price">Order History</string>
-    <string name="Fragment_payment_history">Payment History</string>
-    <string name="Fragment_payment_price">Payment History</string>
+    <string name="total_product">Total Product</string>
+    <string name="total_order">Total Order</string>
+    <string name="Resent_order_history">Resent Order History</string>
+    <string name="total_earning">Total Earning</string>
 
     //Product_Fragment
     <string name="Add_new_product">Add new Product</string>
@@ -122,4 +120,12 @@
     <string name="Delete_account">Delete Account</string>
     <string name="canclelation">Cancellation Policy</string>
 
+    //Table
+    <string name="order_id_table">Order Id</string>
+    <string name="customer_details_table">Customer Details</string>
+    <string name="date_table">Date</string>
+    <string name="price_table">Price</string>
+
+    //Button
+    <string name="view_all">View All</string>
 </resources>
