@@ -95,7 +95,7 @@
                         app:hintTextColor="@color/default_color">
 
                         <com.google.android.material.textfield.TextInputEditText
-                            android:id="@+id/add_address_address"
+                            android:id="@+id/edit_store_name"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:textColor="@color/textview_text_color"
@@ -107,13 +107,13 @@
                         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="@string/name"
                         android:layout_marginTop="@dimen/_10sdp"
+                        android:hint="@string/name"
                         app:boxStrokeColor="@color/active"
                         app:hintTextColor="@color/default_color">
 
                         <com.google.android.material.textfield.TextInputEditText
-                            android:id="@+id/add_address"
+                            android:id="@+id/edit_name"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:textColor="@color/textview_text_color"
@@ -128,8 +128,7 @@
                         android:layout_marginTop="10dp"
                         android:text="@string/gender"
                         android:textColor="@color/default_color"
-                        android:textSize="@dimen/text_size"
-                        android:textStyle="bold" />
+                        android:textSize="@dimen/hint_text_size" />
 
                     <RadioGroup
                         android:layout_width="match_parent"
@@ -165,8 +164,7 @@
                         android:layout_marginTop="10dp"
                         android:text="@string/phone_number"
                         android:textColor="@color/default_color"
-                        android:textSize="@dimen/text_size"
-                        android:textStyle="bold" />
+                        android:textSize="@dimen/hint_text_size" />
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -228,13 +226,13 @@
                         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/_10sdp"
                         android:hint="@string/email"
-                        android:layout_marginTop="@dimen/_10sdp"
                         app:boxStrokeColor="@color/active"
                         app:hintTextColor="@color/default_color">
 
                         <com.google.android.material.textfield.TextInputEditText
-                            android:id="@+id/email"
+                            android:id="@+id/edit_email"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:textColor="@color/textview_text_color"
@@ -246,13 +244,13 @@
                         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/_10sdp"
                         android:hint="@string/location"
-                        android:layout_marginTop="@dimen/_10sdp"
                         app:boxStrokeColor="@color/active"
                         app:hintTextColor="@color/default_color">
 
                         <com.google.android.material.textfield.TextInputEditText
-                            android:id="@+id/locationj"
+                            android:id="@+id/edit_store_address"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:textColor="@color/textview_text_color"
@@ -260,77 +258,65 @@
 
                     </com.google.android.material.textfield.TextInputLayout>
 
-                    <com.google.android.material.textfield.TextInputLayout
-                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="@string/pincode"
                         android:layout_marginTop="@dimen/_10sdp"
-                        app:boxStrokeColor="@color/active"
-                        app:hintTextColor="@color/default_color">
+                        android:orientation="horizontal">
 
-                        <com.google.android.material.textfield.TextInputEditText
-                            android:id="@+id/pincode"
+                        <androidx.appcompat.widget.AppCompatSpinner
+                            android:id="@+id/edit_profile_country_spinner"
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:textColor="@color/textview_text_color"
-                            android:textSize="@dimen/hint_text_size" />
+                            android:layout_height="@dimen/_40sdp"
+                            android:layout_marginRight="5dp"
+                            android:layout_weight="1"
+                            android:background="@drawable/border_color"
+                            android:dropDownVerticalOffset="0dp"
+                            android:padding="@dimen/_5sdp"
+                            android:spinnerMode="dropdown" />
 
-                    </com.google.android.material.textfield.TextInputLayout>
+                        <androidx.appcompat.widget.AppCompatSpinner
+                            android:id="@+id/edit_profile_state_spinner"
+                            android:layout_width="match_parent"
+                            android:layout_height="@dimen/_40sdp"
+                            android:layout_marginLeft="5dp"
+                            android:layout_weight="1"
+                            android:background="@drawable/border_color"
+                            android:dropDownVerticalOffset="0dp"
+                            android:padding="@dimen/_5sdp"
+                            android:spinnerMode="dropdown" />
 
-                    <com.google.android.material.textfield.TextInputLayout
-                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    </LinearLayout>
+
+                    <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="@string/city"
                         android:layout_marginTop="@dimen/_10sdp"
-                        app:boxStrokeColor="@color/active"
-                        app:hintTextColor="@color/default_color">
+                        android:orientation="horizontal">
 
-                        <com.google.android.material.textfield.TextInputEditText
-                            android:id="@+id/city"
+                        <androidx.appcompat.widget.AppCompatSpinner
+                            android:id="@+id/edit_profile_city_spinner"
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:textColor="@color/textview_text_color"
-                            android:textSize="@dimen/hint_text_size" />
+                            android:layout_height="@dimen/_40sdp"
+                            android:layout_marginRight="5dp"
+                            android:layout_weight="1"
+                            android:background="@drawable/border_color"
+                            android:dropDownVerticalOffset="0dp"
+                            android:padding="@dimen/_5sdp"
+                            android:spinnerMode="dropdown" />
 
-                    </com.google.android.material.textfield.TextInputLayout>
-
-                    <com.google.android.material.textfield.TextInputLayout
-                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:hint="@string/state"
-                        android:layout_marginTop="@dimen/_10sdp"
-                        app:boxStrokeColor="@color/active"
-                        app:hintTextColor="@color/default_color">
-
-                        <com.google.android.material.textfield.TextInputEditText
-                            android:id="@+id/state"
+                        <androidx.appcompat.widget.AppCompatSpinner
+                            android:id="@+id/edit_profile_pincode_pincode"
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:textColor="@color/textview_text_color"
-                            android:textSize="@dimen/hint_text_size" />
+                            android:layout_height="@dimen/_40sdp"
+                            android:layout_marginLeft="5dp"
+                            android:layout_weight="1"
+                            android:background="@drawable/border_color"
+                            android:dropDownVerticalOffset="0dp"
+                            android:padding="@dimen/_5sdp"
+                            android:spinnerMode="dropdown" />
 
-                    </com.google.android.material.textfield.TextInputLayout>
-
-                    <com.google.android.material.textfield.TextInputLayout
-                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:hint="@string/country"
-                        android:layout_marginTop="@dimen/_10sdp"
-                        app:boxStrokeColor="@color/active"
-                        app:hintTextColor="@color/default_color">
-
-                        <com.google.android.material.textfield.TextInputEditText
-                            android:id="@+id/country"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:textColor="@color/textview_text_color"
-                            android:textSize="@dimen/hint_text_size" />
-
-                    </com.google.android.material.textfield.TextInputLayout>
+                    </LinearLayout>
 
                 </LinearLayout>
 
@@ -364,4 +350,5 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

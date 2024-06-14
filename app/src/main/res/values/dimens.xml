@@ -6,7 +6,7 @@
     <dimen name="small_text_size">@dimen/_10sdp</dimen>
     <dimen name="button_text_size">@dimen/_18sdp</dimen>
     <dimen name="hint_text_size">@dimen/_12sdp</dimen>
-    <dimen name="linear_padding">@dimen/_20sdp</dimen>
+    <dimen name="linear_padding">@dimen/_10sdp</dimen>
     <dimen name="card_corners">@dimen/_10sdp</dimen>
     <dimen name="text_size">@dimen/_15sdp</dimen>
     <dimen name="textview_inner_padding">@dimen/_12sdp</dimen>
