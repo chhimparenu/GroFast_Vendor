@@ -11,8 +11,8 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="@dimen/linear_padding"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:padding="@dimen/linear_padding">
 
         <ImageView
             android:id="@+id/add_product_image"
@@ -44,18 +44,22 @@
 
             </com.google.android.material.textfield.TextInputLayout>
 
-
-            <androidx.appcompat.widget.AppCompatSpinner
-                android:id="@+id/Categories_spinner"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/_40sdp"
                 android:layout_marginTop="@dimen/_10sdp"
-                android:layout_marginRight="5dp"
-                android:layout_weight="1"
                 android:background="@drawable/border_color"
-                android:dropDownVerticalOffset="0dp"
-                android:padding="@dimen/_5sdp"
-                android:spinnerMode="dropdown" />
+                android:orientation="vertical">
+
+                <androidx.appcompat.widget.AppCompatSpinner
+                    android:id="@+id/Categories_spinner"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:dropDownVerticalOffset="0dp"
+                    android:padding="@dimen/_5sdp"
+                    android:spinnerMode="dropdown" />
+
+            </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -162,31 +166,31 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/return_plociy"
-                android:textSize="@dimen/hint_text_size"
                 android:layout_marginTop="@dimen/_10sdp"
-                android:textColor="@color/default_color"/>
+                android:text="@string/return_plociy"
+                android:textColor="@color/default_color"
+                android:textSize="@dimen/hint_text_size" />
 
-           <RadioGroup
-               android:layout_width="match_parent"
-               android:layout_height="wrap_content"
-               android:orientation="horizontal">
+            <RadioGroup
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
 
-               <RadioButton
-                   android:id="@+id/retun_true"
-                   android:layout_width="match_parent"
-                   android:layout_height="wrap_content"
-                   android:layout_weight="1"
-                   android:text="@string/True"/>
+                <RadioButton
+                    android:id="@+id/retun_true"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/True" />
 
-               <RadioButton
-                   android:id="@+id/retun_false"
-                   android:layout_width="match_parent"
-                   android:layout_height="wrap_content"
-                   android:layout_weight="1"
-                   android:text="@string/False"/>
+                <RadioButton
+                    android:id="@+id/retun_false"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/False" />
 
-           </RadioGroup>
+            </RadioGroup>
 
 
         </LinearLayout>
