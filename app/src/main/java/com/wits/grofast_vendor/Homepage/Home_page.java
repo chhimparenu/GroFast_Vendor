@@ -128,7 +128,7 @@ public class Home_page extends AppCompatActivity {
         userPhoneNo.setText(session.getPhoneNo());
         String name = session.getName();
         if (name == null || name.isEmpty()) {
-            name = getString(R.string.user_name);
+            name = getString(R.string.your_name);
             userName.setTextColor(getResources().getColor(R.color.default_color));
         } else {
             userName.setTextColor(getResources().getColor(R.color.white));
