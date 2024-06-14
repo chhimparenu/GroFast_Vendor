@@ -2,7 +2,6 @@ package com.wits.grofast_vendor.Api.Model;
 
 public class TaxModel {
     private Integer id;
-
     private String uuid;
     private String tax_percentage;
     private String name;

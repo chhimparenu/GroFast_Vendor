@@ -9,37 +9,36 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.core.content.ContextCompat;
 
-import com.wits.grofast_vendor.Api.Model.CategoryModel;
 import com.wits.grofast_vendor.Api.Model.TaxModel;
+import com.wits.grofast_vendor.Api.Model.UnitModel;
 import com.wits.grofast_vendor.R;
 
 import java.util.List;
 
-public class TaxesSpinnerAdapter extends ArrayAdapter<TaxModel> {
+public class UnitSpinnerAdapter extends ArrayAdapter<UnitModel> {
     private final LayoutInflater mInflater;
-    private final List<TaxModel> taxModelList;
+    private final List<UnitModel> unitModelslist;
     private final Context mContext;
     private final int mResource;
 
-    public TaxesSpinnerAdapter(@NonNull Context context, @NonNull List<TaxModel> objects) {
+    public UnitSpinnerAdapter(@NonNull Context context, @NonNull List<UnitModel> objects) {
         super(context, R.layout.spinner_layout, objects);
         this.mInflater = LayoutInflater.from(context);
-        this.taxModelList = objects;
+        this.unitModelslist = objects;
         this.mContext = context;
         this.mResource = R.layout.spinner_layout;
     }
 
     @Override
     public int getCount() {
-        return taxModelList.size()+1;
+        return unitModelslist.size()+1;
     }
 
     @Override
-    public TaxModel getItem(int position) {
+    public UnitModel getItem(int position) {
         // Return null if the position is the first item (hint)
-        return position == 0 ? null : taxModelList.get(position - 1);
+        return position == 0 ? null : unitModelslist.get(position - 1);
     }
 
     @Override
@@ -71,15 +70,14 @@ public class TaxesSpinnerAdapter extends ArrayAdapter<TaxModel> {
     private View getCustomView(int position, View convertView, ViewGroup parent) {
         final View view = mInflater.inflate(mResource, parent, false);
         TextView textView = view.findViewById(R.id.text1);
-        textView.setText(taxModelList.get(position - 1).getName());
+        textView.setText(unitModelslist.get(position - 1).getUnit_name());
         return view;
     }
 
     private View getHintView(ViewGroup parent) {
         final View view = mInflater.inflate(mResource, parent, false);
         TextView textView = view.findViewById(R.id.text1);
-        textView.setText("Select Taxes");
-        textView.setTextColor(ContextCompat.getColor(mContext, R.color.default_color));
+        textView.setText("Select Unit");
         textView.setTextColor(mContext.getResources().getColor(android.R.color.darker_gray));
         return view;
     }

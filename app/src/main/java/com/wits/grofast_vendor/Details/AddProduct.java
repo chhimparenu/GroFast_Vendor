@@ -5,33 +5,27 @@ import static com.wits.grofast_vendor.CommonUtilities.handleApiError;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
+
 import android.view.WindowManager;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
+
 import android.widget.ImageView;
 import android.widget.RadioButton;
-import android.widget.SpinnerAdapter;
-import android.widget.TextView;
-import android.widget.Toast;
-
-import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatEditText;
 import androidx.appcompat.widget.AppCompatSpinner;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 
 import com.wits.grofast_vendor.Adapter.CategorySpinnerAdapter;
 import com.wits.grofast_vendor.Adapter.TaxesSpinnerAdapter;
+import com.wits.grofast_vendor.Adapter.UnitSpinnerAdapter;
 import com.wits.grofast_vendor.Api.Interface.CategoriesInterface;
 import com.wits.grofast_vendor.Api.Interface.TaxInterface;
+import com.wits.grofast_vendor.Api.Interface.UnitInterface;
 import com.wits.grofast_vendor.Api.Model.CategoryModel;
 import com.wits.grofast_vendor.Api.Model.TaxModel;
+import com.wits.grofast_vendor.Api.Model.UnitModel;
 import com.wits.grofast_vendor.Api.Response.CategoryResponse;
 import com.wits.grofast_vendor.Api.Response.TaxReponse;
+import com.wits.grofast_vendor.Api.Response.UnitResponse;
 import com.wits.grofast_vendor.Api.Retrofirinstance;
 import com.wits.grofast_vendor.R;
 import com.wits.grofast_vendor.session.SupplierActivitySession;
@@ -52,7 +46,8 @@ public class AddProduct extends AppCompatActivity {
     private final String TAG = "ShowAllCategories";
     private List<CategoryModel> categoryList = new ArrayList<>();
     private List<TaxModel> taxModelList = new ArrayList<>();
-    int categoryId, taxid;
+    private List<UnitModel> unitModelList = new ArrayList<>();
+    int categoryId, taxid, unitId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,8 +80,10 @@ public class AddProduct extends AppCompatActivity {
         image = findViewById(R.id.add_product_image);
         fetchCategories();
         fetchTaxes();
+        fetchUnit();
         populateCategorySpinner(categoryList);
         populateTaxesSpinner(taxModelList);
+        populateUnitSpinner(unitModelList);
 //        categories.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
 //            @Override
 //            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -188,6 +185,50 @@ public class AddProduct extends AppCompatActivity {
         for (TaxModel tax : taxModelList) {
             taxid = tax.getId();
             Log.e(TAG, "onResponse: categories name : " + tax.getName());
+        }
+    }
+
+    private void fetchUnit() {
+        Log.e(TAG, "onResponse: token " + session.getToken());
+        Call<UnitResponse> call = Retrofirinstance.getClient(session.getToken()).create(UnitInterface.class).fetchproductunit();
+        call.enqueue(new Callback<UnitResponse>() {
+            @Override
+            public void onResponse(Call<UnitResponse> call, Response<UnitResponse> response) {
+                if (response.isSuccessful()) {
+                    UnitResponse unitResponse = response.body();
+                    unitModelList = unitResponse.getUnitModel();
+                    if (unitModelList != null && !unitModelList.isEmpty()) {
+                        populateUnitSpinner(unitModelList);
+                    }
+                    Log.e(TAG, "onResponse: fragment Show all Unit");
+                    Log.e(TAG, "onResponse: message " + unitResponse.getMessage());
+                } else {
+                    handleApiError(TAG, response, getApplicationContext());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<UnitResponse> call, Throwable t) {
+
+            }
+        });
+    }
+
+    private void populateUnitSpinner(List<UnitModel> unitModelList) {
+        unitModelList.add(new UnitModel("friuts", 1));
+        unitModelList.add(new UnitModel("veg", 2));
+        unitModelList.add(new UnitModel("dairy", 3));
+        unitModelList.add(new UnitModel("baby products", 4));
+        unitModelList.add(new UnitModel("chaval", 5));
+
+//        ArrayAdapter<CategoryModel> adapter = new ArrayAdapter<>(getApplicationContext(), android.R.layout.simple_spinner_item, categoryList);
+        UnitSpinnerAdapter adapter = new UnitSpinnerAdapter(getApplicationContext(), unitModelList);
+//        adapter.set(android.R.layout.simple_spinner_dropdown_item);
+        unit.setAdapter(adapter);
+
+        for (UnitModel unit : unitModelList) {
+            unitId = unit.getId();
+            Log.e(TAG, "onResponse: Unit name : " + unit.getUnit_name());
         }
     }
 
