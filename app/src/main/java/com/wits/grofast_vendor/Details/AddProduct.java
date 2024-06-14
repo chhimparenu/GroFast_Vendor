@@ -25,9 +25,13 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.wits.grofast_vendor.Adapter.CategorySpinnerAdapter;
+import com.wits.grofast_vendor.Adapter.TaxesSpinnerAdapter;
 import com.wits.grofast_vendor.Api.Interface.CategoriesInterface;
+import com.wits.grofast_vendor.Api.Interface.TaxInterface;
 import com.wits.grofast_vendor.Api.Model.CategoryModel;
+import com.wits.grofast_vendor.Api.Model.TaxModel;
 import com.wits.grofast_vendor.Api.Response.CategoryResponse;
+import com.wits.grofast_vendor.Api.Response.TaxReponse;
 import com.wits.grofast_vendor.Api.Retrofirinstance;
 import com.wits.grofast_vendor.R;
 import com.wits.grofast_vendor.session.SupplierActivitySession;
@@ -47,7 +51,8 @@ public class AddProduct extends AppCompatActivity {
     SupplierActivitySession session;
     private final String TAG = "ShowAllCategories";
     private List<CategoryModel> categoryList = new ArrayList<>();
-    int categoryId;
+    private List<TaxModel> taxModelList = new ArrayList<>();
+    int categoryId, taxid;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,7 +84,9 @@ public class AddProduct extends AppCompatActivity {
         //image
         image = findViewById(R.id.add_product_image);
         fetchCategories();
+        fetchTaxes();
         populateCategorySpinner(categoryList);
+        populateTaxesSpinner(taxModelList);
 //        categories.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
 //            @Override
 //            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -93,6 +100,7 @@ public class AddProduct extends AppCompatActivity {
 //            }
 //        });
     }
+
 
     private void fetchCategories() {
         Log.e(TAG, "onResponse: token " + session.getToken());
@@ -136,6 +144,50 @@ public class AddProduct extends AppCompatActivity {
         for (CategoryModel category : categoryList) {
             categoryId = category.getId();
             Log.e(TAG, "onResponse: categories name : " + category.getCategory_name());
+        }
+    }
+
+    private void fetchTaxes() {
+        Log.e(TAG, "onResponse: token " + session.getToken());
+        Call<TaxReponse> call = Retrofirinstance.getClient(session.getToken()).create(TaxInterface.class).fetchtaxes();
+        call.enqueue(new Callback<TaxReponse>() {
+            @Override
+            public void onResponse(Call<TaxReponse> call, Response<TaxReponse> response) {
+                if (response.isSuccessful()) {
+                    TaxReponse taxReponse = response.body();
+                    taxModelList = taxReponse.gettax();
+                    if (taxModelList != null && !taxModelList.isEmpty()) {
+                        populateTaxesSpinner(taxModelList);
+                    }
+                    Log.e(TAG, "onResponse: fragment Show all taxes");
+                    Log.e(TAG, "onResponse: message " + taxReponse.getMessage());
+                } else {
+                    handleApiError(TAG, response, getApplicationContext());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<TaxReponse> call, Throwable t) {
+
+            }
+        });
+    }
+
+    private void populateTaxesSpinner(List<TaxModel> taxModelList) {
+        taxModelList.add(new TaxModel("friuts", 1));
+        taxModelList.add(new TaxModel("veg", 2));
+        taxModelList.add(new TaxModel("dairy", 3));
+        taxModelList.add(new TaxModel("baby products", 4));
+        taxModelList.add(new TaxModel("chaval", 5));
+
+//        ArrayAdapter<CategoryModel> adapter = new ArrayAdapter<>(getApplicationContext(), android.R.layout.simple_spinner_item, categoryList);
+        TaxesSpinnerAdapter adapter = new TaxesSpinnerAdapter(getApplicationContext(), taxModelList);
+//        adapter.set(android.R.layout.simple_spinner_dropdown_item);
+        tax.setAdapter(adapter);
+
+        for (TaxModel tax : taxModelList) {
+            taxid = tax.getId();
+            Log.e(TAG, "onResponse: categories name : " + tax.getName());
         }
     }
 

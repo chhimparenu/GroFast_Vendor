@@ -16,7 +16,6 @@ public class CategoryModel {
         this.id = id;
     }
 
-
     public String getImage() {
         return image;
     }

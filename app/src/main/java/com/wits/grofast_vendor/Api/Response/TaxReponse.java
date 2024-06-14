@@ -1,0 +1,26 @@
+package com.wits.grofast_vendor.Api.Response;
+
+import com.wits.grofast_vendor.Api.Model.CategoryModel;
+import com.wits.grofast_vendor.Api.Model.TaxModel;
+
+import java.util.List;
+
+public class TaxReponse {
+    private String message;
+
+    private Integer status;
+
+    private List<TaxModel> tax;
+
+    public String getMessage() {
+        return message;
+    }
+
+    public Integer getStatus() {
+        return status;
+    }
+
+    public List<TaxModel> gettax() {
+        return tax;
+    }
+}
