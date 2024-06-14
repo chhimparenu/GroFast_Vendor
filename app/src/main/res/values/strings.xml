@@ -148,4 +148,28 @@
 
     //pages
     <string name="add_product_page_name">Add Product</string>
+
+    <!--    SETINGS PAGE POLICIES -->
+
+    <string name="settings_policy">Policy</string>
+    <string name="settings_privacy_policy">Privacy policy</string>
+    <string name="settings_terms_and_conditions">Terms and conditions</string>
+    <string name="settings_content_policy">Content policy</string>
+    <string name="settings_refund_policy">Refund policy</string>
+    <string name="settings_cancellation_policy">Cancellation policy</string>
+    <string name="settings_delete_data_policy">Delete data policy</string>
+    <string name="settings_delete_account_policy">Delete account policy</string>
+    <string name="settings_report_policy">Report policy</string>
+    <string name="settings_infrigment_policy">Infrigment policy</string>
+    <string name="settings_grievance_policy">Grievance policy</string>
+    <string name="settings_bsd_license_policy">BSD license</string>
+    <string name="cancelation_policy">Cancellation Policy</string>
+
+    <!--    SETINGS PAGE -->
+
+    <string name="settings_account">Account</string>
+    <string name="settings_deactivate_account">Deactivate account</string>
+    <string name="settings_delete_account">Delete account</string>
+
+
 </resources>
