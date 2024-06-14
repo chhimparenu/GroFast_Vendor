@@ -1,4 +1,4 @@
-package com.wits.grofast_vendor;
+package com.wits.grofast_vendor.Api;
 
 import java.io.IOException;
 
@@ -14,7 +14,7 @@ public class Retrofirinstance {
     public static String domain = "https://grofast.in/";
 
     public static Retrofit getClient(){
-        return new Retrofit.Builder().baseUrl(domain + "api/supplier-otp").addConverterFactory(GsonConverterFactory.create()).build();
+        return new Retrofit.Builder().baseUrl(domain + "api/supplier").addConverterFactory(GsonConverterFactory.create()).build();
     }
 
     public static Retrofit getUnAuthorizedClient(){
