@@ -1,66 +1,91 @@
 package com.wits.grofast_vendor.Homepage;
 
+import android.content.Intent;
 import android.os.Bundle;
 
+import androidx.appcompat.widget.AppCompatButton;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.wits.grofast_vendor.Adapter.ProductlistAdapter;
+import com.wits.grofast_vendor.Details.AddProduct;
 import com.wits.grofast_vendor.R;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link Product_Fragment#newInstance} factory method to
- * create an instance of this fragment.
- */
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 public class Product_Fragment extends Fragment {
-
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
-
-    public Product_Fragment() {
-        // Required empty public constructor
-    }
-
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment Product_Fragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static Product_Fragment newInstance(String param1, String param2) {
-        Product_Fragment fragment = new Product_Fragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
-    }
+    RecyclerView productrecycleview;
+    AppCompatButton addproduct;
+    private ProductlistAdapter productAdapter;
+    private List<Map<String, Object>> itemList;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_product_, container, false);
+        View root = inflater.inflate(R.layout.fragment_product_, container, false);
+
+        addproduct = root.findViewById(R.id.new_product_add);
+
+        productrecycleview = root.findViewById(R.id.product_list);
+        productrecycleview.setLayoutManager(new LinearLayoutManager(getContext()));
+        itemList = new ArrayList<>();
+        loaddata();
+        productAdapter = new ProductlistAdapter(getContext(), itemList);
+        productrecycleview.setAdapter(productAdapter);
+
+        addproduct.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent in = new Intent(getContext(), AddProduct.class);
+                startActivity(in);
+            }
+        });
+
+        return root;
+    }
+
+    private void loaddata() {
+        Map<String, Object> item1 = new HashMap<>();
+        item1.put("Name", "Ankleshwar");
+        item1.put("description", "Your order from Fresh Picks Mart has been delivered. Feel free to tio the delivery partner.");
+        item1.put("Price", "3");
+        item1.put("Quantity", "3Kg");
+        item1.put("image", R.drawable.gobhi_image);
+
+        Map<String, Object> item2 = new HashMap<>();
+        item2.put("Name", "Ankleshwar");
+        item2.put("description", "Your order from Fresh Picks Mart has been delivered. Feel free to tio the delivery partner.");
+        item2.put("Price", "3");
+        item2.put("Quantity", "3Kg");
+        item2.put("image", R.drawable.gobhi_image);
+
+        Map<String, Object> item3 = new HashMap<>();
+        item3.put("Name", "Ankleshwar");
+        item3.put("description", "Your order from Fresh Picks Mart has been delivered. Feel free to tio the delivery partner.");
+        item3.put("Price", "3");
+        item3.put("Quantity", "3Kg");
+        item3.put("image", R.drawable.gobhi_image);
+
+        Map<String, Object> item4 = new HashMap<>();
+        item4.put("Name", "Ankleshwar");
+        item4.put("description", "Your order from Fresh Picks Mart has been delivered. Feel free to tio the delivery partner.");
+        item4.put("Price", "3");
+        item4.put("Quantity", "3Kg");
+        item4.put("image", R.drawable.gobhi_image);
+
+        itemList.add(item1);
+        itemList.add(item2);
+        itemList.add(item3);
+        itemList.add(item4);
     }
 }
+

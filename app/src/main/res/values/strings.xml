@@ -46,12 +46,13 @@
     <string name="Product_description">Description</string>
     <string name="Product_price">Price</string>
     <string name="Product_Quantity">Quantity</string>
+    <string name="categories">Categories</string>
+    <string name="product_discount">Discount</string>
+    <string name="product_detail">Detail</string>
+    <string name="add_product">Add Product</string>
 
-    //Add_product_list
-    <string name="Product_list_name">Product Name</string>
-    <string name="Product_list_Quantity">Product Name</string>
-    <string name="Product_list_Price">Product Name</string>
-    <string name="Product_list_discount">Product Name</string>
+    //Search
+    <string name="search_product_fragment">Search Item...</string>
 
     //Toast
     <string name="toast_message_enter_number">Enter a phone number</string>
@@ -141,4 +142,7 @@
 
     //Button
     <string name="view_all">View All</string>
+
+    //pages
+    <string name="add_product_page_name">Add Product</string>
 </resources>

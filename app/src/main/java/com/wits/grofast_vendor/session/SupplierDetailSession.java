@@ -1,6 +1,6 @@
 package com.wits.grofast_vendor.session;
 
-import static com.wits.grofast_vendor.Retrofirinstance.domain;
+import static com.wits.grofast_vendor.Api.Retrofirinstance.domain;
 
 import android.content.Context;
 import android.content.SharedPreferences;
