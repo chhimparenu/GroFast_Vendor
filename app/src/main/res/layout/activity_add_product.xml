@@ -5,13 +5,13 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="@dimen/linear_padding"
     android:scrollbars="none"
     tools:context=".Details.AddProduct">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:padding="@dimen/linear_padding"
         android:orientation="vertical">
 
         <ImageView
@@ -44,35 +44,18 @@
 
             </com.google.android.material.textfield.TextInputLayout>
 
-            <LinearLayout
+
+            <androidx.appcompat.widget.AppCompatSpinner
+                android:id="@+id/Categories_spinner"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="@dimen/_40sdp"
                 android:layout_marginTop="@dimen/_10sdp"
-                android:orientation="horizontal">
-
-                <androidx.appcompat.widget.AppCompatSpinner
-                    android:id="@+id/Categories_spinner"
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/_40sdp"
-                    android:layout_marginRight="5dp"
-                    android:layout_weight="1"
-                    android:background="@drawable/border_color"
-                    android:dropDownVerticalOffset="0dp"
-                    android:padding="@dimen/_5sdp"
-                    android:spinnerMode="dropdown" />
-
-                <androidx.appcompat.widget.AppCompatSpinner
-                    android:id="@+id/supplier_spinner"
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/_40sdp"
-                    android:layout_marginLeft="5dp"
-                    android:layout_weight="1"
-                    android:background="@drawable/border_color"
-                    android:dropDownVerticalOffset="0dp"
-                    android:padding="@dimen/_5sdp"
-                    android:spinnerMode="dropdown" />
-
-            </LinearLayout>
+                android:layout_marginRight="5dp"
+                android:layout_weight="1"
+                android:background="@drawable/border_color"
+                android:dropDownVerticalOffset="0dp"
+                android:padding="@dimen/_5sdp"
+                android:spinnerMode="dropdown" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -176,15 +159,35 @@
 
             </com.google.android.material.textfield.TextInputLayout>
 
-            <androidx.appcompat.widget.AppCompatSpinner
-                android:id="@+id/return_spinner"
+            <TextView
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/_40sdp"
+                android:layout_height="wrap_content"
+                android:text="@string/return_plociy"
+                android:textSize="@dimen/hint_text_size"
                 android:layout_marginTop="@dimen/_10sdp"
-                android:background="@drawable/border_color"
-                android:dropDownVerticalOffset="0dp"
-                android:padding="@dimen/_5sdp"
-                android:spinnerMode="dropdown" />
+                android:textColor="@color/default_color"/>
+
+           <RadioGroup
+               android:layout_width="match_parent"
+               android:layout_height="wrap_content"
+               android:orientation="horizontal">
+
+               <RadioButton
+                   android:id="@+id/retun_true"
+                   android:layout_width="match_parent"
+                   android:layout_height="wrap_content"
+                   android:layout_weight="1"
+                   android:text="@string/True"/>
+
+               <RadioButton
+                   android:id="@+id/retun_false"
+                   android:layout_width="match_parent"
+                   android:layout_height="wrap_content"
+                   android:layout_weight="1"
+                   android:text="@string/False"/>
+
+           </RadioGroup>
+
 
         </LinearLayout>
 
@@ -192,7 +195,6 @@
             android:id="@+id/product_add"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="@dimen/linear_padding"
             android:background="@drawable/button_round"
             android:padding="@dimen/_5sdp"
             android:text="@string/add_product"

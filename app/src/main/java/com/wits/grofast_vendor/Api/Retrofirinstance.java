@@ -14,7 +14,7 @@ public class Retrofirinstance {
     public static String domain = "https://grofast.in/";
 
     public static Retrofit getClient(){
-        return new Retrofit.Builder().baseUrl(domain + "api/supplier").addConverterFactory(GsonConverterFactory.create()).build();
+        return new Retrofit.Builder().baseUrl(domain + "api/supplier/").addConverterFactory(GsonConverterFactory.create()).build();
     }
 
     public static Retrofit getUnAuthorizedClient(){
@@ -30,7 +30,7 @@ public class Retrofirinstance {
                 return chain.proceed(newRequest);
             }
         }).build();
-        return new Retrofit.Builder().baseUrl(domain + "api/supplier-otp").client(okHttpClient).addConverterFactory(GsonConverterFactory.create()).build();
+        return new Retrofit.Builder().baseUrl(domain + "api/supplier/").client(okHttpClient).addConverterFactory(GsonConverterFactory.create()).build();
 
     }
 }

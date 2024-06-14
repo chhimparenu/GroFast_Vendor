@@ -11,6 +11,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -32,6 +33,8 @@ import com.wits.grofast_vendor.Api.Response.LoginResponse;
 import com.wits.grofast_vendor.Api.Response.OtpResponse;
 import com.wits.grofast_vendor.session.SupplierActivitySession;
 import com.wits.grofast_vendor.session.SupplierDetailSession;
+
+import java.util.Locale;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -102,7 +105,9 @@ public class Login_page extends AppCompatActivity {
     }
 
     EditText digit1, digit2, digit3, digit4;
-    AppCompatButton Continue_otp_page;
+    AppCompatButton Continue_otp_page,resend;
+    TextView textphone, countDownTimer;
+    long COUNTDOWN_TIME_MILLIS = 30000;
 
     private void openOtpPage(String phone) {
         AlertDialog.Builder builder = new AlertDialog.Builder(Login_page.this);
@@ -111,8 +116,11 @@ public class Login_page extends AppCompatActivity {
         AlertDialog dialog = builder.create();
         dialog.setCanceledOnTouchOutside(false);
         ImageView close_change_phone_number;
-        TextView textphone = dialogView.findViewById(R.id.otp_phone_no);
+        textphone = dialogView.findViewById(R.id.otp_phone_no);
         textphone.setText(phone);
+        resend = dialogView.findViewById(R.id.resend_otp_button);
+        countDownTimer = dialogView.findViewById(R.id.countdown_timer);
+        startCountdown(resend, countDownTimer, getApplicationContext(), COUNTDOWN_TIME_MILLIS);
 
         digit1 = dialogView.findViewById(R.id.otp_digit1);
         digit2 = dialogView.findViewById(R.id.otp_digit2);
@@ -186,6 +194,36 @@ public class Login_page extends AppCompatActivity {
                 }
             }
 
+        });
+
+        resend.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (countDownTimer.getText().toString().equals("00:00")) {
+                    Call<LoginResponse> call = Retrofirinstance.getUnAuthorizedClient().create(userinterface.class).Login(phone);
+                    call.enqueue(new Callback<LoginResponse>() {
+                        @Override
+                        public void onResponse(Call<LoginResponse> call, Response<LoginResponse> response) {
+                            if (response.isSuccessful()) {
+                                startCountdown(resend, countDownTimer, getApplicationContext(), COUNTDOWN_TIME_MILLIS);
+                                LoginResponse loginResponse = response.body();
+                                if (loginResponse != null) {
+                                    Toast.makeText(getApplicationContext(), "" + loginResponse.getMessage(), Toast.LENGTH_SHORT).show();
+                                }
+                            } else {
+                                handleApiError(TAG, response, getApplicationContext());
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<LoginResponse> call, Throwable t) {
+                            t.printStackTrace();
+                        }
+                    });
+                } else {
+                    Toast.makeText(getApplicationContext(), getString(R.string.toast_message_resend_otp), Toast.LENGTH_SHORT).show();
+                }
+            }
         });
 
         if (dialog.getWindow() != null) {
@@ -320,5 +358,30 @@ public class Login_page extends AppCompatActivity {
             imm.showSoftInput(view, InputMethodManager.SHOW_IMPLICIT);
         }
     }
+
+    public static void startCountdown(AppCompatButton resend, TextView countDownTimer, Context context, long countDownTime) {
+        new CountDownTimer(countDownTime, 1000) {
+            @Override
+            public void onTick(long millisUntilFinished) {
+                int minutes = (int) (millisUntilFinished / 1000) / 60;
+                int seconds = (int) (millisUntilFinished / 1000) % 60;
+                String timeLeftFormatted = String.format(Locale.getDefault(), "%02d:%02d", minutes, seconds);
+                countDownTimer.setText(timeLeftFormatted);
+
+                resend.setClickable(false);
+                resend.setBackgroundDrawable(context.getDrawable(R.drawable.textview_design));
+                resend.setTextColor(context.getColor(R.color.default_color));
+            }
+
+            @Override
+            public void onFinish() {
+                resend.setClickable(true);
+                countDownTimer.setText("00:00");
+                resend.setBackgroundDrawable(context.getDrawable(R.drawable.button_round));
+                resend.setTextColor(context.getColor(R.color.button_text_color));
+            }
+        }.start();
+    }
+
 }
 

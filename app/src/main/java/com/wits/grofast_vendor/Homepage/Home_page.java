@@ -27,7 +27,9 @@ import com.wits.grofast_vendor.Details.Notification;
 import com.wits.grofast_vendor.Details.Notification_setting;
 import com.wits.grofast_vendor.Details.ProfilePage;
 import com.wits.grofast_vendor.Details.Settings;
+import com.wits.grofast_vendor.Login_page;
 import com.wits.grofast_vendor.R;
+import com.wits.grofast_vendor.session.SupplierActivitySession;
 import com.wits.grofast_vendor.session.SupplierDetailSession;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -41,7 +43,8 @@ public class Home_page extends AppCompatActivity {
     private CircleImageView userProfile;
     NavigationView navigationView;
     ImageView menu;
-    SupplierDetailSession session;
+    SupplierDetailSession supplierDetailSession;
+    SupplierActivitySession supplierActivitySession;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -49,6 +52,8 @@ public class Home_page extends AppCompatActivity {
         this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,WindowManager.LayoutParams.FLAG_FULLSCREEN);
         getSupportActionBar().hide();
         setContentView(R.layout.activity_home_page);
+        supplierActivitySession = new SupplierActivitySession(getApplicationContext());
+        supplierDetailSession  = new SupplierDetailSession(getApplicationContext());
 
         bottomNavigationView = findViewById(R.id.bottomNavigationView);
         frameLayout = findViewById(R.id.venfragmentn);
@@ -56,7 +61,6 @@ public class Home_page extends AppCompatActivity {
         drawerLayout = findViewById(R.id.drawer_layout);
         navigationView = findViewById(R.id.nav_view);
         headerView = navigationView.getHeaderView(0);
-        session = new SupplierDetailSession(getApplicationContext());
 
         bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
@@ -101,6 +105,13 @@ public class Home_page extends AppCompatActivity {
                     startActivity(new Intent(Home_page.this, Notification_setting.class));
                 } else if (id == R.id.menu_setting) {
                     startActivity(new Intent(Home_page.this, Settings.class));
+                } else if (id==R.id.menu_logout) {
+                    supplierActivitySession.setLoginStaus(false);
+                    supplierActivitySession.clearSession();
+                    supplierDetailSession.clearSession();
+                    Intent i = new Intent(getApplicationContext(), Login_page.class);
+                    i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                    startActivity(i);
                 }
                 drawerLayout.closeDrawer(GravityCompat.START);
                 return false;
@@ -125,8 +136,8 @@ public class Home_page extends AppCompatActivity {
         userPhoneNo = headerView.findViewById(R.id.user_phone_no);
         userProfile = headerView.findViewById(R.id.user_profile);
 
-        userPhoneNo.setText(session.getPhoneNo());
-        String name = session.getName();
+        userPhoneNo.setText(supplierDetailSession.getPhoneNo());
+        String name = supplierDetailSession.getName();
         if (name == null || name.isEmpty()) {
             name = getString(R.string.your_name);
             userName.setTextColor(getResources().getColor(R.color.default_color));
@@ -134,6 +145,6 @@ public class Home_page extends AppCompatActivity {
             userName.setTextColor(getResources().getColor(R.color.white));
         }
         userName.setText(name);
-        Glide.with(getApplicationContext()).load(session.getImage()).placeholder(R.drawable.account).into(userProfile);
+        Glide.with(getApplicationContext()).load(supplierDetailSession.getImage()).placeholder(R.drawable.account).into(userProfile);
     }
 }

@@ -50,6 +50,9 @@
     <string name="product_discount">Discount</string>
     <string name="product_detail">Detail</string>
     <string name="add_product">Add Product</string>
+    <string name="return_plociy">Return Policy</string>
+    <string name="True">True</string>
+    <string name="False">False</string>
 
     //Search
     <string name="search_product_fragment">Search Item...</string>
