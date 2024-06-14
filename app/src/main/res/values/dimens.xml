@@ -15,4 +15,5 @@
     <dimen name="padding">@dimen/_10sdp</dimen>
     <dimen name="drawable_icon">@dimen/_24sdp</dimen>
     <dimen name="otp_edittext">@dimen/_50sdp</dimen>
+    <dimen name="view_height">1dp</dimen>
 </resources>
