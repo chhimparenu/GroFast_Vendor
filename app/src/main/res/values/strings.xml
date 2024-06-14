@@ -8,7 +8,7 @@
     <string name="save_change_button">Save Changes</string>
 
     //Slider Layout
-    <string name="user_name">Your Name</string>
+    <string name="your_store_name">Your Store Name</string>
 
     <string name="edit_profile_page_name">Edit Profile</string>
     <string name="notification_page_name">Notification</string>
@@ -19,6 +19,7 @@
     <string name="login">Login</string>
     <string name="phonenumberhint">Enter phone number</string>
     <string name="continue_button">Continue</string>
+    <string name="hint_phone_number">Phone number</string>
     <string name="login_end_title">By continuing you agree to our</string>
     <string name="privacy_policy">Privacy Policy</string>
     <string name="terms_and_condition">T &amp; C</string>
@@ -87,11 +88,23 @@
 
     //Edit Page Details
     <string name="name">Name</string>
+    <string name="store_name">Store Name</string>
+    <string name="your_name">Your Name</string>
     <string name="phone_number">Phone Number</string>
     <string name="email">Email</string>
+    <string name="pincode">PinCode</string>
+    <string name="city">City</string>
+    <string name="city_hint">Enter your City</string>
+    <string name="state">State</string>
+    <string name="state_hint">Enter your State</string>
+    <string name="country">Country</string>
+    <string name="country_hint">Enter Country name </string>
+    <string name="pincode_hint">Enter your PinCode</string>
+    <string name="descrption">Description</string>
     <string name="email_hint">example@gmail.com</string>
-    <string name="location">Location</string>
-    <string name="location_hint">Your Location</string>
+    <string name="edit_des">Add Description</string>
+    <string name="location">Store Address</string>
+    <string name="location_hint">Your Store Location</string>
     <string name="gender">Gender</string>
     <string name="gender_male">Male</string>
     <string name="gender_female">Female</string>

@@ -7,7 +7,6 @@ public class SupplierActivitySession {
     private final SharedPreferences sharedPreferences;
     private final SharedPreferences.Editor editor;
 
-
     public SupplierActivitySession(Context context) {
         sharedPreferences = context.getSharedPreferences("UserActivity", Context.MODE_PRIVATE);
         editor = sharedPreferences.edit();

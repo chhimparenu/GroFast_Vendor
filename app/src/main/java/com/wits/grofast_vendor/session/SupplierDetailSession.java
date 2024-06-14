@@ -9,12 +9,10 @@ public class SupplierDetailSession {
     private final SharedPreferences sharedPreferences;
     private final SharedPreferences.Editor editor;
 
-
     public SupplierDetailSession(Context context) {
         sharedPreferences = context.getSharedPreferences("UserDetails", Context.MODE_PRIVATE);
         editor = sharedPreferences.edit();
     }
-
     public void setPhoneNo(String phone) {
         editor.putString("userPhone", phone);
         editor.apply();
@@ -23,7 +21,6 @@ public class SupplierDetailSession {
     public String getPhoneNo() {
         return sharedPreferences.getString("userPhone", "1234567890");
     }
-
 
     public void setName(String name) {
         editor.putString("userName", name);
