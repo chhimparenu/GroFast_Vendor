@@ -1,9 +1,17 @@
 package com.wits.grofast_vendor.Details;
 
+import static com.wits.grofast_vendor.CommonUtilities.getPathFromUri;
 import static com.wits.grofast_vendor.CommonUtilities.handleApiError;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.MenuItem;
 
@@ -20,6 +28,7 @@ import androidx.appcompat.widget.AppCompatButton;
 import androidx.appcompat.widget.AppCompatEditText;
 import androidx.appcompat.widget.AppCompatSpinner;
 
+import com.bumptech.glide.Glide;
 import com.wits.grofast_vendor.Adapter.CategorySpinnerAdapter;
 import com.wits.grofast_vendor.Adapter.TaxesSpinnerAdapter;
 import com.wits.grofast_vendor.Adapter.UnitSpinnerAdapter;
@@ -39,6 +48,8 @@ import com.wits.grofast_vendor.Api.Retrofirinstance;
 import com.wits.grofast_vendor.R;
 import com.wits.grofast_vendor.session.SupplierActivitySession;
 
+import org.jetbrains.annotations.Nullable;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -52,19 +63,23 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class AddProduct extends AppCompatActivity {
+    private static final int GALLERY_REQUEST_CODE = 100;
+    private static final int STORAGE_PERMISSION_CODE = 101;
+    private boolean isRemoveProfile = false;
     AppCompatSpinner categories, unit, tax;
     RadioButton return_true, return_false, stock_true, stock_false;
     AppCompatEditText name, quantity, price, detail, descount, per;
-    ImageView proimage;
+    ImageView showimage;
     SupplierActivitySession session;
     private MultipartBody.Part image;
     private File imageFile;
+    private final int defaultImage = R.drawable.add_product;
     private final String TAG = "ShowAllCategories";
     private List<CategoryModel> categoryList = new ArrayList<>();
     private List<TaxModel> taxModelList = new ArrayList<>();
     private List<UnitModel> unitModelList = new ArrayList<>();
     int categoryId, taxid, unitId;
-    AppCompatButton addproduct;
+    AppCompatButton addproduct, addimage, editimage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -98,9 +113,25 @@ public class AddProduct extends AppCompatActivity {
 
         //Button
         addproduct = findViewById(R.id.product_add);
+        addimage = findViewById(R.id.add_product_image);
+        editimage = findViewById(R.id.edit_product_image);
 
         //image
-        proimage = findViewById(R.id.add_product_image);
+        showimage = findViewById(R.id.show_product_image);
+
+        addimage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openGallery();
+            }
+        });
+
+        editimage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showDialog();
+            }
+        });
 
 
         fetchCategories();
@@ -110,6 +141,11 @@ public class AddProduct extends AppCompatActivity {
         populateCategorySpinner(categoryList);
         populateTaxesSpinner(taxModelList);
         populateUnitSpinner(unitModelList);
+//        String image = null;
+//        Glide.with(getApplicationContext()).load(image).placeholder(defaultImage).into(showimage);
+//        if (Uri.parse(image).getLastPathSegment().equals("null")) {
+//            showaddimage();
+//        } else showeditImage();
 
         addproduct.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -216,7 +252,7 @@ public class AddProduct extends AppCompatActivity {
                                 Log.d(TAG, "Message " + productResponse.getMessage());
                                 Log.d(TAG, "Status " + productResponse.getStatus());
                                 Log.d(TAG, "Product " + productResponse.getProduct());
-                                Toast.makeText(AddProduct.this, "" + response.body().getMessage(), Toast.LENGTH_SHORT).show();
+                                Toast.makeText(AddProduct.this, "" + productResponse.getMessage(), Toast.LENGTH_SHORT).show();
                             } else {
                                 try {
                                     String errorBody = response.errorBody().string();
@@ -231,12 +267,80 @@ public class AddProduct extends AppCompatActivity {
 
                         @Override
                         public void onFailure(Call<ProductResponse> call, Throwable t) {
-
+                            t.printStackTrace();
                         }
                     });
                 }
             }
         });
+    }
+
+    private void showDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(R.string.edit_profile_image_heading).setItems(new String[]{getString(R.string.change_image), getString(R.string.remove_image)}, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+                switch (which) {
+                    case 0:
+                        openGallery();
+                        break;
+                    case 1:
+                        showimage.setImageResource(R.drawable.add_product);
+                        showaddimage();
+                        image = null;
+                        isRemoveProfile = true;
+                        break;
+                }
+            }
+        });
+        builder.create().show();
+    }
+
+
+    private void openGallery() {
+        Intent galleryIntent = new Intent(Intent.ACTION_PICK);
+        galleryIntent.setType("image/*");
+        startActivityForResult(galleryIntent, GALLERY_REQUEST_CODE);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == STORAGE_PERMISSION_CODE) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                openGallery();
+            } else {
+                Toast.makeText(this, "Permission denied!", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == GALLERY_REQUEST_CODE && resultCode == RESULT_OK && data != null) {
+            Uri selectedImageUri = data.getData();
+            try {
+                Bitmap bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), selectedImageUri);
+                showimage.setImageBitmap(bitmap);
+                showeditImage();
+                imageFile = new File(getPathFromUri(getApplicationContext(), data.getData()));
+                RequestBody requestFile = RequestBody.create(MediaType.parse("multipart/form-data"), imageFile);
+                image = MultipartBody.Part.createFormData("image", imageFile.getName(), requestFile);
+            } catch (IOException e) {
+                e.printStackTrace();
+                Toast.makeText(this, "Failed to load image", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
+    private void showeditImage() {
+        addimage.setVisibility(View.GONE);
+        editimage.setVisibility(View.VISIBLE);
+    }
+
+    private void showaddimage() {
+        addimage.setVisibility(View.VISIBLE);
+        editimage.setVisibility(View.GONE);
     }
 
     private void showToastAndFocus(String message, View view) {

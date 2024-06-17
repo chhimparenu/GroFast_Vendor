@@ -3,6 +3,8 @@
     <string name="company_name">Wingers It Services Pvt.Ltd</string>
     <string name="pvt">Powered by</string>
     <string name="add_profile_button">Add profile</string>
+    <string name="add_image">Add Image</string>
+    <string name="edit_image">Edit Image</string>
     <string name="edit_profile_button">Edit profile</string>
     <string name="change_button">Change</string>
     <string name="save_change_button">Save Changes</string>

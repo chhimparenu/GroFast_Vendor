@@ -22,6 +22,7 @@ import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -46,6 +47,7 @@ public class Login_page extends AppCompatActivity {
     String enteredPhone, enteredOtp = "";
     SupplierActivitySession session;
     SupplierDetailSession supplierDetailSession;
+    ProgressBar progressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,6 +59,7 @@ public class Login_page extends AppCompatActivity {
 
         Login = findViewById(R.id.login_button);
         phoneNo = findViewById(R.id.phone_no);
+        progressBar = findViewById(R.id.loading_login);
         session = new SupplierActivitySession(getApplicationContext());
         supplierDetailSession = new SupplierDetailSession(getApplicationContext());
 
@@ -75,12 +78,12 @@ public class Login_page extends AppCompatActivity {
                     UserInterface userInterface = Retrofirinstance.getUnAuthorizedClient().create(UserInterface.class);  //API call
                     Call<LoginResponse> call = userInterface.Login(enteredPhone);
 
-                    //   loadingOverlay.setVisibility(View.VISIBLE);
+                    progressBar.setVisibility(View.VISIBLE);
 
                     call.enqueue(new Callback<LoginResponse>() {
                         @Override
                         public void onResponse(Call<LoginResponse> call, Response<LoginResponse> response) {
-//                            loadingOverlay.setVisibility(View.GONE);
+                            progressBar.setVisibility(View.GONE);
                             if (response.isSuccessful()) {
                                 LoginResponse loginResponse = response.body();
                                 Toast.makeText(getApplicationContext(), "" + loginResponse.getMessage(), Toast.LENGTH_SHORT).show();
@@ -95,7 +98,7 @@ public class Login_page extends AppCompatActivity {
                         @Override
                         public void onFailure(Call<LoginResponse> call, Throwable t) {
                             t.printStackTrace();
-                            // loadingOverlay.setVisibility(View.GONE);
+                            progressBar.setVisibility(View.GONE);
                         }
                     });
 
@@ -105,7 +108,7 @@ public class Login_page extends AppCompatActivity {
     }
 
     EditText digit1, digit2, digit3, digit4;
-    AppCompatButton Continue_otp_page,resend;
+    AppCompatButton Continue_otp_page, resend;
     TextView textphone, countDownTimer;
     long COUNTDOWN_TIME_MILLIS = 30000;
 

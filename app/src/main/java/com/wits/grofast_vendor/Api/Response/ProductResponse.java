@@ -9,7 +9,7 @@ public class ProductResponse {
 
     private Integer status;
 
-    private List<ProductModel> product;
+    private ProductModel product;
 
     public String getMessage() {
         return message;
@@ -19,7 +19,7 @@ public class ProductResponse {
         return status;
     }
 
-    public List<ProductModel> getProduct() {
+    public ProductModel getProduct() {
         return product;
     }
 }
