@@ -1,5 +1,6 @@
 package com.wits.grofast_vendor.Api.Response;
 
+import com.google.gson.annotations.SerializedName;
 import com.wits.grofast_vendor.Api.Model.TaxModel;
 import com.wits.grofast_vendor.Api.Model.UnitModel;
 
@@ -10,6 +11,7 @@ public class UnitResponse {
 
     private Integer status;
 
+    @SerializedName("products")
     private List<UnitModel> unitModels;
 
     public String getMessage() {

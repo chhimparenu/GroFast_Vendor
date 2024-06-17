@@ -49,11 +49,21 @@
     <string name="categories">Categories</string>
     <string name="product_discount">Discount</string>
     <string name="product_detail">Detail</string>
+    <string name="product_per">Per</string>
+    <string name="product_stock">Stock</string>
     <string name="add_product">Add Product</string>
     <string name="return_plociy">Return Policy</string>
     <string name="True">True</string>
     <string name="False">False</string>
     <string name="select_category">Select Categories</string>
+    <string name="select_tax">Select Tax</string>
+    <string name="select_unit">Select Unit</string>
+
+    <!--    Edit Image dialog-->
+
+    <string name="edit_profile_image_heading">Edit Profile Image</string>
+    <string name="change_image">Change Image</string>
+    <string name="remove_image">Remove Image</string>
 
     //Search
     <string name="search_product_fragment">Search Item...</string>
@@ -64,6 +74,23 @@
     <string name="toast_message_enter_otp">Please enter the OTP</string>
     <string name="toast_message_correct_otp">Please enter correct otp</string>
     <string name="toast_message_resend_otp">Wait for resend code</string>
+    <string name="toast_message_select_profile">Please select profile image</string>
+    <string name="toast_message_select_return_policy">Please select Return Policy</string>
+    <string name="toast_message_select_stock">Please select Stock</string>
+    <string name="toast_message_select_gender">Please select Gender</string>
+    <string name="toast_message_enter_name">Please enter your name</string>
+    <string name="toast_message_enter_price">Please enter Price</string>
+    <string name="toast_message_enter_quantity">Please enter Quantity</string>
+    <string name="toast_message_enter_discount">Please enter Discount</string>
+    <string name="toast_message_enter_detail">Please enter product Detail</string>
+    <string name="toast_message_enter_per">Please enter per amount</string>
+    <string name="toast_message_select_categories">Please Select Categories</string>
+    <string name="toast_message_select_tax">Please Select Tax</string>
+    <string name="toast_message_select_unit">Please Select Unit</string>
+    <string name="toast_message_enter_email">Please enter E-mail id</string>
+    <string name="toast_message_enter_valid_email">Please enter valid E-mail id</string>
+    <string name="toast_message_new_phone">Please change to a new phone number.</string>
+    <string name="toast_coupon_code_copied">Coupon code copied</string>
 
     //Otp Page
     <string name="otp_title">OTP Verification</string>

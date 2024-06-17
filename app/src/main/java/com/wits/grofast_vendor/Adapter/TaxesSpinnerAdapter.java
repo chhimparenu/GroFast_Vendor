@@ -78,7 +78,7 @@ public class TaxesSpinnerAdapter extends ArrayAdapter<TaxModel> {
     private View getHintView(ViewGroup parent) {
         final View view = mInflater.inflate(mResource, parent, false);
         TextView textView = view.findViewById(R.id.text1);
-        textView.setText("Select Taxes");
+        textView.setText(R.string.select_tax);
         textView.setTextColor(ContextCompat.getColor(mContext, R.color.default_color));
         textView.setTextColor(mContext.getResources().getColor(android.R.color.darker_gray));
         return view;

@@ -77,7 +77,7 @@ public class CategorySpinnerAdapter extends ArrayAdapter<CategoryModel> {
     private View getHintView(ViewGroup parent) {
         final View view = mInflater.inflate(mResource, parent, false);
         TextView textView = view.findViewById(R.id.text1);
-        textView.setText("Select Categories");
+        textView.setText(R.string.select_category);
         textView.setTextColor(mContext.getResources().getColor(android.R.color.darker_gray));
         return view;
     }

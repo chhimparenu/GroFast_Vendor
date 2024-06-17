@@ -56,4 +56,17 @@ public class CommonUtilities {
             e.printStackTrace();
         }
     }
+
+    public static String getPathFromUri(Context context, Uri uri) {
+        String[] projection = {android.provider.MediaStore.Images.Media.DATA};
+        Cursor cursor = context.getContentResolver().query(uri, projection, null, null, null);
+        if (cursor == null) {
+            return null;
+        }
+        int column_index = cursor.getColumnIndexOrThrow(android.provider.MediaStore.Images.Media.DATA);
+        cursor.moveToFirst();
+        String imagePath = cursor.getString(column_index);
+        cursor.close();
+        return imagePath;
+    }
 }
