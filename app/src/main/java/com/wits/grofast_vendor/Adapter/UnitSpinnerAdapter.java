@@ -77,7 +77,7 @@ public class UnitSpinnerAdapter extends ArrayAdapter<UnitModel> {
     private View getHintView(ViewGroup parent) {
         final View view = mInflater.inflate(mResource, parent, false);
         TextView textView = view.findViewById(R.id.text1);
-        textView.setText("Select Unit");
+        textView.setText(R.string.select_unit);
         textView.setTextColor(mContext.getResources().getColor(android.R.color.darker_gray));
         return view;
     }

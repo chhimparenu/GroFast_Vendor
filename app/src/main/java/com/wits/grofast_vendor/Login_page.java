@@ -27,7 +27,7 @@ import android.widget.Toast;
 
 import com.wits.grofast_vendor.Api.Retrofirinstance;
 import com.wits.grofast_vendor.Homepage.Home_page;
-import com.wits.grofast_vendor.Api.Interface.userinterface;
+import com.wits.grofast_vendor.Api.Interface.UserInterface;
 import com.wits.grofast_vendor.Api.Model.SupplierModel;
 import com.wits.grofast_vendor.Api.Response.LoginResponse;
 import com.wits.grofast_vendor.Api.Response.OtpResponse;
@@ -72,7 +72,7 @@ public class Login_page extends AppCompatActivity {
                     showToastAndFocus(getString(R.string.toast_message_valid_number));
                 } else {
                     Log.e(TAG, "onClick: phone no " + enteredPhone);    //Log Phone number
-                    userinterface userInterface = Retrofirinstance.getUnAuthorizedClient().create(userinterface.class);  //API call
+                    UserInterface userInterface = Retrofirinstance.getUnAuthorizedClient().create(UserInterface.class);  //API call
                     Call<LoginResponse> call = userInterface.Login(enteredPhone);
 
                     //   loadingOverlay.setVisibility(View.VISIBLE);
@@ -147,7 +147,7 @@ public class Login_page extends AppCompatActivity {
                 Log.e(TAG, "onCreate: enteredPhone_no " + phone);
                 if (isOtpValid()) {
                     Integer userOtp = Integer.parseInt(enteredOtp);
-                    Call<OtpResponse> call = Retrofirinstance.getUnAuthorizedClient().create(userinterface.class).Otp(phone, userOtp);
+                    Call<OtpResponse> call = Retrofirinstance.getUnAuthorizedClient().create(UserInterface.class).Otp(phone, userOtp);
                     call.enqueue(new Callback<OtpResponse>() {
                         @Override
                         public void onResponse(Call<OtpResponse> call, Response<OtpResponse> response) {
@@ -200,7 +200,7 @@ public class Login_page extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if (countDownTimer.getText().toString().equals("00:00")) {
-                    Call<LoginResponse> call = Retrofirinstance.getUnAuthorizedClient().create(userinterface.class).Login(phone);
+                    Call<LoginResponse> call = Retrofirinstance.getUnAuthorizedClient().create(UserInterface.class).Login(phone);
                     call.enqueue(new Callback<LoginResponse>() {
                         @Override
                         public void onResponse(Call<LoginResponse> call, Response<LoginResponse> response) {
