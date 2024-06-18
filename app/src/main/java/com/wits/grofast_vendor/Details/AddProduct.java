@@ -11,8 +11,10 @@ import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.provider.MediaStore;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 
 import android.view.View;
@@ -20,7 +22,9 @@ import android.view.WindowManager;
 
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.RadioButton;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -80,6 +84,7 @@ public class AddProduct extends AppCompatActivity {
     private List<UnitModel> unitModelList = new ArrayList<>();
     int categoryId, taxid, unitId;
     AppCompatButton addproduct, addimage, editimage;
+    ProgressBar progressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -96,6 +101,8 @@ public class AddProduct extends AppCompatActivity {
         categories = findViewById(R.id.Categories_spinner);
         unit = findViewById(R.id.unit_spinner);
         tax = findViewById(R.id.tax_spinner);
+
+        progressBar = findViewById(R.id.loader_add_product);
 
         //Radio button
         return_true = findViewById(R.id.retun_true);
@@ -141,11 +148,6 @@ public class AddProduct extends AppCompatActivity {
         populateCategorySpinner(categoryList);
         populateTaxesSpinner(taxModelList);
         populateUnitSpinner(unitModelList);
-//        String image = null;
-//        Glide.with(getApplicationContext()).load(image).placeholder(defaultImage).into(showimage);
-//        if (Uri.parse(image).getLastPathSegment().equals("null")) {
-//            showaddimage();
-//        } else showeditImage();
 
         addproduct.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -243,16 +245,20 @@ public class AddProduct extends AppCompatActivity {
                 if (selectedreturnpolicy != null && selectedstock != null) {
                     RequestBody policy = RequestBody.create(MediaType.parse("text/plain"), String.valueOf(selectedReturnPolicy));
                     RequestBody stock = RequestBody.create(MediaType.parse("text/plain"), String.valueOf(selectedReturnPolicy));
+                    progressBar.setVisibility(View.VISIBLE);
+                    addproduct.setVisibility(View.GONE);
                     Call<ProductResponse> addProductResponseCall = Retrofirinstance.getClient(session.getToken()).create(ProductInterface.class).addProduct(adname, adcategories, adunit, adtax, adquantity, adprice, addiscount, policy, adproductdetail, stock, adper, image);
                     addProductResponseCall.enqueue(new Callback<ProductResponse>() {
                         @Override
                         public void onResponse(Call<ProductResponse> call, Response<ProductResponse> response) {
+                            progressBar.setVisibility(View.GONE);
+                            addproduct.setVisibility(View.VISIBLE);
                             if (response.isSuccessful()) {
                                 ProductResponse productResponse = response.body();
-                                Log.d(TAG, "Message " + productResponse.getMessage());
-                                Log.d(TAG, "Status " + productResponse.getStatus());
-                                Log.d(TAG, "Product " + productResponse.getProduct());
-                                Toast.makeText(AddProduct.this, "" + productResponse.getMessage(), Toast.LENGTH_SHORT).show();
+                                Log.e(TAG, "Message " + productResponse.getMessage());
+                                Log.e(TAG, "Status " + productResponse.getStatus());
+                                Log.e(TAG, "Product " + productResponse.getProduct());
+                                showSuccessDialog(productResponse.getMessage());
                             } else {
                                 try {
                                     String errorBody = response.errorBody().string();
@@ -268,11 +274,40 @@ public class AddProduct extends AppCompatActivity {
                         @Override
                         public void onFailure(Call<ProductResponse> call, Throwable t) {
                             t.printStackTrace();
+                            progressBar.setVisibility(View.GONE);
+                            addproduct.setVisibility(View.VISIBLE);
                         }
                     });
                 }
             }
         });
+    }
+
+    private void showSuccessDialog(String message) {
+        LayoutInflater inflater = getLayoutInflater();
+        View dialogView = inflater.inflate(R.layout.dialog_success, null);
+
+        TextView successMessage = dialogView.findViewById(R.id.success_message);
+        successMessage.setText(message);
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(AddProduct.this);
+        builder.setView(dialogView)
+                .setCancelable(false);
+        AlertDialog alert = builder.create();
+        alert.show();
+
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                alert.dismiss();
+                reloadPage();
+            }
+        }, 2000);
+    }
+
+    private void reloadPage() {
+        finish();
+        startActivity(getIntent());
     }
 
     private void showDialog() {
@@ -294,7 +329,6 @@ public class AddProduct extends AppCompatActivity {
         });
         builder.create().show();
     }
-
 
     private void openGallery() {
         Intent galleryIntent = new Intent(Intent.ACTION_PICK);
@@ -378,7 +412,7 @@ public class AddProduct extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<CategoryResponse> call, Throwable t) {
-
+                t.printStackTrace();
             }
         });
     }
@@ -413,7 +447,7 @@ public class AddProduct extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<TaxReponse> call, Throwable t) {
-
+                t.printStackTrace();
             }
         });
     }
@@ -448,7 +482,7 @@ public class AddProduct extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<UnitResponse> call, Throwable t) {
-
+                t.printStackTrace();
             }
         });
     }

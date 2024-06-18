@@ -24,6 +24,7 @@
                 android:layout_width="@dimen/_150sdp"
                 android:layout_height="@dimen/_150sdp"
                 android:layout_gravity="center"
+                android:scaleType="fitXY"
                 android:background="@drawable/add_product" />
 
             <androidx.appcompat.widget.AppCompatButton
@@ -301,6 +302,14 @@
             android:textAllCaps="false"
             android:textColor="@android:color/white"
             android:textSize="@dimen/button_text_size" />
+
+        <ProgressBar
+            android:id="@+id/loader_add_product"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            android:padding="@dimen/_5sdp"/>
+
 
     </LinearLayout>
 
