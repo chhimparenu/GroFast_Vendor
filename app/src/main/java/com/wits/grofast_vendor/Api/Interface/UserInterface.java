@@ -1,6 +1,6 @@
 package com.wits.grofast_vendor.Api.Interface;
 
-import com.wits.grofast_vendor.Api.Response.EditProfileResponse;
+import com.wits.grofast_vendor.Api.Response.SupplierProfileResponse;
 import com.wits.grofast_vendor.Api.Response.LoginResponse;
 import com.wits.grofast_vendor.Api.Response.OtpResponse;
 
@@ -14,12 +14,19 @@ import retrofit2.http.Query;
 
 public interface UserInterface {
 
-    @POST("editCustomerProfile")
+    @POST("updateSupplierDetails")
     @Multipart
-    Call<EditProfileResponse> updateProfile(
-            @Part("phone_no") RequestBody phone_no,
+    Call<SupplierProfileResponse> updateProfile(
             @Part("name") RequestBody name,
             @Part("email") RequestBody email,
+            @Part("mobile_number") RequestBody mobile_number,
+            @Part("description") RequestBody description,
+            @Part("store_address") RequestBody store_address,
+            @Part("pin_code") RequestBody pin_code,
+            @Part("city") RequestBody city,
+            @Part("state") RequestBody state,
+            @Part("country") RequestBody country,
+            @Part("store_name") RequestBody store_name,
             @Part("gender") RequestBody gender,
             @Part MultipartBody.Part image
     );
@@ -29,5 +36,5 @@ public interface UserInterface {
     Call<LoginResponse> Login(@Query("mobile_number") String Phone_no);
 
     @POST("verify-supplier-otp")
-    Call<OtpResponse> Otp(@Query("mobile_number") String Phone_no, @Query("otp")  Integer Otp );
+    Call<OtpResponse> Otp(@Query("mobile_number") String Phone_no, @Query("otp") Integer Otp);
 }

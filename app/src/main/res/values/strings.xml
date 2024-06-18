@@ -81,6 +81,7 @@
     <string name="toast_message_select_stock">Please select Stock</string>
     <string name="toast_message_select_gender">Please select Gender</string>
     <string name="toast_message_enter_name">Please enter your name</string>
+    <string name="toast_message_enter_storename">Please enter your name</string>
     <string name="toast_message_enter_price">Please enter Price</string>
     <string name="toast_message_enter_quantity">Please enter Quantity</string>
     <string name="toast_message_enter_discount">Please enter Discount</string>
@@ -90,7 +91,16 @@
     <string name="toast_message_select_tax">Please Select Tax</string>
     <string name="toast_message_select_unit">Please Select Unit</string>
     <string name="toast_message_enter_email">Please enter E-mail id</string>
+    <string name="toast_message_enter_mobile">Please enter Mobile no.</string>
+    <string name="toast_message_enter_description">Please enter Description</string>
+    <string name="toast_message_enter_storeaddress">Please enter Store Address</string>
+    <string name="toast_message_enter_pincode">Please enter Pin_code</string>
+    <string name="toast_message_enter_city">Please enter City</string>
+    <string name="toast_message_enter_state">Please enter Store State</string>
+    <string name="toast_message_enter_country">Please enter Country Name</string>
     <string name="toast_message_enter_valid_email">Please enter valid E-mail id</string>
+    <string name="toast_message_enter_valid_mobileno">Please enter valid Mobile No.</string>
+    <string name="toast_message_enter_valid_pincode">Please enter valid Pin code</string>
     <string name="toast_message_new_phone">Please change to a new phone number.</string>
     <string name="toast_coupon_code_copied">Coupon code copied</string>
 
@@ -137,6 +147,7 @@
     <string name="email_hint">example@gmail.com</string>
     <string name="edit_des">Add Description</string>
     <string name="location">Store Address</string>
+    <string name="description">Description</string>
     <string name="location_hint">Your Store Location</string>
     <string name="gender">Gender</string>
     <string name="gender_male">Male</string>

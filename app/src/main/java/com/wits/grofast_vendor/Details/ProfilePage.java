@@ -1,5 +1,6 @@
 package com.wits.grofast_vendor.Details;
 
+
 import static com.wits.grofast_vendor.CommonUtilities.getPathFromUri;
 import static com.wits.grofast_vendor.CommonUtilities.handleApiError;
 
@@ -18,26 +19,21 @@ import android.view.View;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
-import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatButton;
 import androidx.appcompat.widget.AppCompatSpinner;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 import androidx.core.widget.NestedScrollView;
 
 import com.bumptech.glide.Glide;
 import com.google.android.material.textfield.TextInputEditText;
 import com.wits.grofast_vendor.Api.Interface.UserInterface;
 import com.wits.grofast_vendor.Api.Model.SupplierModel;
-import com.wits.grofast_vendor.Api.Response.EditProfileResponse;
+import com.wits.grofast_vendor.Api.Response.SupplierProfileResponse;
 import com.wits.grofast_vendor.Api.Retrofirinstance;
 import com.wits.grofast_vendor.R;
 import com.wits.grofast_vendor.session.SupplierActivitySession;
@@ -67,7 +63,7 @@ public class ProfilePage extends AppCompatActivity {
     private File imageFile;
     private final String TAG = "EditProfile";
     private RadioButton radioMale, radioFemale, radioOther;
-    private TextInputEditText email, storeaddress, name, storename;
+    private TextInputEditText email, storeaddress, name, storename, description;
     AppCompatSpinner pincode, city, state, country;
     private TextView tvPhone;
     NestedScrollView scrollView;
@@ -112,6 +108,8 @@ public class ProfilePage extends AppCompatActivity {
         storeaddress = findViewById(R.id.edit_store_address);
         name = findViewById(R.id.edit_name);
         email = findViewById(R.id.edit_email);
+        description = findViewById(R.id.edit_description);
+
 
         //Textview
         tvPhone = findViewById(R.id.show_phone_no);
@@ -150,7 +148,7 @@ public class ProfilePage extends AppCompatActivity {
                 radioOther.setChecked(true);
                 break;
         }
-        Log.e(TAG,"Profile Image"+supplierDetailSession.getImage());
+        Log.e(TAG, "Profile Image" + supplierDetailSession.getImage());
         country.setAdapter(new ArrayAdapter<String>(getApplicationContext(), android.R.layout.simple_spinner_item, countrylist));
         city.setAdapter(new ArrayAdapter<String>(getApplicationContext(), android.R.layout.simple_spinner_item, citylist));
         state.setAdapter(new ArrayAdapter<String>(getApplicationContext(), android.R.layout.simple_spinner_item, statelist));
@@ -217,6 +215,15 @@ public class ProfilePage extends AppCompatActivity {
 
         String uname = name.getText().toString().trim();
         String uemail = email.getText().toString().trim();
+        String udescription = description.getText().toString().trim();
+        String uepincode = pincode.toString().trim();
+        String uestorename = storename.toString().trim();
+        String uestoreaddress = storeaddress.toString().trim();
+
+
+        String uestate = state.toString().trim();
+        String uecity = city.toString().trim();
+        String uecountry = country.toString().trim();
 
         if (uname.isEmpty()) {
             showToastAndFocus(getString(R.string.toast_message_enter_name), name);
@@ -232,47 +239,82 @@ public class ProfilePage extends AppCompatActivity {
             showToastAndFocus(getString(R.string.toast_message_enter_email), email);
             return;
         }
+
         if (!android.util.Patterns.EMAIL_ADDRESS.matcher(uemail).matches()) {
             showToastAndFocus(getString(R.string.toast_message_enter_valid_email), email);
             return;
         }
 
+        if (udescription.isEmpty()) {
+            showToastAndFocus(getString(R.string.toast_message_enter_description), description);
+            return;
+        }
 
-        RequestBody phoneNo = RequestBody.create(MediaType.parse("text/plain"), tvPhone.getText().toString());
-        RequestBody name1 = RequestBody.create(MediaType.parse("text/plain"), name.getText().toString());
-        RequestBody email1 = RequestBody.create(MediaType.parse("text/plain"), email.getText().toString());
+        if (uestoreaddress.isEmpty()) {
+            showToastAndFocus(getString(R.string.toast_message_enter_storeaddress), storeaddress);
+            return;
+        }
+
+        if (uestorename.isEmpty()) {
+            showToastAndFocus(getString(R.string.toast_message_enter_storename), country);
+            return;
+        }
+
+        RequestBody evphoneno = RequestBody.create(MediaType.parse("text/plain"), tvPhone.getText().toString());
+        RequestBody evname = RequestBody.create(MediaType.parse("text/plain"), name.getText().toString());
+        RequestBody evdescription = RequestBody.create(MediaType.parse("text/plain"), description.getText().toString());
+        RequestBody evemail = RequestBody.create(MediaType.parse("text/plain"), email.getText().toString());
+        RequestBody evstorename = RequestBody.create(MediaType.parse("text/plain"), storename.getText().toString());
+        RequestBody evstoreaddress = RequestBody.create(MediaType.parse("text/plain"), storeaddress.getText().toString());
+
+//        RequestBody evpincode = RequestBody.create(MediaType.parse("text/plain"), String.valueOf(uepincode.));
+        RequestBody evpincode = RequestBody.create(MediaType.parse("text/plain"), "1");
+        RequestBody evcity = RequestBody.create(MediaType.parse("text/plain"), "1");
+        RequestBody evstate = RequestBody.create(MediaType.parse("text/plain"), "1");
+        RequestBody evcountry = RequestBody.create(MediaType.parse("text/plain"), "1");
+
 
         if (selectedGender != null) {
             RequestBody gender = RequestBody.create(MediaType.parse("text/plain"), selectedGender);
-            Call<EditProfileResponse> call = Retrofirinstance.getClient(supplierActivitySession.getToken()).create(UserInterface.class).updateProfile(phoneNo, name1, email1, gender, image);
+            Call<SupplierProfileResponse> call = Retrofirinstance.getClient(supplierActivitySession.getToken()).create(UserInterface.class).updateProfile(evname, evemail, evphoneno, evdescription, evstoreaddress, evpincode, evcity, evstate, evcountry, evstorename, gender,image);
             scrollView.setVisibility(View.GONE);
             saveButton.setVisibility(View.GONE);
             loadingOverlay.setVisibility(View.VISIBLE);
 
 //            removeProfile();
 
-            call.enqueue(new Callback<EditProfileResponse>() {
+            call.enqueue(new Callback<SupplierProfileResponse>() {
                 @Override
-                public void onResponse(Call<EditProfileResponse> call, Response<EditProfileResponse> response) {
+                public void onResponse(Call<SupplierProfileResponse> call, Response<SupplierProfileResponse> response) {
                     scrollView.setVisibility(View.VISIBLE);
                     saveButton.setVisibility(View.VISIBLE);
                     loadingOverlay.setVisibility(View.GONE);
                     if (response.isSuccessful()) {
-                        EditProfileResponse editProfileResponse = response.body();
-                        SupplierModel userModel = editProfileResponse.getUserProfile();
+                        SupplierProfileResponse supplierProfileResponse = response.body();
+                        SupplierModel supplierModel = supplierProfileResponse.getSupplierprofile();
+                        Log.d(TAG, "" + supplierProfileResponse.getMessage());
+                        Log.d(TAG, "" + supplierProfileResponse.getStatus());
 
-                        if (userModel != null) {
-                            supplierDetailSession.setImage(userModel.getImage());
-                            supplierDetailSession.setName(userModel.getName());
-                            supplierDetailSession.setEmail(userModel.getEmail());
-                            supplierDetailSession.setGender(userModel.getGender());
+                        if (supplierModel != null) {
+                            supplierDetailSession.setImage(supplierModel.getImage());
+                            supplierDetailSession.setName(supplierModel.getName());
+                            supplierDetailSession.setEmail(supplierModel.getEmail());
+                            supplierDetailSession.setGender(supplierModel.getGender());
+                            supplierDetailSession.setDescription(supplierModel.getDescription());
+                            supplierDetailSession.setCiy(supplierModel.getCity());
+                            supplierDetailSession.setPincode(supplierModel.getPin_code());
+                            supplierDetailSession.setState(supplierModel.getState());
+                            supplierDetailSession.setCountry(supplierModel.getCountry());
+                            supplierDetailSession.setStoreAddress(supplierModel.getStore_address());
+                            supplierDetailSession.setStorrname(supplierModel.getStore_name());
+                            supplierDetailSession.setPhoneNo(supplierModel.getMobile_number());
                         }
-                        Toast.makeText(ProfilePage.this, "" + response.body().getMessage(), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(ProfilePage.this, "" + supplierProfileResponse.getMessage(), Toast.LENGTH_SHORT).show();
                     } else handleApiError(TAG, response, getApplicationContext());
                 }
 
                 @Override
-                public void onFailure(Call<EditProfileResponse> call, Throwable t) {
+                public void onFailure(Call<SupplierProfileResponse> call, Throwable t) {
                     t.printStackTrace();
                     scrollView.setVisibility(View.VISIBLE);
                     saveButton.setVisibility(View.VISIBLE);
