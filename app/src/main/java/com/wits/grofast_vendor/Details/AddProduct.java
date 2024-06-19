@@ -49,6 +49,7 @@ import com.wits.grofast_vendor.Api.Response.CategoryResponse;
 import com.wits.grofast_vendor.Api.Response.TaxReponse;
 import com.wits.grofast_vendor.Api.Response.UnitResponse;
 import com.wits.grofast_vendor.Api.Retrofirinstance;
+import com.wits.grofast_vendor.Homepage.Product_Fragment;
 import com.wits.grofast_vendor.R;
 import com.wits.grofast_vendor.session.SupplierActivitySession;
 
@@ -308,7 +309,7 @@ public class AddProduct extends AppCompatActivity {
 
     private void reloadPage() {
         finish();
-        startActivity(getIntent());
+//        startActivity(getIntent());
     }
 
     private void showDialog() {

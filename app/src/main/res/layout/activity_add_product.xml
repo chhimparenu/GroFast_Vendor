@@ -291,7 +291,6 @@
             android:visibility="gone"
             android:padding="@dimen/_5sdp"/>
 
-
     </LinearLayout>
 
 </androidx.core.widget.NestedScrollView>
