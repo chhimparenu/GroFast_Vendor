@@ -63,6 +63,7 @@
     <string name="product_per">Per</string>
     <string name="product_stock">In-Stock &amp; Out-Stock</string>
     <string name="add_product">Add Product</string>
+    <string name="edit_product">Edit Product</string>
     <string name="return_plociy">Is Returnable</string>
     <string name="Yes">Yes</string>
     <string name="No">No</string>
@@ -202,6 +203,7 @@
 
     //pages
     <string name="add_product_page_name">Add Product</string>
+    <string name="edit_product_page_name">Edit Product</string>
 
     <!--    SETINGS PAGE POLICIES -->
 

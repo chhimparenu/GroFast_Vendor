@@ -1,6 +1,5 @@
 package com.wits.grofast_vendor.Api.Interface;
 
-import com.wits.grofast_vendor.Api.Response.FetchProductResponse;
 import com.wits.grofast_vendor.Api.Response.ProductResponse;
 
 import okhttp3.MultipartBody;
@@ -29,6 +28,24 @@ public interface ProductInterface {
             @Part MultipartBody.Part image
     );
 
+
     @GET("fetch-supplier-product")
-    Call<FetchProductResponse> fetchProducts(@Query("page") int page);
+    Call<ProductResponse> fetchProducts(@Query("page") int page);
+
+
+    @POST("update-supplier-product")
+    @Multipart
+    Call<ProductResponse> updateproduct(
+            @Part("name") RequestBody name,
+            @Part("category_id") RequestBody category_id,
+            @Part("unit_id") RequestBody unit_id,
+            @Part("tax_id") RequestBody tax_id,
+            @Part("price") RequestBody price,
+            @Part("discount") RequestBody discount,
+            @Part("is_returnable") RequestBody return_policy,
+            @Part("product_detail") RequestBody product_detail,
+            @Part("stock_status") RequestBody stock_status,
+            @Part("per") RequestBody per,
+            @Part MultipartBody.Part image
+    );
 }

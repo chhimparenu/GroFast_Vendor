@@ -120,6 +120,7 @@
                         android:orientation="horizontal">
 
                         <androidx.appcompat.widget.AppCompatButton
+                            android:id="@+id/edit_product"
                             android:layout_width="match_parent"
                             android:layout_height="@dimen/_25sdp"
                             android:layout_marginRight="5dp"
@@ -131,6 +132,7 @@
                             android:textSize="@dimen/hint_text_size" />
 
                         <androidx.appcompat.widget.AppCompatButton
+                            android:id="@+id/delete_product"
                             android:layout_width="match_parent"
                             android:layout_height="@dimen/_25sdp"
                             android:layout_marginLeft="5dp"
@@ -362,12 +364,12 @@
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="@string/Return"
+                                android:text="@string/Stock"
                                 android:textColor="@color/textview_text_color"
                                 android:textSize="@dimen/hint_text_size" />
 
                             <TextView
-                                android:id="@+id/all_detail_product_return"
+                                android:id="@+id/all_detail_product_stock"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginStart="@dimen/_2sdp"
@@ -385,12 +387,12 @@
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="@string/Stock"
+                                android:text="@string/Return"
                                 android:textColor="@color/textview_text_color"
                                 android:textSize="@dimen/hint_text_size" />
 
                             <TextView
-                                android:id="@+id/all_detail_product_stock"
+                                android:id="@+id/all_detail_product_return"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginStart="@dimen/_2sdp"

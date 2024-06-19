@@ -1,6 +1,9 @@
 package com.wits.grofast_vendor.Adapter;
 
+import static com.wits.grofast_vendor.Api.Retrofirinstance.domain;
+
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.util.Log;
 import android.util.SparseBooleanArray;
@@ -15,10 +18,12 @@ import android.widget.PopupMenu;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.widget.AppCompatButton;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.wits.grofast_vendor.Api.Model.ProductModel;
+import com.wits.grofast_vendor.Details.EditProduct;
 import com.wits.grofast_vendor.R;
 
 import java.util.ArrayList;
@@ -43,8 +48,7 @@ public class AllProductAdapter extends RecyclerView.Adapter<AllProductAdapter.li
     @NonNull
     @Override
     public AllProductAdapter.listViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        return new listViewHolder(LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.product_row_list, parent, false));
+        return new listViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.product_row_list, parent, false));
     }
 
     @Override
@@ -63,6 +67,13 @@ public class AllProductAdapter extends RecyclerView.Adapter<AllProductAdapter.li
         }
         Glide.with(context).load(item.getImage()).placeholder(R.drawable.add_product).into(holder.imageView);
 
+        holder.edit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                editproduct(item);
+            }
+        });
+
         //All details
 
         holder.detailid.setText(item.getId().toString());
@@ -77,16 +88,18 @@ public class AllProductAdapter extends RecyclerView.Adapter<AllProductAdapter.li
             }
         }
         holder.detaildate.setText(item.getCreated_at());
-        holder.detailcategories.setText(item.getCategory_id().toString());
-        holder.detailTax.setText(item.getTax_id().toString());
+        holder.detailcategories.setText(""+item.getCategory_id());
+        holder.detailTax.setText(item.getTax_id());
         holder.detailper.setText(item.getPer());
         holder.detailunit.setText(item.getUnit_id());
         holder.detaildiscount.setText(item.getDiscount());
         holder.detaildetail.setText(item.getProduct_detail());
         holder.detailreturn.setText(item.getReturn_policy());
         holder.detailstock.setText(item.getStock_status());
-        Glide.with(context).load(item.getImage()).placeholder(R.drawable.add_product).into(holder.detailimage);
+        Glide.with(context).load( item.getImage()).placeholder(R.drawable.add_product).into(holder.detailimage);
 
+        Log.d(TAG, "Return " + item.getReturn_policy());
+        Log.d(TAG, "Image " + item.getImage());
         final boolean isExpanded = position == expandedPosition;
         holder.detailsView.setVisibility(isExpanded ? View.VISIBLE : View.GONE);
         holder.detailshide.setVisibility(isExpanded ? View.GONE : View.VISIBLE);
@@ -101,6 +114,12 @@ public class AllProductAdapter extends RecyclerView.Adapter<AllProductAdapter.li
             notifyItemChanged(previousExpandedPosition);
             notifyItemChanged(expandedPosition);
         });
+    }
+
+    private void editproduct(ProductModel item) {
+        Intent intent = new Intent(context, EditProduct.class);
+        intent.putExtra("Product_Item", item);
+        context.startActivity(intent);
     }
 
     @Override
@@ -118,10 +137,10 @@ public class AllProductAdapter extends RecyclerView.Adapter<AllProductAdapter.li
         public TextView id, name, price, status, detailid, detailname, detailcategories, detailprice, detailstatus, detaildate, detailTax, detailper, detailunit, detaildiscount, detaildetail, detailreturn, detailstock;
         ImageView imageView, detailimage;
         LinearLayout detailsView, detailshide;
+        AppCompatButton edit, delete;
 
         public listViewHolder(@NonNull View v) {
             super(v);
-//            date = v.findViewById(R.id.pro_date);
             imageView = v.findViewById(R.id.pro_image);
             id = v.findViewById(R.id.pro_product_id);
             name = v.findViewById(R.id.proname);
@@ -143,6 +162,8 @@ public class AllProductAdapter extends RecyclerView.Adapter<AllProductAdapter.li
             detaildetail = v.findViewById(R.id.all_detail_product_detail);
             detailreturn = v.findViewById(R.id.all_detail_product_return);
             detailstock = v.findViewById(R.id.all_detail_product_stock);
+            edit = v.findViewById(R.id.edit_product);
+            delete = v.findViewById(R.id.delete_product);
         }
     }
 }

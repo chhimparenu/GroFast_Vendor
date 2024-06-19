@@ -13,6 +13,9 @@ public class ProductResponse {
 
     private ProductModel product;
 
+    @SerializedName("products")
+    private ProductPaginatedRes paginatedProducts;
+
     public String getMessage() {
         return message;
     }
@@ -23,5 +26,9 @@ public class ProductResponse {
 
     public ProductModel getProduct() {
         return product;
+    }
+
+    public ProductPaginatedRes getPaginatedProducts() {
+        return paginatedProducts;
     }
 }
