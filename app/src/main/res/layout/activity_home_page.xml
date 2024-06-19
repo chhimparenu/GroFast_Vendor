@@ -15,17 +15,19 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="@dimen/_50sdp"
             android:background="@color/app_theme"
             android:orientation="horizontal"
             android:padding="10dp">
 
             <TextView
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:text="@string/home_page"
+                android:layout_height="wrap_content"
+                android:text="@string/app_name"
                 android:textColor="@color/white"
+                android:layout_weight="1"
+                android:gravity="start|center"
+                android:layout_gravity="start|center"
                 android:textSize="@dimen/text_Size"
                 android:textStyle="bold" />
 
@@ -56,6 +58,7 @@
             app:itemIconTint="@color/icon_color"
             app:itemTextColor="@color/icon_color"
             app:menu="@menu/bottom_menu" />
+
     </LinearLayout>
 
     <com.google.android.material.navigation.NavigationView

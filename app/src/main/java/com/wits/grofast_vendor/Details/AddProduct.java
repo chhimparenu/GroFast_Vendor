@@ -72,7 +72,7 @@ public class AddProduct extends AppCompatActivity {
     private boolean isRemoveProfile = false;
     AppCompatSpinner categories, unit, tax;
     RadioButton return_true, return_false, stock_true, stock_false;
-    AppCompatEditText name, quantity, price, detail, descount, per;
+    AppCompatEditText name, price, detail, descount, per;
     ImageView showimage;
     SupplierActivitySession session;
     private MultipartBody.Part image;
@@ -112,7 +112,6 @@ public class AddProduct extends AppCompatActivity {
 
         //Edittext
         name = findViewById(R.id.add_product_name);
-        quantity = findViewById(R.id.add_product_quantity);
         price = findViewById(R.id.add_product_price);
         detail = findViewById(R.id.add_product_detail);
         descount = findViewById(R.id.add_product_discount);
@@ -151,6 +150,7 @@ public class AddProduct extends AppCompatActivity {
         addproduct.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                addproduct.setEnabled(false);
                 String selectedreturnpolicy = null;
                 if (return_true.isChecked()) {
                     selectedreturnpolicy = return_true.getText().toString();
@@ -174,12 +174,12 @@ public class AddProduct extends AppCompatActivity {
                 UnitModel uunit = (UnitModel) unit.getSelectedItem();
                 String uper = per.getText().toString().trim();
                 String uprice = price.getText().toString().trim();
-                String uquantity = quantity.getText().toString().trim();
                 String udiscount = descount.getText().toString().trim();
                 String udetails = detail.getText().toString().trim();
 
                 if (uname.isEmpty()) {
                     showToastAndFocus(getString(R.string.toast_message_enter_name), name);
+
                     return;
                 }
 
@@ -208,10 +208,6 @@ public class AddProduct extends AppCompatActivity {
                     return;
                 }
 
-                if (uquantity.isEmpty()) {
-                    showToastAndFocus(getString(R.string.toast_message_enter_quantity), quantity);
-                    return;
-                }
                 if (udiscount.isEmpty()) {
                     showToastAndFocus(getString(R.string.toast_message_enter_discount), descount);
                     return;
@@ -235,7 +231,6 @@ public class AddProduct extends AppCompatActivity {
                 RequestBody adcategories = RequestBody.create(MediaType.parse("text/plain"), String.valueOf(ucategories.getId()));
                 RequestBody adunit = RequestBody.create(MediaType.parse("text/plain"), String.valueOf(uunit.getId()));
                 RequestBody adtax = RequestBody.create(MediaType.parse("text/plain"), String.valueOf(utax.getId()));
-                RequestBody adquantity = RequestBody.create(MediaType.parse("text/plain"), quantity.getText().toString());
                 RequestBody adprice = RequestBody.create(MediaType.parse("text/plain"), price.getText().toString());
                 RequestBody addiscount = RequestBody.create(MediaType.parse("text/plain"), descount.getText().toString());
                 RequestBody adproductdetail = RequestBody.create(MediaType.parse("text/plain"), detail.getText().toString());
@@ -246,12 +241,13 @@ public class AddProduct extends AppCompatActivity {
                     RequestBody stock = RequestBody.create(MediaType.parse("text/plain"), String.valueOf(selectedReturnPolicy));
                     progressBar.setVisibility(View.VISIBLE);
                     addproduct.setVisibility(View.GONE);
-                    Call<ProductResponse> addProductResponseCall = Retrofirinstance.getClient(session.getToken()).create(ProductInterface.class).addProduct(adname, adcategories, adunit, adtax, adquantity, adprice, addiscount, policy, adproductdetail, stock, adper, image);
+                    Call<ProductResponse> addProductResponseCall = Retrofirinstance.getClient(session.getToken()).create(ProductInterface.class).addProduct(adname, adcategories, adunit, adtax, adprice, addiscount, policy, adproductdetail, stock, adper, image);
                     addProductResponseCall.enqueue(new Callback<ProductResponse>() {
                         @Override
                         public void onResponse(Call<ProductResponse> call, Response<ProductResponse> response) {
                             progressBar.setVisibility(View.GONE);
                             addproduct.setVisibility(View.VISIBLE);
+                            addproduct.setEnabled(true);
                             if (response.isSuccessful()) {
                                 ProductResponse productResponse = response.body();
                                 Log.e(TAG, "Message " + productResponse.getMessage());
@@ -275,6 +271,7 @@ public class AddProduct extends AppCompatActivity {
                             t.printStackTrace();
                             progressBar.setVisibility(View.GONE);
                             addproduct.setVisibility(View.VISIBLE);
+                            addproduct.setEnabled(true);
                         }
                     });
                 }
@@ -283,13 +280,16 @@ public class AddProduct extends AppCompatActivity {
     }
 
     private void showSuccessDialog(String message) {
+        if (isFinishing() || isDestroyed()) {
+            return;
+        }
         LayoutInflater inflater = getLayoutInflater();
         View dialogView = inflater.inflate(R.layout.dialog_success, null);
 
         TextView successMessage = dialogView.findViewById(R.id.success_message);
         successMessage.setText(message);
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(AddProduct.this);
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setView(dialogView)
                 .setCancelable(false);
         AlertDialog alert = builder.create();
@@ -298,8 +298,10 @@ public class AddProduct extends AppCompatActivity {
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                alert.dismiss();
-                reloadPage();
+                if (alert.isShowing()) {
+                    alert.dismiss();
+                    reloadPage();
+                }
             }
         }, 2000);
     }

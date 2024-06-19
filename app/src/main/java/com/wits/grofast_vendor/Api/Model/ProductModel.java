@@ -1,22 +1,48 @@
 package com.wits.grofast_vendor.Api.Model;
 
+import static com.wits.grofast_vendor.CommonUtilities.formatDate;
+
+import com.google.gson.annotations.SerializedName;
+
+import java.io.Serializable;
+
 public class ProductModel {
-     private String name ;
-     private String image;
-     private String product_code;
-     private Integer category_id;
-     private String unit_id;
-     private Integer tax_id;
-     private String quantity;
-     private String per;
-     private String price;
-     private String discount;
-     private String return_policy;
-     private String product_status;
-     private String stock_status;
-     private String product_detail;
-     private String uuid;
-     private Integer id;
+    private String name;
+    private String image;
+    private String product_code;
+    private Integer category_id;
+    private String unit_id;
+    private Integer tax_id;
+    private String per;
+    private String price;
+    private String discount;
+    @SerializedName("product_status")
+    private ProductStatus productStatus;
+    @SerializedName("is_returnable")
+    private String return_policy;
+    public static class ProductStatus {
+        private String label;
+        private String color;
+
+        public String getLabel() {
+            return label;
+        }
+
+        public String getColor() {
+            return color;
+        }
+
+    }
+
+    private String stock_status;
+    private String product_detail;
+    private String uuid;
+    private String created_at;
+    private Integer id;
+
+    public String getCreated_at() {
+        return formatDate(created_at);
+    }
 
     public String getName() {
         return name;
@@ -42,10 +68,6 @@ public class ProductModel {
         return tax_id;
     }
 
-    public String getQuantity() {
-        return quantity;
-    }
-
     public String getPer() {
         return per;
     }
@@ -62,10 +84,6 @@ public class ProductModel {
         return return_policy;
     }
 
-    public String getProduct_status() {
-        return product_status;
-    }
-
     public String getStock_status() {
         return stock_status;
     }
@@ -80,5 +98,9 @@ public class ProductModel {
 
     public Integer getId() {
         return id;
+    }
+
+    public ProductStatus getProductStatus() {
+        return productStatus;
     }
 }
