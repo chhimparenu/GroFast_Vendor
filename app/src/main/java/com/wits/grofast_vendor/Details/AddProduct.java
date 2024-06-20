@@ -140,7 +140,6 @@ public class AddProduct extends AppCompatActivity {
             }
         });
 
-
         fetchCategories();
         fetchTaxes();
         fetchUnit();
