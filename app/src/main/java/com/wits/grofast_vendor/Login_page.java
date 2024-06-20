@@ -79,11 +79,13 @@ public class Login_page extends AppCompatActivity {
                     Call<LoginResponse> call = userInterface.Login(enteredPhone);
 
                     progressBar.setVisibility(View.VISIBLE);
+                    Login.setVisibility(View.GONE);
 
                     call.enqueue(new Callback<LoginResponse>() {
                         @Override
                         public void onResponse(Call<LoginResponse> call, Response<LoginResponse> response) {
                             progressBar.setVisibility(View.GONE);
+                            Login.setVisibility(View.VISIBLE);
                             if (response.isSuccessful()) {
                                 LoginResponse loginResponse = response.body();
                                 Toast.makeText(getApplicationContext(), "" + loginResponse.getMessage(), Toast.LENGTH_SHORT).show();
@@ -99,6 +101,7 @@ public class Login_page extends AppCompatActivity {
                         public void onFailure(Call<LoginResponse> call, Throwable t) {
                             t.printStackTrace();
                             progressBar.setVisibility(View.GONE);
+                            Login.setVisibility(View.VISIBLE);
                         }
                     });
 

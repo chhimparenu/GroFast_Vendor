@@ -42,6 +42,7 @@ import com.wits.grofast_vendor.Api.Interface.TaxInterface;
 import com.wits.grofast_vendor.Api.Interface.UnitInterface;
 import com.wits.grofast_vendor.Api.Model.CategoryModel;
 import com.wits.grofast_vendor.Api.Model.ProductModel;
+import com.wits.grofast_vendor.Api.Model.SpinnerModel;
 import com.wits.grofast_vendor.Api.Model.TaxModel;
 import com.wits.grofast_vendor.Api.Model.UnitModel;
 import com.wits.grofast_vendor.Api.Response.ProductResponse;
@@ -49,6 +50,7 @@ import com.wits.grofast_vendor.Api.Response.CategoryResponse;
 import com.wits.grofast_vendor.Api.Response.TaxReponse;
 import com.wits.grofast_vendor.Api.Response.UnitResponse;
 import com.wits.grofast_vendor.Api.Retrofirinstance;
+import com.wits.grofast_vendor.Homepage.Product_Fragment;
 import com.wits.grofast_vendor.R;
 import com.wits.grofast_vendor.session.SupplierActivitySession;
 
@@ -72,7 +74,7 @@ public class AddProduct extends AppCompatActivity {
     private boolean isRemoveProfile = false;
     AppCompatSpinner categories, unit, tax;
     RadioButton return_true, return_false, stock_true, stock_false;
-    AppCompatEditText name, quantity, price, detail, descount, per;
+    AppCompatEditText name, price, detail, descount, per;
     ImageView showimage;
     SupplierActivitySession session;
     private MultipartBody.Part image;
@@ -80,6 +82,7 @@ public class AddProduct extends AppCompatActivity {
     private final int defaultImage = R.drawable.add_product;
     private final String TAG = "ShowAllCategories";
     private List<CategoryModel> categoryList = new ArrayList<>();
+    private List<SpinnerModel> categorySpinnerList = new ArrayList<>();
     private List<TaxModel> taxModelList = new ArrayList<>();
     private List<UnitModel> unitModelList = new ArrayList<>();
     int categoryId, taxid, unitId;
@@ -112,7 +115,6 @@ public class AddProduct extends AppCompatActivity {
 
         //Edittext
         name = findViewById(R.id.add_product_name);
-        quantity = findViewById(R.id.add_product_quantity);
         price = findViewById(R.id.add_product_price);
         detail = findViewById(R.id.add_product_detail);
         descount = findViewById(R.id.add_product_discount);
@@ -144,13 +146,14 @@ public class AddProduct extends AppCompatActivity {
         fetchTaxes();
         fetchUnit();
 
-        populateCategorySpinner(categoryList);
+        populateCategorySpinner(categorySpinnerList);
         populateTaxesSpinner(taxModelList);
         populateUnitSpinner(unitModelList);
 
         addproduct.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+//                addproduct.setEnabled(false);
                 String selectedreturnpolicy = null;
                 if (return_true.isChecked()) {
                     selectedreturnpolicy = return_true.getText().toString();
@@ -159,7 +162,7 @@ public class AddProduct extends AppCompatActivity {
                 }
 
                 int selectedReturnPolicy = return_true.isChecked() ? 1 : 0;
-                int selectedStock = stock_true.isChecked() ? 1 : 0;
+                int selectedStockPolicy = stock_true.isChecked() ? 1 : 0;
 
                 String selectedstock = null;
                 if (stock_true.isChecked()) {
@@ -169,17 +172,17 @@ public class AddProduct extends AppCompatActivity {
                 }
 
                 String uname = name.getText().toString().trim();
-                CategoryModel ucategories = (CategoryModel) categories.getSelectedItem();
+                SpinnerModel ucategories = (SpinnerModel) categories.getSelectedItem();
                 TaxModel utax = (TaxModel) tax.getSelectedItem();
                 UnitModel uunit = (UnitModel) unit.getSelectedItem();
                 String uper = per.getText().toString().trim();
                 String uprice = price.getText().toString().trim();
-                String uquantity = quantity.getText().toString().trim();
                 String udiscount = descount.getText().toString().trim();
                 String udetails = detail.getText().toString().trim();
 
                 if (uname.isEmpty()) {
                     showToastAndFocus(getString(R.string.toast_message_enter_name), name);
+
                     return;
                 }
 
@@ -208,10 +211,6 @@ public class AddProduct extends AppCompatActivity {
                     return;
                 }
 
-                if (uquantity.isEmpty()) {
-                    showToastAndFocus(getString(R.string.toast_message_enter_quantity), quantity);
-                    return;
-                }
                 if (udiscount.isEmpty()) {
                     showToastAndFocus(getString(R.string.toast_message_enter_discount), descount);
                     return;
@@ -235,7 +234,6 @@ public class AddProduct extends AppCompatActivity {
                 RequestBody adcategories = RequestBody.create(MediaType.parse("text/plain"), String.valueOf(ucategories.getId()));
                 RequestBody adunit = RequestBody.create(MediaType.parse("text/plain"), String.valueOf(uunit.getId()));
                 RequestBody adtax = RequestBody.create(MediaType.parse("text/plain"), String.valueOf(utax.getId()));
-                RequestBody adquantity = RequestBody.create(MediaType.parse("text/plain"), quantity.getText().toString());
                 RequestBody adprice = RequestBody.create(MediaType.parse("text/plain"), price.getText().toString());
                 RequestBody addiscount = RequestBody.create(MediaType.parse("text/plain"), descount.getText().toString());
                 RequestBody adproductdetail = RequestBody.create(MediaType.parse("text/plain"), detail.getText().toString());
@@ -243,15 +241,16 @@ public class AddProduct extends AppCompatActivity {
 
                 if (selectedreturnpolicy != null && selectedstock != null) {
                     RequestBody policy = RequestBody.create(MediaType.parse("text/plain"), String.valueOf(selectedReturnPolicy));
-                    RequestBody stock = RequestBody.create(MediaType.parse("text/plain"), String.valueOf(selectedReturnPolicy));
+                    RequestBody stock = RequestBody.create(MediaType.parse("text/plain"), String.valueOf(selectedStockPolicy));
                     progressBar.setVisibility(View.VISIBLE);
                     addproduct.setVisibility(View.GONE);
-                    Call<ProductResponse> addProductResponseCall = Retrofirinstance.getClient(session.getToken()).create(ProductInterface.class).addProduct(adname, adcategories, adunit, adtax, adquantity, adprice, addiscount, policy, adproductdetail, stock, adper, image);
+                    Call<ProductResponse> addProductResponseCall = Retrofirinstance.getClient(session.getToken()).create(ProductInterface.class).addProduct(adname, adcategories, adunit, adtax, adprice, addiscount, policy, adproductdetail, stock, adper, image);
                     addProductResponseCall.enqueue(new Callback<ProductResponse>() {
                         @Override
                         public void onResponse(Call<ProductResponse> call, Response<ProductResponse> response) {
                             progressBar.setVisibility(View.GONE);
                             addproduct.setVisibility(View.VISIBLE);
+                            addproduct.setEnabled(true);
                             if (response.isSuccessful()) {
                                 ProductResponse productResponse = response.body();
                                 Log.e(TAG, "Message " + productResponse.getMessage());
@@ -275,6 +274,7 @@ public class AddProduct extends AppCompatActivity {
                             t.printStackTrace();
                             progressBar.setVisibility(View.GONE);
                             addproduct.setVisibility(View.VISIBLE);
+                            addproduct.setEnabled(true);
                         }
                     });
                 }
@@ -283,30 +283,34 @@ public class AddProduct extends AppCompatActivity {
     }
 
     private void showSuccessDialog(String message) {
+        if (isFinishing() || isDestroyed()) {
+            return;
+        }
         LayoutInflater inflater = getLayoutInflater();
         View dialogView = inflater.inflate(R.layout.dialog_success, null);
 
         TextView successMessage = dialogView.findViewById(R.id.success_message);
         successMessage.setText(message);
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(AddProduct.this);
-        builder.setView(dialogView)
-                .setCancelable(false);
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setView(dialogView).setCancelable(false);
         AlertDialog alert = builder.create();
         alert.show();
 
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                alert.dismiss();
-                reloadPage();
+                if (alert.isShowing()) {
+                    alert.dismiss();
+                    reloadPage();
+                }
             }
         }, 2000);
     }
 
     private void reloadPage() {
         finish();
-        startActivity(getIntent());
+//        startActivity(getIntent());
     }
 
     private void showDialog() {
@@ -399,9 +403,13 @@ public class AddProduct extends AppCompatActivity {
                 if (response.isSuccessful()) {
                     CategoryResponse categoryResponse = response.body();
                     categoryList = categoryResponse.getCategories();
-                    if (categoryList != null && !categoryList.isEmpty()) {
-                        populateCategorySpinner(categoryList);
+
+                    categorySpinnerList.clear();
+                    for (CategoryModel categorymodel : categoryList) {
+                        categorySpinnerList.add(new SpinnerModel(categorymodel.getCategory_name(), categorymodel.getId()));
                     }
+
+                    populateCategorySpinner(categorySpinnerList);
                     Log.e(TAG, "onResponse: fragment Show all categories");
                     Log.e(TAG, "onResponse: message " + categoryResponse.getMessage());
                 } else {
@@ -416,13 +424,13 @@ public class AddProduct extends AppCompatActivity {
         });
     }
 
-    private void populateCategorySpinner(List<CategoryModel> categoryList) {
-        CategorySpinnerAdapter adapter = new CategorySpinnerAdapter(getApplicationContext(), categoryList);
+    private void populateCategorySpinner(List<SpinnerModel> spinnerCategories) {
+        Log.e(TAG, "populateCategorySpinner: size " + spinnerCategories.size());
+        CategorySpinnerAdapter adapter = new CategorySpinnerAdapter(getApplicationContext(), spinnerCategories);
         categories.setAdapter(adapter);
-
-        for (CategoryModel category : categoryList) {
+        for (SpinnerModel category : spinnerCategories) {
             categoryId = category.getId();
-            Log.e(TAG, "onResponse: categories name : " + category.getCategory_name());
+            Log.e(TAG, "onResponse: categories name : " + category.getName());
         }
     }
 

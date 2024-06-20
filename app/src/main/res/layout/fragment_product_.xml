@@ -4,11 +4,15 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="@dimen/linear_padding"
+    android:id="@+id/fram_product"
+    android:paddingLeft="@dimen/linear_padding"
+    android:layout_marginRight="@dimen/linear_padding"
     tools:context=".Homepage.Product_Fragment">
 
     <androidx.core.widget.NestedScrollView
+        android:id="@+id/scroll_product_layout"
         android:layout_width="match_parent"
+        android:paddingTop="@dimen/linear_padding"
         android:layout_height="match_parent">
 
         <LinearLayout
@@ -52,15 +56,58 @@
 
     </androidx.core.widget.NestedScrollView>
 
-    <androidx.appcompat.widget.AppCompatButton
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/new_product_add"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="bottom"
-        android:background="@drawable/button_round"
-        android:text="@string/Add_new_product"
-        android:textAllCaps="false"
-        android:textColor="@android:color/white"
-        android:textSize="@dimen/button_text_size" />
+        android:layout_gravity="bottom|end"
+        android:layout_marginRight="@dimen/_5sdp"
+        android:layout_marginBottom="@dimen/_5sdp"
+        android:src="@drawable/baseline_add_24"
+        app:backgroundTint="@color/app_theme" />
+
+    <LinearLayout
+        android:id="@+id/no_product_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:visibility="gone"
+        android:orientation="vertical">
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="150dp"
+            android:src="@drawable/empty_product" />
+
+        <TextView
+            android:id="@+id/no_product_text1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:text="There is "
+            android:textColor="@color/black"
+            android:textSize="@dimen/text_size" />
+
+        <TextView
+            android:id="@+id/no_product_text2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:layout_marginTop="5dp"
+            android:text="There is "
+            android:textColor="@color/default_color"
+            android:textSize="@dimen/hint_text_size" />
+
+    </LinearLayout>
+
+    <include
+        android:id="@+id/shimmer_layout_product"
+        layout="@layout/shimmer_layout"
+        android:layout_width="match_parent"
+        android:visibility="gone"
+        android:layout_height="match_parent" />
 
 </FrameLayout>

@@ -14,9 +14,11 @@
         android:theme="@style/Theme.Grofast_Vendor"
         tools:targetApi="31">
         <activity
+            android:name=".Details.EditProduct"
+            android:exported="false" />
+        <activity
             android:name=".Details.AddProduct"
             android:exported="false" />
-
         <activity
             android:name=".Details.AllResentOrderHistory"
             android:exported="false" />

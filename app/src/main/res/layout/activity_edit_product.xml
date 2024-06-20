@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:scrollbars="none"
-    tools:context=".Details.AddProduct">
+    tools:context=".Details.EditProduct">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -20,15 +20,15 @@
             android:orientation="horizontal">
 
             <ImageView
-                android:id="@+id/show_product_image"
+                android:id="@+id/show_edit_product_image"
                 android:layout_width="@dimen/_150sdp"
                 android:layout_height="@dimen/_150sdp"
                 android:layout_gravity="center"
-                android:scaleType="fitXY"
-                android:background="@drawable/add_product" />
+                android:background="@drawable/add_product"
+                android:scaleType="fitXY" />
 
             <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/add_product_image"
+                android:id="@+id/add_edit_product_image"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
@@ -41,7 +41,7 @@
                 android:visibility="visible" />
 
             <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/edit_product_image"
+                android:id="@+id/edit_edit_product_image"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
@@ -70,7 +70,7 @@
                 app:hintTextColor="@color/default_color">
 
                 <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/add_product_name"
+                    android:id="@+id/edit_product_name"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:textColor="@color/textview_text_color"
@@ -86,7 +86,7 @@
                 android:orientation="vertical">
 
                 <androidx.appcompat.widget.AppCompatSpinner
-                    android:id="@+id/Categories_spinner"
+                    android:id="@+id/edit_Categories_spinner"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:dropDownVerticalOffset="0dp"
@@ -103,7 +103,7 @@
                 android:orientation="vertical">
 
                 <androidx.appcompat.widget.AppCompatSpinner
-                    android:id="@+id/tax_spinner"
+                    android:id="@+id/edit_tax_spinner"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:dropDownVerticalOffset="0dp"
@@ -131,7 +131,7 @@
                     app:hintTextColor="@color/default_color">
 
                     <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/add_product_per"
+                        android:id="@+id/edit_product_per"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:inputType="number"
@@ -148,7 +148,7 @@
                     android:orientation="vertical">
 
                     <androidx.appcompat.widget.AppCompatSpinner
-                        android:id="@+id/unit_spinner"
+                        android:id="@+id/edit_unit_spinner"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:dropDownVerticalOffset="0dp"
@@ -169,7 +169,7 @@
                 app:hintTextColor="@color/default_color">
 
                 <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/add_product_price"
+                    android:id="@+id/edit_product_price"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:inputType="number"
@@ -188,7 +188,7 @@
                 app:hintTextColor="@color/default_color">
 
                 <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/add_product_discount"
+                    android:id="@+id/edit_product_discount"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:inputType="number"
@@ -207,7 +207,7 @@
                 app:hintTextColor="@color/default_color">
 
                 <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/add_product_detail"
+                    android:id="@+id/edit_product_detail"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:textColor="@color/textview_text_color"
@@ -229,14 +229,14 @@
                 android:orientation="horizontal">
 
                 <RadioButton
-                    android:id="@+id/stock_true"
+                    android:id="@+id/edit_stock_true"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/Yes" />
 
                 <RadioButton
-                    android:id="@+id/stock_false"
+                    android:id="@+id/edit_stock_false"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -257,39 +257,40 @@
                 android:orientation="horizontal">
 
                 <RadioButton
-                    android:id="@+id/retun_true"
+                    android:id="@+id/edit_retun_true"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/Yes" />
 
                 <RadioButton
-                    android:id="@+id/retun_false"
+                    android:id="@+id/edit_retun_false"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/No" />
+
             </RadioGroup>
 
         </LinearLayout>
 
         <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/product_add"
+            android:id="@+id/product_edit"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@drawable/button_round"
             android:padding="@dimen/_5sdp"
-            android:text="@string/add_product"
+            android:text="@string/edit_product"
             android:textAllCaps="false"
             android:textColor="@android:color/white"
             android:textSize="@dimen/button_text_size" />
 
         <ProgressBar
-            android:id="@+id/loader_add_product"
+            android:id="@+id/loader_edit_product"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:visibility="gone"
-            android:padding="@dimen/_5sdp"/>
+            android:padding="@dimen/_5sdp"
+            android:visibility="gone" />
 
     </LinearLayout>
 

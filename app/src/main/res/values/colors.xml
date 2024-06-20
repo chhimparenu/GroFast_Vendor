@@ -28,6 +28,8 @@
     <color name="inactive">#7ad8b3</color>
     <color name="expired">#E41D0E</color>
 
+    <color name="colo">#218b82</color>
+
     <color name="offer_color_card_1">#f5570f</color>
     <color name="offer_color_card_1_off">#f9a983</color>
     <color name="offer_color_card_2">#ffc415</color>

@@ -42,21 +42,31 @@
 
     //Product_Fragment
     <string name="Add_new_product">Add new Product</string>
+    <string name="product_id">Product Id : </string>
 
     //Product_row_list
     <string name="Product_name">Name</string>
     <string name="Product_description">Description</string>
     <string name="Product_price">Price</string>
     <string name="Product_Quantity">Quantity</string>
-    <string name="categories">Categories</string>
+    <string name="categories">Categories : </string>
+    <string name="Tax">Tax :  </string>
+    <string name="per">Per :  </string>
+    <string name="dicount">Discount :  </string>
+    <string name="Quantity">Quantity : </string>
+    <string name="detail">Detail : </string>
+    <string name="Stock">Stock : </string>
+    <string name="Return">Return : </string>
+
     <string name="product_discount">Discount</string>
     <string name="product_detail">Detail</string>
     <string name="product_per">Per</string>
-    <string name="product_stock">Stock</string>
+    <string name="product_stock">In-Stock &amp; Out-Stock</string>
     <string name="add_product">Add Product</string>
-    <string name="return_plociy">Return Policy</string>
-    <string name="True">True</string>
-    <string name="False">False</string>
+    <string name="edit_product">Edit Product</string>
+    <string name="return_plociy">Is Returnable</string>
+    <string name="Yes">Yes</string>
+    <string name="No">No</string>
     <string name="select_category">Select Categories</string>
     <string name="select_tax">Select Tax</string>
     <string name="select_unit">Select Unit</string>
@@ -188,9 +198,12 @@
 
     //Button
     <string name="view_all">View All</string>
+    <string name="edit">Edit</string>
+    <string name="delete">Delete</string>
 
     //pages
     <string name="add_product_page_name">Add Product</string>
+    <string name="edit_product_page_name">Edit Product</string>
 
     <!--    SETINGS PAGE POLICIES -->
 

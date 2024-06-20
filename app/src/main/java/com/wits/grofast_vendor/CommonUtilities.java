@@ -26,6 +26,7 @@ import com.google.gson.JsonObject;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
@@ -68,5 +69,24 @@ public class CommonUtilities {
         String imagePath = cursor.getString(column_index);
         cursor.close();
         return imagePath;
+    }
+
+    public static String formatDate(String dateTimeString) {
+        // Parse the timestamp to LocalDateTime
+        DateTimeFormatter formatter = null;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+            formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSSSS'Z'");
+        }
+        LocalDateTime dateTime = null;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+            dateTime = LocalDateTime.parse(dateTimeString, formatter);
+        }
+
+        // Format to show only the date
+        DateTimeFormatter dateFormatter = null;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+            dateFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+        }
+        return dateTime.format(dateFormatter);
     }
 }

@@ -14,6 +14,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.AppCompatButton;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
@@ -23,10 +24,12 @@ import androidx.fragment.app.FragmentTransaction;
 import com.bumptech.glide.Glide;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
+import com.wits.grofast_vendor.Details.AddProduct;
 import com.wits.grofast_vendor.Details.Notification;
 import com.wits.grofast_vendor.Details.Notification_setting;
 import com.wits.grofast_vendor.Details.ProfilePage;
 import com.wits.grofast_vendor.Details.Settings;
+import com.wits.grofast_vendor.KeyboardUtil;
 import com.wits.grofast_vendor.Login_page;
 import com.wits.grofast_vendor.R;
 import com.wits.grofast_vendor.session.SupplierActivitySession;
@@ -45,15 +48,17 @@ public class Home_page extends AppCompatActivity {
     ImageView menu;
     SupplierDetailSession supplierDetailSession;
     SupplierActivitySession supplierActivitySession;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
-        this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         getSupportActionBar().hide();
         setContentView(R.layout.activity_home_page);
         supplierActivitySession = new SupplierActivitySession(getApplicationContext());
-        supplierDetailSession  = new SupplierDetailSession(getApplicationContext());
+        supplierDetailSession = new SupplierDetailSession(getApplicationContext());
+        final View rootLayout = findViewById(R.id.drawer_layout);
 
         bottomNavigationView = findViewById(R.id.bottomNavigationView);
         frameLayout = findViewById(R.id.venfragmentn);
@@ -105,7 +110,7 @@ public class Home_page extends AppCompatActivity {
                     startActivity(new Intent(Home_page.this, Notification_setting.class));
                 } else if (id == R.id.menu_setting) {
                     startActivity(new Intent(Home_page.this, Settings.class));
-                } else if (id==R.id.menu_logout) {
+                } else if (id == R.id.menu_logout) {
                     supplierActivitySession.setLoginStaus(false);
                     supplierActivitySession.clearSession();
                     supplierDetailSession.clearSession();
@@ -119,7 +124,19 @@ public class Home_page extends AppCompatActivity {
         });
         // Set default fragment when activity is first created
         bottomNavigationView.setSelectedItemId(R.id.venhome);
+
+        KeyboardUtil.setKeyboardVisibilityListener(rootLayout, new KeyboardUtil.KeyboardVisibilityListener() {
+            @Override
+            public void onKeyboardVisibilityChanged(boolean isVisible) {
+                if (isVisible) {
+                    bottomNavigationView.setVisibility(View.GONE);
+                } else {
+                    bottomNavigationView.setVisibility(View.VISIBLE);
+                }
+            }
+        });
     }
+
     private void loadFragment(Fragment fragment, boolean addToBackStack) {
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
@@ -128,7 +145,11 @@ public class Home_page extends AppCompatActivity {
             fragmentTransaction.addToBackStack(null);
         }
         fragmentTransaction.commit();
+
     }
+
+
+
     @Override
     protected void onStart() {
         super.onStart();
