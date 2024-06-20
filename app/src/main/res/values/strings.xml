@@ -155,6 +155,8 @@
     <string name="gender_other">Other</string>
     <string name="add_product_name">Add item which not found in menu</string>
     <string name="add_coupon_name">Enter Coupon code</string>
+    <string name="change_phone_number_title">Change Number</string>
+    <string name="change_number">Change Number</string>
 
     //Notification Setting
     <string name="notification_1_heading">Push Notifications</string>
