@@ -76,7 +76,7 @@ public class AllProductAdapter extends RecyclerView.Adapter<AllProductAdapter.li
 
         //All details
 
-        holder.detailid.setText(item.getId().toString());
+        holder.detailid.setText("" + item.getId().toString());
         holder.detailname.setText(item.getName());
         holder.detailprice.setText(item.getPrice());
         if (item.getProductStatus() != null) {
@@ -88,15 +88,26 @@ public class AllProductAdapter extends RecyclerView.Adapter<AllProductAdapter.li
             }
         }
         holder.detaildate.setText(item.getCreated_at());
-        holder.detailcategories.setText(""+item.getCategory_id());
+        holder.detailcategories.setText(item.getCategory_name());
         holder.detailTax.setText(item.getTax_id());
         holder.detailper.setText(item.getPer());
         holder.detailunit.setText(item.getUnit_id());
         holder.detaildiscount.setText(item.getDiscount());
         holder.detaildetail.setText(item.getProduct_detail());
-        holder.detailreturn.setText(item.getReturn_policy());
-        holder.detailstock.setText(item.getStock_status());
-        Glide.with(context).load( item.getImage()).placeholder(R.drawable.add_product).into(holder.detailimage);
+
+        if (item.getStock_status() == 1) {
+            holder.detailstock.setText("In Stock");
+        } else {
+            holder.detailstock.setText("Out Stock");
+        }
+
+        if (item.getReturn_policy() == 1) {
+            holder.detailreturn.setText("True");
+        } else {
+            holder.detailreturn.setText("False");
+        }
+
+        Glide.with(context).load(item.getImage()).placeholder(R.drawable.add_product).into(holder.detailimage);
 
         Log.d(TAG, "Return " + item.getReturn_policy());
         Log.d(TAG, "Image " + item.getImage());
@@ -126,11 +137,6 @@ public class AllProductAdapter extends RecyclerView.Adapter<AllProductAdapter.li
     public int getItemCount() {
         Log.e("TAG", "getItemCount: size " + productList.size());
         return productList.size();
-    }
-
-    public void addProducts(List<ProductModel> products) {
-        productList.addAll(products);
-        notifyDataSetChanged();
     }
 
     public class listViewHolder extends RecyclerView.ViewHolder {

@@ -16,6 +16,7 @@ public class ProductModel implements Parcelable {
     private String image;
     private String product_code;
     private int category_id;
+    private String category_name;
     private String unit_id;
     private String tax_id;
     private String per;
@@ -24,7 +25,7 @@ public class ProductModel implements Parcelable {
     @SerializedName("product_status")
     private ProductStatus productStatus;
     @SerializedName("is_returnable")
-    private String return_policy;
+    private int return_policy;
 
     protected ProductModel(Parcel in) {
         name = in.readString();
@@ -36,8 +37,8 @@ public class ProductModel implements Parcelable {
         per = in.readString();
         price = in.readString();
         discount = in.readString();
-        return_policy = in.readString();
-        stock_status = in.readString();
+        return_policy = in.readInt();
+        stock_status = in.readInt();
         product_detail = in.readString();
         uuid = in.readString();
         created_at = in.readString();
@@ -76,8 +77,8 @@ public class ProductModel implements Parcelable {
         dest.writeString(per);
         dest.writeString(price);
         dest.writeString(discount);
-        dest.writeString(return_policy);
-        dest.writeString(stock_status);
+        dest.writeInt(return_policy);
+        dest.writeInt(stock_status);
         dest.writeString(product_detail);
         dest.writeString(uuid);
         dest.writeString(created_at);
@@ -103,7 +104,7 @@ public class ProductModel implements Parcelable {
 
     }
 
-    private String stock_status;
+    private int stock_status;
     private String product_detail;
     private String uuid;
     private String created_at;
@@ -149,11 +150,11 @@ public class ProductModel implements Parcelable {
         return discount;
     }
 
-    public String getReturn_policy() {
+    public int getReturn_policy() {
         return return_policy;
     }
 
-    public String getStock_status() {
+    public int getStock_status() {
         return stock_status;
     }
 
@@ -163,6 +164,10 @@ public class ProductModel implements Parcelable {
 
     public String getUuid() {
         return uuid;
+    }
+
+    public String getCategory_name() {
+        return category_name;
     }
 
     public Integer getId() {
