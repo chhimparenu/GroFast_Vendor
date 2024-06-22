@@ -50,19 +50,15 @@ public class Product_Fragment extends Fragment {
     SupplierActivitySession supplierActivitySession;
     private final String TAG = "Product Fragment";
     private boolean isLoading = false;
-    private boolean hasMoreProducts = true;
     private int currentPage = 1;
+    private int lastPage = 1;
     NestedScrollView product_layout;
     LinearLayout no_product_layout;
     TextView nomsg1, nomsg2;
     private ShimmerFrameLayout shimmerFrameLayout;
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        ShowPageLoader();
-        getProducts(++currentPage);
-    }
+    LinearLayoutManager layoutManager;
+    private int visibleThreshold = 4;
+    private Call<ProductResponse> call;
 
     @SuppressLint("ClickableViewAccessibility")
     @Override
@@ -89,18 +85,30 @@ public class Product_Fragment extends Fragment {
 
         //Product Item
         productrecycleview = root.findViewById(R.id.product_list);
-        productrecycleview.setLayoutManager(new LinearLayoutManager(getContext()));
-        allProductAdapter = new AllProductAdapter(getContext(), productList);
-        productrecycleview.setAdapter(allProductAdapter);
+        layoutManager = new LinearLayoutManager(getContext());
+        productrecycleview.setLayoutManager(layoutManager);
+
+        call = Retrofirinstance.getClient(supplierActivitySession.getToken()).create(ProductInterface.class).fetchProducts(currentPage);
+        getProducts(call);
 
         productrecycleview.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
-                LinearLayoutManager layoutManager = (LinearLayoutManager) recyclerView.getLayoutManager();
-                if (layoutManager != null && layoutManager.findLastVisibleItemPosition() == productList.size() - 1 && !isLoading) {
-                    currentPage++;
-                    getProducts(currentPage);
+                int totalItemCount = layoutManager.getItemCount();
+                int firstVisibleItemPosition = layoutManager.findFirstVisibleItemPosition();
+                int lastVisibleItem = layoutManager.findLastVisibleItemPosition();
+
+                if (!isLoading && totalItemCount < lastVisibleItem + visibleThreshold) {
+                    Log.e("TAG", "onScrolled: firstVisibleItem : " + firstVisibleItemPosition);
+                    Log.e("TAG", "onScrolled: lastVisibleItem : " + lastVisibleItem);
+                    Log.e("TAG", "onScrolled:  totalItemCount : " + totalItemCount);
+                    Log.e("TAG", "onScrolled: lastVisibleItem + visibleThreshold : " + (lastVisibleItem + visibleThreshold));
+                    Log.e("TAG", "onScrolled: current page " + currentPage);
+
+                    isLoading = true;
+                    call = Retrofirinstance.getClient(supplierActivitySession.getToken()).create(ProductInterface.class).fetchProducts(currentPage);
+                    getProducts(call);
                 }
             }
         });
@@ -120,10 +128,10 @@ public class Product_Fragment extends Fragment {
         return root;
     }
 
-    private void getProducts(int page) {
-        isLoading = true;
-        Call<ProductResponse> call = Retrofirinstance.getClient(supplierActivitySession.getToken()).create(ProductInterface.class).fetchProducts(page);
-        if (hasMoreProducts) {
+    private void getProducts(Call<ProductResponse> call) {
+        Log.e("TAG", "getProducts:     last page  " + lastPage);
+        Log.e("TAG", "getProducts: curremnt page  " + currentPage);
+        if (lastPage >= currentPage) {
             call.enqueue(new Callback<ProductResponse>() {
                 @SuppressLint("NotifyDataSetChanged")
                 @Override
@@ -132,24 +140,20 @@ public class Product_Fragment extends Fragment {
                     isLoading = false;
                     if (response.isSuccessful()) {
                         ProductResponse productResponse = response.body();
-                        if (productResponse != null) {
-                            ProductPaginatedRes paginatedResponse = productResponse.getPaginatedProducts();
-                            if (paginatedResponse != null) {
-                                List<ProductModel> Products = paginatedResponse.getProductList();
-                                if (Products != null && !Products.isEmpty()) {
-//                                productList.clear();
-                                    allProductAdapter.addProducts(Products);
-                                }
-                                hasMoreProducts = paginatedResponse.getNext_page_url() != null;
-                                Log.d(TAG, "onResponse: getProducts message " + productResponse.getMessage());
-                                Log.d(TAG, "onResponse: total products " + paginatedResponse.getTotal());
-                                Log.d(TAG, "onResponse: fetched products " + paginatedResponse.getTo());
-                            } else {
-                                hasMoreProducts = false;
+                        ProductPaginatedRes paginatedResponse = productResponse.getPaginatedProducts();
+                        if (currentPage == 1) {
+                            productList = paginatedResponse.getProductList();
+                            allProductAdapter = new AllProductAdapter(getContext(),productList);
+                            productrecycleview.setAdapter(allProductAdapter);
+                        }else {
+                            List<ProductModel> list = paginatedResponse.getProductList();
+                            for (ProductModel model : list) {
+                                productList.add(model);
+                                allProductAdapter.notifyItemInserted(productList.size());
                             }
-                        } else {
-                            hasMoreProducts = false;
                         }
+                        currentPage++;
+                        lastPage = paginatedResponse.getLast_page();
                     } else if (response.code() == 422) {
                         try {
                             String errorBodyString = response.errorBody().string();
@@ -165,14 +169,14 @@ public class Product_Fragment extends Fragment {
                         }
                     } else {
                         if (isAdded()) handleApiError(TAG, response, getContext());
-                        hasMoreProducts = false;
                     }
                 }
 
                 @Override
                 public void onFailure(Call<ProductResponse> call, Throwable t) {
-                    t.printStackTrace();
                     isLoading = false;
+                    HidePageLoader();
+                    t.printStackTrace();
                 }
             });
         }
@@ -199,5 +203,9 @@ public class Product_Fragment extends Fragment {
         addproduct.setVisibility(View.VISIBLE);
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+    }
 }
 

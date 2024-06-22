@@ -117,22 +117,18 @@ public class EditProduct extends AppCompatActivity {
                 detail.setText(product.getProduct_detail());
                 Glide.with(this).load(product.getImage()).placeholder(R.drawable.add_product).into(showimage);
 
-                if (product.getReturn_policy() != null) {
-                    if (product.getReturn_policy().equals("1")) {
-                        return_true.setChecked(true);
-                    } else {
-                        return_false.setChecked(true);
-                    }
+                if (product.getReturn_policy() == 1) {
+                    return_true.setChecked(true);
+                } else {
+                    return_false.setChecked(true);
                 }
+            }
 
-                if (product.getStock_status() != null) {
-                    if (product.getStock_status().equals("1")) {
-                        stock_true.setChecked(true);
-                    } else {
-                        stock_false.setChecked(true);
-                    }
-                }
 
+            if (product.getStock_status() == 1) {
+                stock_true.setChecked(true);
+            } else {
+                stock_false.setChecked(true);
             }
             fetchCategories();
             fetchTaxes();

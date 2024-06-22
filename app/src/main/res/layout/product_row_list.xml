@@ -19,7 +19,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:visibility="visible">
+            android:visibility="gone">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -157,7 +157,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:visibility="gone">
+            android:visibility="visible">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -241,14 +241,14 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="@string/categories"
-                                android:textColor="@color/textview_text_color"
+                                android:textColor="@color/default_color"
                                 android:textSize="@dimen/hint_text_size" />
 
                             <TextView
                                 android:id="@+id/all_detail_product_categories"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_marginStart="@dimen/_2sdp"
+                                android:layout_marginStart="@dimen/_5sdp"
                                 android:text="Product Categories"
                                 android:textColor="@color/textview_text_color"
                                 android:textSize="@dimen/hint_text_size" />
@@ -264,14 +264,14 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="@string/Tax"
-                                android:textColor="@color/textview_text_color"
+                                android:textColor="@color/default_color"
                                 android:textSize="@dimen/hint_text_size" />
 
                             <TextView
                                 android:id="@+id/all_detail_product_tax"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_marginStart="@dimen/_2sdp"
+                                android:layout_marginStart="@dimen/_5sdp"
                                 android:text="Product Tax"
                                 android:textColor="@color/textview_text_color"
                                 android:textSize="@dimen/hint_text_size" />
@@ -287,14 +287,14 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="@string/per"
-                                android:textColor="@color/textview_text_color"
+                                android:textColor="@color/default_color"
                                 android:textSize="@dimen/hint_text_size" />
 
                             <TextView
                                 android:id="@+id/all_detail_product_per"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_marginStart="@dimen/_2sdp"
+                                android:layout_marginStart="@dimen/_5sdp"
                                 android:text="Product Per"
                                 android:textColor="@color/textview_text_color"
                                 android:textSize="@dimen/hint_text_size" />
@@ -319,14 +319,14 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="@string/dicount"
-                                android:textColor="@color/textview_text_color"
+                                android:textColor="@color/default_color"
                                 android:textSize="@dimen/hint_text_size" />
 
                             <TextView
                                 android:id="@+id/all_detail_product_discount"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_marginStart="@dimen/_2sdp"
+                                android:layout_marginStart="@dimen/_5sdp"
                                 android:text="Product Discount"
                                 android:textColor="@color/textview_text_color"
                                 android:textSize="@dimen/hint_text_size" />
@@ -342,14 +342,14 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="@string/detail"
-                                android:textColor="@color/textview_text_color"
+                                android:textColor="@color/default_color"
                                 android:textSize="@dimen/hint_text_size" />
 
                             <TextView
                                 android:id="@+id/all_detail_product_detail"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_marginStart="@dimen/_2sdp"
+                                android:layout_marginStart="@dimen/_5sdp"
                                 android:text="Product Deatil"
                                 android:textColor="@color/textview_text_color"
                                 android:textSize="@dimen/hint_text_size" />
@@ -365,14 +365,14 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="@string/Stock"
-                                android:textColor="@color/textview_text_color"
+                                android:textColor="@color/default_color"
                                 android:textSize="@dimen/hint_text_size" />
 
                             <TextView
                                 android:id="@+id/all_detail_product_stock"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_marginStart="@dimen/_2sdp"
+                                android:layout_marginStart="@dimen/_5sdp"
                                 android:text="Product Deatil"
                                 android:textColor="@color/textview_text_color"
                                 android:textSize="@dimen/hint_text_size" />
@@ -388,14 +388,14 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="@string/Return"
-                                android:textColor="@color/textview_text_color"
+                                android:textColor="@color/default_color"
                                 android:textSize="@dimen/hint_text_size" />
 
                             <TextView
                                 android:id="@+id/all_detail_product_return"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_marginStart="@dimen/_2sdp"
+                                android:layout_marginStart="@dimen/_5sdp"
                                 android:text="Product Deatil"
                                 android:textColor="@color/textview_text_color"
                                 android:textSize="@dimen/hint_text_size" />
