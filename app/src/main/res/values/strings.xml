@@ -228,4 +228,9 @@
     <string name="settings_delete_account">Delete account</string>
 
 
+    <string name="order_id">Order Id :</string>
+    <string name="Invoice">Invoice</string>
+    <string name="qty">Qty : - </string>
+    <string name="Total">Total : </string>
+
 </resources>

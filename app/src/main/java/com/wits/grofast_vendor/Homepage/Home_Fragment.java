@@ -1,6 +1,5 @@
 package com.wits.grofast_vendor.Homepage;
 
-import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.appcompat.widget.AppCompatButton;
@@ -16,7 +15,6 @@ import android.view.ViewGroup;
 
 import com.wits.grofast_vendor.Adapter.BannerAdapter;
 import com.wits.grofast_vendor.Adapter.HomeOrderHistoryAdapter;
-import com.wits.grofast_vendor.Details.AllResentOrderHistory;
 import com.wits.grofast_vendor.Api.Model.HomeOrderHistoryModel;
 import com.wits.grofast_vendor.R;
 
@@ -57,14 +55,6 @@ public class Home_Fragment extends Fragment {
         recentorderrecycleview.setAdapter(orderHistoryAdapter);
 
         Log.d("Home_page", "Product list size: " + orderHistoryModels.size());
-
-        view_all_order_history.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent in = new Intent(getContext(), AllResentOrderHistory.class);
-                startActivity(in);
-            }
-        });
 
         return root;
     }

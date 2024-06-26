@@ -111,6 +111,8 @@ public class AllProductAdapter extends RecyclerView.Adapter<AllProductAdapter.li
 
         Log.d(TAG, "Return " + item.getReturn_policy());
         Log.d(TAG, "Image " + item.getImage());
+
+
         final boolean isExpanded = position == expandedPosition;
         holder.detailsView.setVisibility(isExpanded ? View.VISIBLE : View.GONE);
         holder.detailshide.setVisibility(isExpanded ? View.GONE : View.VISIBLE);
