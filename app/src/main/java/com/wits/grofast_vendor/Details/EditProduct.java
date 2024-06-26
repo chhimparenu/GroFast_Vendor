@@ -178,10 +178,10 @@ public class EditProduct extends AppCompatActivity {
         categorySpinner.setAdapter(adapter);
         categorySpinner.setSelection(selectedCategoryPosition);
 
-//        for (CategoryModel category : categoryList) {
-//            categoryId = category.getId();
-//            Log.e(TAG, "onResponse: categories name : " + category.getCategory_name());
-//        }
+        for (CategoryModel category : categoryList) {
+            categoryId = category.getId();
+            Log.e(TAG, "onResponse: categories name : " + category.getCategory_name());
+        }
     }
 
     private void fetchTaxes() {
@@ -213,10 +213,10 @@ public class EditProduct extends AppCompatActivity {
         TaxesSpinnerAdapter adapter = new TaxesSpinnerAdapter(getApplicationContext(), taxModelList);
         taxSpinner.setAdapter(adapter);
 
-//        for (TaxModel model : taxModelList) {
-//            taxid = model.getId();
-//            Log.e(TAG, "onResponse: tax name " + model.getName() + " id " + model.getId());
-//        }
+        for (TaxModel tax : taxModelList) {
+            taxid = tax.getId();
+            Log.e(TAG, "onResponse: categories name : " + tax.getName());
+        }
     }
 
     private void fetchUnit() {
@@ -230,6 +230,7 @@ public class EditProduct extends AppCompatActivity {
                     if (unitModelList != null && !unitModelList.isEmpty()) {
                         populateUnitSpinner(unitModelList);
                     }
+                    Log.e(TAG, "onResponse: fragment Show all Unit");
                     Log.e(TAG, "onResponse: message " + unitResponse.getMessage());
                 } else {
                     handleApiError(TAG, response, getApplicationContext());
@@ -246,10 +247,10 @@ public class EditProduct extends AppCompatActivity {
     private void populateUnitSpinner(List<UnitModel> unitModelList) {
         UnitSpinnerAdapter adapter = new UnitSpinnerAdapter(getApplicationContext(), unitModelList);
         unitSpinner.setAdapter(adapter);
-//        for (UnitModel model : unitModelList) {
-//            unitId = model.getId();
-//            Log.e(TAG, "onResponse: unit name " + model.getUnit_name() + " id " + model.getId());
-//        }
+        for (UnitModel unit : unitModelList) {
+            unitId = unit.getId();
+            Log.e(TAG, "onResponse: Unit name : " + unit.getUnit_name());
+        }
     }
 
     @Override
