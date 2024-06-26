@@ -44,7 +44,7 @@ public class HomeOrderHistoryAdapter extends RecyclerView.Adapter<HomeOrderHisto
 
     @Override
     public int getItemCount() {
-        Log.e("OrderHistoryAdapter", "getItemCount: size " + List.size());
+//        Log.e("OrderHistoryAdapter", "getItemCount: size " + List.size());
         return List.size();
     }
 
