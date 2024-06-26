@@ -48,16 +48,16 @@ public class Product_Fragment extends Fragment {
     private List<ProductModel> productList = new ArrayList<>();
     SupplierActivitySession supplierActivitySession;
     private final String TAG = "Product Fragment";
-    private boolean isLoading = false;
-    private int currentPage = 1;
-    private int lastPage = 1;
     NestedScrollView product_layout;
     LinearLayout no_product_layout;
     TextView nomsg1, nomsg2;
     private ShimmerFrameLayout shimmerFrameLayout;
     LinearLayoutManager layoutManager;
+    private int currentPage = 1;
+    private int lastPage = 1;
     private int visibleThreshold = 4;
     private Call<ProductResponse> call;
+    private boolean isLoading = false;
 
     @SuppressLint("ClickableViewAccessibility")
     @Override
