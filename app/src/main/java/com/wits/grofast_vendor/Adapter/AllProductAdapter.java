@@ -137,7 +137,7 @@ public class AllProductAdapter extends RecyclerView.Adapter<AllProductAdapter.li
 
     @Override
     public int getItemCount() {
-//        Log.e("TAG", "getItemCount: size " + productList.size());
+        Log.e("TAG", "getItemCount: size " + productList.size());
         return productList.size();
     }
 
