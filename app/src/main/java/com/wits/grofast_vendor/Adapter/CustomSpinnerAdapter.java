@@ -10,20 +10,19 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.wits.grofast_vendor.Api.Model.CategoryModel;
 import com.wits.grofast_vendor.Api.Model.SpinnerModel;
 import com.wits.grofast_vendor.R;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class CategorySpinnerAdapter extends ArrayAdapter<SpinnerModel> {
+public class CustomSpinnerAdapter extends ArrayAdapter<SpinnerModel> {
     private final LayoutInflater mInflater;
     List<SpinnerModel> spinnerItemList = new ArrayList<>();
     private final Context mContext;
     private final int mResource;
 
-    public CategorySpinnerAdapter(@NonNull Context context, @NonNull List<SpinnerModel> spinnerItemList) {
+    public CustomSpinnerAdapter(@NonNull Context context, @NonNull List<SpinnerModel> spinnerItemList) {
         super(context, R.layout.spinner_layout, spinnerItemList);
         this.mInflater = LayoutInflater.from(context);
         this.spinnerItemList = spinnerItemList;

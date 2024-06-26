@@ -16,8 +16,7 @@ import androidx.appcompat.widget.AppCompatEditText;
 import androidx.appcompat.widget.AppCompatSpinner;
 
 import com.bumptech.glide.Glide;
-import com.wits.grofast_vendor.Adapter.CategorySpinnerAdapter;
-import com.wits.grofast_vendor.Adapter.TaxesSpinnerAdapter;
+import com.wits.grofast_vendor.Adapter.CustomSpinnerAdapter;
 import com.wits.grofast_vendor.Adapter.UnitSpinnerAdapter;
 import com.wits.grofast_vendor.Api.Interface.CategoriesInterface;
 import com.wits.grofast_vendor.Api.Interface.TaxInterface;
@@ -65,6 +64,7 @@ public class EditProduct extends AppCompatActivity {
     ProgressBar progressBar;
     List<SpinnerModel> categorySpinnerList = new ArrayList<>();
     List<SpinnerModel> taxSpinnerList = new ArrayList<>();
+    List<SpinnerModel> unitSpinnerList = new ArrayList<>();
     ProductModel product;
 
     @Override
@@ -145,7 +145,6 @@ public class EditProduct extends AppCompatActivity {
         }
     }
 
-
     private void fetchCategories() {
         Call<CategoryResponse> call = Retrofirinstance.getClient(session.getToken()).create(CategoriesInterface.class).fetchCategories();
         call.enqueue(new Callback<CategoryResponse>() {
@@ -179,7 +178,7 @@ public class EditProduct extends AppCompatActivity {
         int selectedCategoryPosition = getSelectedSpinnerItemPosition(categorySpinnerList, product.getCategory_id());
         Log.e(TAG, "populateCategorySpinner: selected category position " + selectedCategoryPosition);
 
-        CategorySpinnerAdapter adapter = new CategorySpinnerAdapter(getApplicationContext(), categorySpinnerList);
+        CustomSpinnerAdapter adapter = new CustomSpinnerAdapter(getApplicationContext(), categorySpinnerList);
         categorySpinner.setAdapter(adapter);
         categorySpinner.setSelection(selectedCategoryPosition);
 
@@ -214,13 +213,15 @@ public class EditProduct extends AppCompatActivity {
     }
 
     private void populateTaxesSpinner(List<TaxModel> taxModelList) {
-        TaxesSpinnerAdapter adapter = new TaxesSpinnerAdapter(getApplicationContext(), taxModelList);
-        taxSpinner.setAdapter(adapter);
+//        TaxesSpinnerAdapter adapter = new TaxesSpinnerAdapter(getApplicationContext(), taxModelList);
+//        taxSpinner.setAdapter(adapter);
 
-//        for (TaxModel tax : taxModelList) {
-//            taxid = tax.getId();
-//            Log.e(TAG, "onResponse: categories name : " + tax.getName());
-//        }
+        taxSpinnerList.clear();
+        for (TaxModel model : taxModelList) {
+            taxSpinnerList.add(new SpinnerModel(model.getName(), model.getId()));
+        }
+
+
     }
 
     private void fetchUnit() {
@@ -280,5 +281,13 @@ public class EditProduct extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
+    }
+
+    private void setSelectedTax(List<TaxModel> taxList, String selectedTax) {
+
+    }
+
+    private void setSelectedUnit(List<UnitModel> unitList, String selectedUnit) {
+
     }
 }
