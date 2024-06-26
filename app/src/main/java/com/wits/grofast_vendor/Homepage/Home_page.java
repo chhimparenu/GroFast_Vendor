@@ -56,6 +56,8 @@ public class Home_page extends AppCompatActivity {
         this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         getSupportActionBar().hide();
         setContentView(R.layout.activity_home_page);
+
+
         supplierActivitySession = new SupplierActivitySession(getApplicationContext());
         supplierDetailSession = new SupplierDetailSession(getApplicationContext());
         final View rootLayout = findViewById(R.id.drawer_layout);
@@ -147,8 +149,6 @@ public class Home_page extends AppCompatActivity {
         fragmentTransaction.commit();
 
     }
-
-
 
     @Override
     protected void onStart() {

@@ -28,7 +28,6 @@ public interface ProductInterface {
             @Part MultipartBody.Part image
     );
 
-
     @GET("fetch-supplier-product")
     Call<ProductResponse> fetchProducts(@Query("page") int page);
 
