@@ -4,34 +4,16 @@ import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Build;
-import android.os.Bundle;
-import android.os.CountDownTimer;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.util.Log;
-import android.view.Gravity;
-import android.view.KeyEvent;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.widget.EditText;
-import android.widget.FrameLayout;
-import android.widget.TextView;
 import android.widget.Toast;
-
-import androidx.annotation.RequiresApi;
-import androidx.appcompat.widget.AppCompatButton;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import com.wits.grofast_vendor.Api.Model.SpinnerModel;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Date;
-import java.util.Locale;
+import java.util.List;
 
 import retrofit2.Response;
 
@@ -74,19 +56,34 @@ public class CommonUtilities {
     public static String formatDate(String dateTimeString) {
         // Parse the timestamp to LocalDateTime
         DateTimeFormatter formatter = null;
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSSSS'Z'");
         }
         LocalDateTime dateTime = null;
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             dateTime = LocalDateTime.parse(dateTimeString, formatter);
         }
 
         // Format to show only the date
         DateTimeFormatter dateFormatter = null;
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             dateFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
         }
-        return dateTime.format(dateFormatter);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            return dateTime.format(dateFormatter);
+        }
+        return dateTimeString;
+    }
+
+    public static int getSelectedSpinnerItemPosition(List<SpinnerModel> spinnerItemList, String selectedItem) {
+        int position = 1;
+        for (SpinnerModel model : spinnerItemList) {
+            String id = model.getId() + "";
+            if (model.getName().equals(selectedItem) || id.equals(selectedItem)) {
+                break;
+            }
+            position++;
+        }
+        return position;
     }
 }

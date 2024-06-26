@@ -1,5 +1,6 @@
 package com.wits.grofast_vendor.Details;
 
+import static com.wits.grofast_vendor.CommonUtilities.getSelectedSpinnerItemPosition;
 import static com.wits.grofast_vendor.CommonUtilities.handleApiError;
 
 import android.os.Bundle;
@@ -16,9 +17,7 @@ import androidx.appcompat.widget.AppCompatEditText;
 import androidx.appcompat.widget.AppCompatSpinner;
 
 import com.bumptech.glide.Glide;
-import com.wits.grofast_vendor.Adapter.CategorySpinnerAdapter;
-import com.wits.grofast_vendor.Adapter.TaxesSpinnerAdapter;
-import com.wits.grofast_vendor.Adapter.UnitSpinnerAdapter;
+import com.wits.grofast_vendor.Adapter.CustomSpinnerAdapter;
 import com.wits.grofast_vendor.Api.Interface.CategoriesInterface;
 import com.wits.grofast_vendor.Api.Interface.TaxInterface;
 import com.wits.grofast_vendor.Api.Interface.UnitInterface;
@@ -60,10 +59,13 @@ public class EditProduct extends AppCompatActivity {
     private List<TaxModel> taxModelList = new ArrayList<>();
     private List<UnitModel> unitModelList = new ArrayList<>();
     int categoryId, taxid, unitId;
+    private String taxName, unitName;
     AppCompatButton addproduct, addimage, editimage;
     ProgressBar progressBar;
     List<SpinnerModel> categorySpinnerList = new ArrayList<>();
     List<SpinnerModel> taxSpinnerList = new ArrayList<>();
+    List<SpinnerModel> unitSpinnerList = new ArrayList<>();
+    CustomSpinnerAdapter categoryAdapter, taxAdapter, unitAdapter;
     ProductModel product;
 
     @Override
@@ -117,6 +119,10 @@ public class EditProduct extends AppCompatActivity {
                 detail.setText(product.getProduct_detail());
                 Glide.with(this).load(product.getImage()).placeholder(R.drawable.add_product).into(showimage);
 
+                taxName = product.getTax_id();
+                unitName = product.getUnit_id();
+                Log.e(TAG, "onCreate:  taxName " + taxName);
+                Log.e(TAG, "onCreate: unitName " + unitName);
                 if (product.getReturn_policy() == 1) {
                     return_true.setChecked(true);
                 } else {
@@ -139,7 +145,6 @@ public class EditProduct extends AppCompatActivity {
             populateUnitSpinner(unitModelList);
         }
     }
-
 
     private void fetchCategories() {
         Call<CategoryResponse> call = Retrofirinstance.getClient(session.getToken()).create(CategoriesInterface.class).fetchCategories();
@@ -171,17 +176,12 @@ public class EditProduct extends AppCompatActivity {
         for (CategoryModel categorymodel : categoryList) {
             categorySpinnerList.add(new SpinnerModel(categorymodel.getCategory_name(), categorymodel.getId()));
         }
-        int selectedCategoryPosition = getSelectedSpinnerItemPosition(categorySpinnerList, product.getCategory_id());
+        int selectedCategoryPosition = getSelectedSpinnerItemPosition(categorySpinnerList, product.getCategory_id() + "");
         Log.e(TAG, "populateCategorySpinner: selected category position " + selectedCategoryPosition);
 
-        CategorySpinnerAdapter adapter = new CategorySpinnerAdapter(getApplicationContext(), categorySpinnerList);
-        categorySpinner.setAdapter(adapter);
+        categoryAdapter = new CustomSpinnerAdapter(getApplicationContext(), categorySpinnerList, getString(R.string.select_category));
+        categorySpinner.setAdapter(categoryAdapter);
         categorySpinner.setSelection(selectedCategoryPosition);
-
-        for (CategoryModel category : categoryList) {
-            categoryId = category.getId();
-            Log.e(TAG, "onResponse: categories name : " + category.getCategory_name());
-        }
     }
 
     private void fetchTaxes() {
@@ -210,13 +210,15 @@ public class EditProduct extends AppCompatActivity {
     }
 
     private void populateTaxesSpinner(List<TaxModel> taxModelList) {
-        TaxesSpinnerAdapter adapter = new TaxesSpinnerAdapter(getApplicationContext(), taxModelList);
-        taxSpinner.setAdapter(adapter);
-
-        for (TaxModel tax : taxModelList) {
-            taxid = tax.getId();
-            Log.e(TAG, "onResponse: categories name : " + tax.getName());
+        taxSpinnerList.clear();
+        for (TaxModel model : taxModelList) {
+            taxSpinnerList.add(new SpinnerModel(model.getName(), model.getId()));
         }
+        taxAdapter = new CustomSpinnerAdapter(getApplicationContext(), taxSpinnerList, getString(R.string.select_tax));
+        taxSpinner.setAdapter(taxAdapter);
+
+        int selectedPosition = getSelectedSpinnerItemPosition(taxSpinnerList, taxName);
+        taxSpinner.setSelection(selectedPosition);
     }
 
     private void fetchUnit() {
@@ -245,12 +247,18 @@ public class EditProduct extends AppCompatActivity {
     }
 
     private void populateUnitSpinner(List<UnitModel> unitModelList) {
-        UnitSpinnerAdapter adapter = new UnitSpinnerAdapter(getApplicationContext(), unitModelList);
-        unitSpinner.setAdapter(adapter);
-        for (UnitModel unit : unitModelList) {
-            unitId = unit.getId();
-            Log.e(TAG, "onResponse: Unit name : " + unit.getUnit_name());
+        unitSpinnerList.clear();
+
+        for (UnitModel model : unitModelList) {
+            unitSpinnerList.add(new SpinnerModel(model.getUnit_name(), model.getId()));
         }
+        unitAdapter = new CustomSpinnerAdapter(getApplicationContext(), unitSpinnerList, getString(R.string.select_unit));
+        unitSpinner.setAdapter(unitAdapter);
+
+        int selectedPosition = getSelectedSpinnerItemPosition(unitSpinnerList, unitName);
+        unitSpinner.setSelection(selectedPosition);
+
+
     }
 
     @Override
@@ -262,16 +270,16 @@ public class EditProduct extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    private int getSelectedSpinnerItemPosition(List<SpinnerModel> spinnerModelList, int categoryid) {
-        int position = 1;
-        for (SpinnerModel model : spinnerModelList) {
-            if (model.getId() == categoryid) {
-                break;
-            }
-            position++;
-        }
-        return position;
-    }
+//    private int getSelectedSpinnerItemPosition(List<SpinnerModel> spinnerModelList, int categoryid) {
+//        int position = 1;
+//        for (SpinnerModel model : spinnerModelList) {
+//            if (model.getId() == categoryid) {
+//                break;
+//            }
+//            position++;
+//        }
+//        return position;
+//    }
 
     @Override
     protected void onStart() {

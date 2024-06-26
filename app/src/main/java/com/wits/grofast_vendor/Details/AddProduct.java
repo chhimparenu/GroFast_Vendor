@@ -16,10 +16,8 @@ import android.provider.MediaStore;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
-
 import android.view.View;
 import android.view.WindowManager;
-
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -32,8 +30,7 @@ import androidx.appcompat.widget.AppCompatButton;
 import androidx.appcompat.widget.AppCompatEditText;
 import androidx.appcompat.widget.AppCompatSpinner;
 
-import com.bumptech.glide.Glide;
-import com.wits.grofast_vendor.Adapter.CategorySpinnerAdapter;
+import com.wits.grofast_vendor.Adapter.CustomSpinnerAdapter;
 import com.wits.grofast_vendor.Adapter.TaxesSpinnerAdapter;
 import com.wits.grofast_vendor.Adapter.UnitSpinnerAdapter;
 import com.wits.grofast_vendor.Api.Interface.CategoriesInterface;
@@ -41,16 +38,14 @@ import com.wits.grofast_vendor.Api.Interface.ProductInterface;
 import com.wits.grofast_vendor.Api.Interface.TaxInterface;
 import com.wits.grofast_vendor.Api.Interface.UnitInterface;
 import com.wits.grofast_vendor.Api.Model.CategoryModel;
-import com.wits.grofast_vendor.Api.Model.ProductModel;
 import com.wits.grofast_vendor.Api.Model.SpinnerModel;
 import com.wits.grofast_vendor.Api.Model.TaxModel;
 import com.wits.grofast_vendor.Api.Model.UnitModel;
-import com.wits.grofast_vendor.Api.Response.ProductResponse;
 import com.wits.grofast_vendor.Api.Response.CategoryResponse;
+import com.wits.grofast_vendor.Api.Response.ProductResponse;
 import com.wits.grofast_vendor.Api.Response.TaxReponse;
 import com.wits.grofast_vendor.Api.Response.UnitResponse;
 import com.wits.grofast_vendor.Api.Retrofirinstance;
-import com.wits.grofast_vendor.Homepage.Product_Fragment;
 import com.wits.grofast_vendor.R;
 import com.wits.grofast_vendor.session.SupplierActivitySession;
 
@@ -426,7 +421,7 @@ public class AddProduct extends AppCompatActivity {
 
     private void populateCategorySpinner(List<SpinnerModel> spinnerCategories) {
         Log.e(TAG, "populateCategorySpinner: size " + spinnerCategories.size());
-        CategorySpinnerAdapter adapter = new CategorySpinnerAdapter(getApplicationContext(), spinnerCategories);
+        CustomSpinnerAdapter adapter = new CustomSpinnerAdapter(getApplicationContext(), spinnerCategories, getString(R.string.select_category));
         categories.setAdapter(adapter);
         for (SpinnerModel category : spinnerCategories) {
             categoryId = category.getId();
