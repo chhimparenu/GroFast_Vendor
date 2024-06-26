@@ -21,13 +21,15 @@ public class CustomSpinnerAdapter extends ArrayAdapter<SpinnerModel> {
     List<SpinnerModel> spinnerItemList = new ArrayList<>();
     private final Context mContext;
     private final int mResource;
+    private final String hintMessage;
 
-    public CustomSpinnerAdapter(@NonNull Context context, @NonNull List<SpinnerModel> spinnerItemList) {
+    public CustomSpinnerAdapter(@NonNull Context context, @NonNull List<SpinnerModel> spinnerItemList, String hint) {
         super(context, R.layout.spinner_layout, spinnerItemList);
         this.mInflater = LayoutInflater.from(context);
         this.spinnerItemList = spinnerItemList;
         this.mContext = context;
         this.mResource = R.layout.spinner_layout;
+        hintMessage = hint;
     }
 
     @Override
@@ -81,7 +83,7 @@ public class CustomSpinnerAdapter extends ArrayAdapter<SpinnerModel> {
     private View getHintView(ViewGroup parent) {
         final View view = mInflater.inflate(mResource, parent, false);
         TextView textView = view.findViewById(R.id.text1);
-        textView.setText(R.string.select_category);
+        textView.setText(hintMessage);
         textView.setTextColor(mContext.getResources().getColor(android.R.color.darker_gray));
         return view;
     }

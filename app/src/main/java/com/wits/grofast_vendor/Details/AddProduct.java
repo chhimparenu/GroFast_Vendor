@@ -16,10 +16,8 @@ import android.provider.MediaStore;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
-
 import android.view.View;
 import android.view.WindowManager;
-
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -43,8 +41,8 @@ import com.wits.grofast_vendor.Api.Model.CategoryModel;
 import com.wits.grofast_vendor.Api.Model.SpinnerModel;
 import com.wits.grofast_vendor.Api.Model.TaxModel;
 import com.wits.grofast_vendor.Api.Model.UnitModel;
-import com.wits.grofast_vendor.Api.Response.ProductResponse;
 import com.wits.grofast_vendor.Api.Response.CategoryResponse;
+import com.wits.grofast_vendor.Api.Response.ProductResponse;
 import com.wits.grofast_vendor.Api.Response.TaxReponse;
 import com.wits.grofast_vendor.Api.Response.UnitResponse;
 import com.wits.grofast_vendor.Api.Retrofirinstance;
@@ -423,7 +421,7 @@ public class AddProduct extends AppCompatActivity {
 
     private void populateCategorySpinner(List<SpinnerModel> spinnerCategories) {
         Log.e(TAG, "populateCategorySpinner: size " + spinnerCategories.size());
-        CustomSpinnerAdapter adapter = new CustomSpinnerAdapter(getApplicationContext(), spinnerCategories);
+        CustomSpinnerAdapter adapter = new CustomSpinnerAdapter(getApplicationContext(), spinnerCategories, getString(R.string.select_category));
         categories.setAdapter(adapter);
         for (SpinnerModel category : spinnerCategories) {
             categoryId = category.getId();
