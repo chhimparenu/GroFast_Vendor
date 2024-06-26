@@ -60,6 +60,7 @@ public class EditProduct extends AppCompatActivity {
     private List<TaxModel> taxModelList = new ArrayList<>();
     private List<UnitModel> unitModelList = new ArrayList<>();
     int categoryId, taxid, unitId;
+    private String taxName, unitName;
     AppCompatButton addproduct, addimage, editimage;
     ProgressBar progressBar;
     List<SpinnerModel> categorySpinnerList = new ArrayList<>();
@@ -117,6 +118,10 @@ public class EditProduct extends AppCompatActivity {
                 detail.setText(product.getProduct_detail());
                 Glide.with(this).load(product.getImage()).placeholder(R.drawable.add_product).into(showimage);
 
+                taxName = product.getTax_id();
+                unitName = product.getUnit_id();
+                Log.e(TAG, "onCreate:  taxName " + taxName);
+                Log.e(TAG, "onCreate: unitName " + unitName);
                 if (product.getReturn_policy() == 1) {
                     return_true.setChecked(true);
                 } else {
@@ -178,10 +183,9 @@ public class EditProduct extends AppCompatActivity {
         categorySpinner.setAdapter(adapter);
         categorySpinner.setSelection(selectedCategoryPosition);
 
-        for (CategoryModel category : categoryList) {
-            categoryId = category.getId();
-            Log.e(TAG, "onResponse: categories name : " + category.getCategory_name());
-        }
+//        for (CategoryModel category : categoryList) {
+//            Log.e(TAG, "onResponse: categories name : " + category.getCategory_name());
+//        }
     }
 
     private void fetchTaxes() {
@@ -213,10 +217,10 @@ public class EditProduct extends AppCompatActivity {
         TaxesSpinnerAdapter adapter = new TaxesSpinnerAdapter(getApplicationContext(), taxModelList);
         taxSpinner.setAdapter(adapter);
 
-        for (TaxModel tax : taxModelList) {
-            taxid = tax.getId();
-            Log.e(TAG, "onResponse: categories name : " + tax.getName());
-        }
+//        for (TaxModel tax : taxModelList) {
+//            taxid = tax.getId();
+//            Log.e(TAG, "onResponse: categories name : " + tax.getName());
+//        }
     }
 
     private void fetchUnit() {
@@ -247,10 +251,10 @@ public class EditProduct extends AppCompatActivity {
     private void populateUnitSpinner(List<UnitModel> unitModelList) {
         UnitSpinnerAdapter adapter = new UnitSpinnerAdapter(getApplicationContext(), unitModelList);
         unitSpinner.setAdapter(adapter);
-        for (UnitModel unit : unitModelList) {
-            unitId = unit.getId();
-            Log.e(TAG, "onResponse: Unit name : " + unit.getUnit_name());
-        }
+//        for (UnitModel unit : unitModelList) {
+//            unitId = unit.getId();
+//            Log.e(TAG, "onResponse: Unit name : " + unit.getUnit_name());
+//        }
     }
 
     @Override

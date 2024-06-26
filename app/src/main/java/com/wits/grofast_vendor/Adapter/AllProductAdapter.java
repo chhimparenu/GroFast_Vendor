@@ -2,6 +2,7 @@ package com.wits.grofast_vendor.Adapter;
 
 import static com.wits.grofast_vendor.Api.Retrofirinstance.domain;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
@@ -52,7 +53,7 @@ public class AllProductAdapter extends RecyclerView.Adapter<AllProductAdapter.li
     }
 
     @Override
-    public void onBindViewHolder(@NonNull AllProductAdapter.listViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull AllProductAdapter.listViewHolder holder, @SuppressLint("RecyclerView") int position) {
         ProductModel item = productList.get(position);
         holder.id.setText(item.getId().toString());
         holder.name.setText(item.getName());
@@ -137,7 +138,7 @@ public class AllProductAdapter extends RecyclerView.Adapter<AllProductAdapter.li
 
     @Override
     public int getItemCount() {
-        Log.e("TAG", "getItemCount: size " + productList.size());
+//        Log.e("TAG", "getItemCount: size " + productList.size());
         return productList.size();
     }
 
