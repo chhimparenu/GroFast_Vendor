@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -11,22 +11,35 @@
     <ImageView
         android:layout_width="match_parent"
         android:layout_height="400dp"
-        android:src="@drawable/login_view" />
+        android:src="@drawable/login_view"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0" />
 
     <ImageView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:src="@drawable/vendor" />
+        android:layout_marginTop="@dimen/_5sdp"
+        android:src="@drawable/vendor"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.025" />
 
-    <LinearLayout
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/_180sdp">
+        android:layout_height="match_parent"
+        android:layout_marginTop="250dp">
 
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="30dp"
+            android:layout_margin="@dimen/padding"
             app:cardBackgroundColor="#FFFFFF"
             app:cardCornerRadius="10dp">
 
@@ -58,7 +71,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:layout_marginTop="20dp"
+                    android:layout_marginTop="@dimen/padding"
                     android:orientation="horizontal">
 
                     <View
@@ -141,9 +154,9 @@
                 <ProgressBar
                     android:id="@+id/loading_login"
                     android:layout_width="match_parent"
-                    android:visibility="gone"
+                    android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/_20sdp"
-                    android:layout_height="wrap_content" />
+                    android:visibility="gone" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -158,7 +171,9 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="@dimen/padding"
+                    android:gravity="center"
                     android:orientation="horizontal">
 
                     <TextView
@@ -187,7 +202,7 @@
                         android:layout_gravity="center"
                         android:layout_weight="1"
                         android:gravity="center"
-                        android:text="@string/content_policy"
+                        android:text="@string/return_policy"
                         android:textColor="@color/line_text_color"
                         android:textSize="@dimen/small_text_size" />
 
@@ -197,6 +212,6 @@
 
         </androidx.cardview.widget.CardView>
 
-    </LinearLayout>
+    </FrameLayout>
 
-</FrameLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -189,6 +189,7 @@
     <string name="Refund_policy">Refund Policy</string>
     <string name="Delete_account">Delete Account</string>
     <string name="canclelation">Cancellation Policy</string>
+    <string name="return_policy">Return Policy</string>
 
     //Table
     <string name="order_id_table">Order Id</string>

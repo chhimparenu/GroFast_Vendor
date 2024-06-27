@@ -5,7 +5,7 @@
         android:right="-100dp"
         android:top="-100dp">
         <shape android:shape="oval">
-            <solid android:color="@color/app_theme"/>
+            <solid android:color="@color/app_theme" />
         </shape>
     </item>
 </layer-list>
