@@ -252,4 +252,10 @@
     <string name="cancellation_policy_link">https://grofast.in/privacy-policy</string>
     <string name="report_policy_link">https://grofast.in/privacy-policy</string>
 
+    <!-- Spinner Hints  -->
+
+    <string name="hint_select_country">Select country</string>
+    <string name="hint_select_state">Select state</string>
+    <string name="hint_select_city">Select city</string>
+    <string name="hint_select_pincode">Select pincode</string>
 </resources>

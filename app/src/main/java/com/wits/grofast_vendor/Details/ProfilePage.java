@@ -19,7 +19,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -35,7 +34,10 @@ import androidx.core.widget.NestedScrollView;
 
 import com.bumptech.glide.Glide;
 import com.google.android.material.textfield.TextInputEditText;
+import com.wits.grofast_vendor.Adapter.CustomSpinnerAdapter;
 import com.wits.grofast_vendor.Api.Interface.UserInterface;
+import com.wits.grofast_vendor.Api.Model.SpinnerItemModel;
+import com.wits.grofast_vendor.Api.Model.SpinnerModel;
 import com.wits.grofast_vendor.Api.Model.SupplierModel;
 import com.wits.grofast_vendor.Api.Response.SupplierProfileResponse;
 import com.wits.grofast_vendor.Api.Retrofirinstance;
@@ -49,6 +51,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import okhttp3.MediaType;
@@ -77,7 +80,12 @@ public class ProfilePage extends AppCompatActivity {
     private final int defaultImage = R.drawable.account;
     private boolean isRemoveProfile = false;
     private long COUNTDOWN_TIME_MILLIS = 30000;
-    List<String> countrylist = new ArrayList<>(), statelist = new ArrayList<>(), citylist = new ArrayList<>(), pincodelist = new ArrayList<>();
+
+    private List<SpinnerItemModel> countryList, stateList, citylist, pincodeList;
+    List<SpinnerModel> countrySpinnerList = new ArrayList<>();
+    List<SpinnerModel> stateSpinnerList = new ArrayList<>();
+    List<SpinnerModel> citySpinnerList = new ArrayList<>();
+    List<SpinnerModel> pincodeSpinnerList = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -136,11 +144,6 @@ public class ProfilePage extends AppCompatActivity {
             showAddProfileButton();
         } else showEditProfileButton();
 
-        countrylist.add(supplierDetailSession.getCountry());
-        statelist.add(supplierDetailSession.getState());
-        citylist.add(supplierDetailSession.getCity());
-        pincodelist.add(supplierDetailSession.getPincode());
-
         Log.e(TAG, "Gender " + supplierDetailSession.getGender());
         switch (supplierDetailSession.getGender()) {
             case "Male":
@@ -154,22 +157,23 @@ public class ProfilePage extends AppCompatActivity {
                 break;
         }
         Log.e(TAG, "Profile Image" + supplierDetailSession.getImage());
-        countrySpinner.setAdapter(new ArrayAdapter<>(getApplicationContext(), android.R.layout.simple_spinner_item, countrylist));
-        citySpinner.setAdapter(new ArrayAdapter<>(getApplicationContext(), android.R.layout.simple_spinner_item, citylist));
-        stateSpinner.setAdapter(new ArrayAdapter<>(getApplicationContext(), android.R.layout.simple_spinner_item, statelist));
-        pincodeSpinner.setAdapter(new ArrayAdapter<>(getApplicationContext(), android.R.layout.simple_spinner_item, pincodelist));
+
+        getCountries();
+        getStates(1);
+        getCities(1);
+        getPincodes(1);
+
+        countrySpinner.setAdapter(new CustomSpinnerAdapter(getApplicationContext(), countrySpinnerList, getString(R.string.hint_select_country)));
+        citySpinner.setAdapter(new CustomSpinnerAdapter(getApplicationContext(), citySpinnerList, getString(R.string.hint_select_country)));
+        stateSpinner.setAdapter(new CustomSpinnerAdapter(getApplicationContext(), stateSpinnerList, getString(R.string.hint_select_country)));
+        pincodeSpinner.setAdapter(new CustomSpinnerAdapter(getApplicationContext(), pincodeSpinnerList, getString(R.string.hint_select_country)));
 
         addProfileImage.setOnClickListener(v -> openGallery());
 
         editProfileImage.setOnClickListener(v -> showDialog());
 
         saveButton.setOnClickListener(v -> updateUserProfile());
-        changephonenumber.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                OpenChangePhoneNumberDialog();
-            }
-        });
+        changephonenumber.setOnClickListener(v -> OpenChangePhoneNumberDialog());
 
     }
 
@@ -346,7 +350,15 @@ public class ProfilePage extends AppCompatActivity {
             return;
         }
 
+
         if (validateAllSpinners()) {
+
+            SpinnerModel countryModel, stateModel, cityModel, pincodeModel;
+            countryModel = (SpinnerModel) countrySpinner.getSelectedItem();
+            stateModel = (SpinnerModel) stateSpinner.getSelectedItem();
+            cityModel = (SpinnerModel) citySpinner.getSelectedItem();
+            pincodeModel = (SpinnerModel) pincodeSpinner.getSelectedItem();
+
 
         RequestBody evphoneno = RequestBody.create(MediaType.parse("text/plain"), tvPhone.getText().toString());
         RequestBody evname = RequestBody.create(MediaType.parse("text/plain"), name.getText().toString());
@@ -356,10 +368,10 @@ public class ProfilePage extends AppCompatActivity {
         RequestBody evstoreaddress = RequestBody.create(MediaType.parse("text/plain"), storeaddress.getText().toString());
 
 //        RequestBody evpincode = RequestBody.create(MediaType.parse("text/plain"), String.valueOf(uepincode.));
-            RequestBody evpincode = RequestBody.create(MediaType.parse("text/plain"), pincodeSpinner.getSelectedItem().toString());
-            RequestBody evcity = RequestBody.create(MediaType.parse("text/plain"), citySpinner.getSelectedItem().toString());
-            RequestBody evstate = RequestBody.create(MediaType.parse("text/plain"), stateSpinner.getSelectedItem().toString());
-            RequestBody evcountry = RequestBody.create(MediaType.parse("text/plain"), countrySpinner.getSelectedItem().toString());
+            RequestBody evcountry = RequestBody.create(MediaType.parse("text/plain"), countryModel.getName());
+            RequestBody evstate = RequestBody.create(MediaType.parse("text/plain"), stateModel.getName());
+            RequestBody evcity = RequestBody.create(MediaType.parse("text/plain"), cityModel.getName());
+            RequestBody evpincode = RequestBody.create(MediaType.parse("text/plain"), pincodeModel.getName());
 
 
         if (selectedGender != null) {
@@ -488,5 +500,31 @@ public class ProfilePage extends AppCompatActivity {
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void getCountries() {
+        for (int i = 1; i < 6; i++) {
+            countrySpinnerList.add(new SpinnerModel("country " + i, i));
+        }
+    }
+
+    private void getStates(int countryId) {
+        for (int i = 1; i < 6; i++) {
+            stateSpinnerList.add(new SpinnerModel("state " + i, i));
+        }
+    }
+
+    private void getCities(int stateId) {
+        for (int i = 1; i < 6; i++) {
+            citySpinnerList.add(new SpinnerModel("city " + i, i));
+        }
+    }
+
+    private void getPincodes(int cityId) {
+        for (int i = 1; i < 6; i++) {
+            Random random = new Random();
+            int randomPincode = 100000 + random.nextInt(900000);
+            pincodeSpinnerList.add(new SpinnerModel("" + randomPincode, i));
+        }
     }
 }
