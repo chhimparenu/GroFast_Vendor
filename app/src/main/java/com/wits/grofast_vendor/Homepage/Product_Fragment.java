@@ -11,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import androidx.core.widget.NestedScrollView;
@@ -48,7 +49,7 @@ public class Product_Fragment extends Fragment {
     private List<ProductModel> productList = new ArrayList<>();
     SupplierActivitySession supplierActivitySession;
     private final String TAG = "Product Fragment";
-    NestedScrollView product_layout;
+    LinearLayout product_layout;
     LinearLayout no_product_layout;
     TextView nomsg1, nomsg2;
     private ShimmerFrameLayout shimmerFrameLayout;

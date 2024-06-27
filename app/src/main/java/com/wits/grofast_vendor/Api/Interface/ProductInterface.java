@@ -35,6 +35,7 @@ public interface ProductInterface {
     @POST("update-supplier-product")
     @Multipart
     Call<ProductResponse> updateproduct(
+            @Part("id") int id,
             @Part("name") RequestBody name,
             @Part("category_id") RequestBody category_id,
             @Part("unit_id") RequestBody unit_id,
