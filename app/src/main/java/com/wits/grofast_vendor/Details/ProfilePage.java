@@ -8,7 +8,6 @@ import static com.wits.grofast_vendor.CommonUtilities.startCountdown;
 
 import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -69,7 +68,7 @@ public class ProfilePage extends AppCompatActivity {
     private final String TAG = "EditProfile";
     private RadioButton radioMale, radioFemale, radioOther;
     private TextInputEditText email, storeaddress, name, storename, description;
-    AppCompatSpinner pincode, city, state, country;
+    AppCompatSpinner pincodeSpinner, citySpinner, stateSpinner, countrySpinner;
     private TextView tvPhone;
     NestedScrollView scrollView;
     private SupplierActivitySession supplierActivitySession;
@@ -120,16 +119,17 @@ public class ProfilePage extends AppCompatActivity {
         tvPhone = findViewById(R.id.show_phone_no);
 
         //Spinner
-        country = findViewById(R.id.edit_profile_country_spinner);
-        state = findViewById(R.id.edit_profile_state_spinner);
-        city = findViewById(R.id.edit_profile_city_spinner);
-        pincode = findViewById(R.id.edit_profile_pincode_pincode);
+        countrySpinner = findViewById(R.id.edit_profile_country_spinner);
+        stateSpinner = findViewById(R.id.edit_profile_state_spinner);
+        citySpinner = findViewById(R.id.edit_profile_city_spinner);
+        pincodeSpinner = findViewById(R.id.edit_profile_pincode_pincode);
 
         name.setText(supplierDetailSession.getName());
-        storename.setText(supplierDetailSession.getStorrname());
+        storename.setText(supplierDetailSession.getStoreName());
         storeaddress.setText(supplierDetailSession.getStoreAddress());
         email.setText(supplierDetailSession.getEmail());
         tvPhone.setText(supplierDetailSession.getPhoneNo());
+        description.setText(supplierDetailSession.getDescription());
         String image = supplierDetailSession.getImage();
         Glide.with(getApplicationContext()).load(image).placeholder(defaultImage).into(showProfileImage);
         if (Uri.parse(image).getLastPathSegment().equals("null")) {
@@ -154,25 +154,16 @@ public class ProfilePage extends AppCompatActivity {
                 break;
         }
         Log.e(TAG, "Profile Image" + supplierDetailSession.getImage());
-        country.setAdapter(new ArrayAdapter<String>(getApplicationContext(), android.R.layout.simple_spinner_item, countrylist));
-        city.setAdapter(new ArrayAdapter<String>(getApplicationContext(), android.R.layout.simple_spinner_item, citylist));
-        state.setAdapter(new ArrayAdapter<String>(getApplicationContext(), android.R.layout.simple_spinner_item, statelist));
-        pincode.setAdapter(new ArrayAdapter<String>(getApplicationContext(), android.R.layout.simple_spinner_item, pincodelist));
+        countrySpinner.setAdapter(new ArrayAdapter<>(getApplicationContext(), android.R.layout.simple_spinner_item, countrylist));
+        citySpinner.setAdapter(new ArrayAdapter<>(getApplicationContext(), android.R.layout.simple_spinner_item, citylist));
+        stateSpinner.setAdapter(new ArrayAdapter<>(getApplicationContext(), android.R.layout.simple_spinner_item, statelist));
+        pincodeSpinner.setAdapter(new ArrayAdapter<>(getApplicationContext(), android.R.layout.simple_spinner_item, pincodelist));
 
-        addProfileImage.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                openGallery();
-            }
-        });
+        addProfileImage.setOnClickListener(v -> openGallery());
 
-        editProfileImage.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                showDialog();
-            }
-        });
+        editProfileImage.setOnClickListener(v -> showDialog());
 
+        saveButton.setOnClickListener(v -> updateUserProfile());
         changephonenumber.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -180,12 +171,6 @@ public class ProfilePage extends AppCompatActivity {
             }
         });
 
-        saveButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                updateUserProfile();
-            }
-        });
     }
 
     private void OpenChangePhoneNumberDialog() {
@@ -292,19 +277,17 @@ public class ProfilePage extends AppCompatActivity {
 
     private void showDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle(R.string.edit_profile_image_heading).setItems(new String[]{getString(R.string.change_image), getString(R.string.remove_image)}, new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int which) {
-                switch (which) {
-                    case 0:
-                        openGallery();
-                        break;
-                    case 1:
-                        showProfileImage.setImageResource(R.drawable.account);
-                        showAddProfileButton();
-                        image = null;
-                        isRemoveProfile = true;
-                        break;
-                }
+        builder.setTitle(R.string.edit_profile_image_heading).setItems(new String[]{getString(R.string.change_image), getString(R.string.remove_image)}, (dialog, which) -> {
+            switch (which) {
+                case 0:
+                    openGallery();
+                    break;
+                case 1:
+                    showProfileImage.setImageResource(R.drawable.account);
+                    showAddProfileButton();
+                    image = null;
+                    isRemoveProfile = true;
+                    break;
             }
         });
         builder.create().show();
@@ -324,14 +307,9 @@ public class ProfilePage extends AppCompatActivity {
         String uname = name.getText().toString().trim();
         String uemail = email.getText().toString().trim();
         String udescription = description.getText().toString().trim();
-        String uepincode = pincode.toString().trim();
+
         String uestorename = storename.toString().trim();
         String uestoreaddress = storeaddress.toString().trim();
-
-
-        String uestate = state.toString().trim();
-        String uecity = city.toString().trim();
-        String uecountry = country.toString().trim();
 
         if (uname.isEmpty()) {
             showToastAndFocus(getString(R.string.toast_message_enter_name), name);
@@ -364,9 +342,11 @@ public class ProfilePage extends AppCompatActivity {
         }
 
         if (uestorename.isEmpty()) {
-            showToastAndFocus(getString(R.string.toast_message_enter_storename), country);
+            showToastAndFocus(getString(R.string.toast_message_enter_storename), countrySpinner);
             return;
         }
+
+        if (validateAllSpinners()) {
 
         RequestBody evphoneno = RequestBody.create(MediaType.parse("text/plain"), tvPhone.getText().toString());
         RequestBody evname = RequestBody.create(MediaType.parse("text/plain"), name.getText().toString());
@@ -376,10 +356,10 @@ public class ProfilePage extends AppCompatActivity {
         RequestBody evstoreaddress = RequestBody.create(MediaType.parse("text/plain"), storeaddress.getText().toString());
 
 //        RequestBody evpincode = RequestBody.create(MediaType.parse("text/plain"), String.valueOf(uepincode.));
-        RequestBody evpincode = RequestBody.create(MediaType.parse("text/plain"), "1");
-        RequestBody evcity = RequestBody.create(MediaType.parse("text/plain"), "1");
-        RequestBody evstate = RequestBody.create(MediaType.parse("text/plain"), "1");
-        RequestBody evcountry = RequestBody.create(MediaType.parse("text/plain"), "1");
+            RequestBody evpincode = RequestBody.create(MediaType.parse("text/plain"), pincodeSpinner.getSelectedItem().toString());
+            RequestBody evcity = RequestBody.create(MediaType.parse("text/plain"), citySpinner.getSelectedItem().toString());
+            RequestBody evstate = RequestBody.create(MediaType.parse("text/plain"), stateSpinner.getSelectedItem().toString());
+            RequestBody evcountry = RequestBody.create(MediaType.parse("text/plain"), countrySpinner.getSelectedItem().toString());
 
 
         if (selectedGender != null) {
@@ -404,6 +384,7 @@ public class ProfilePage extends AppCompatActivity {
                         Log.d(TAG, "" + supplierProfileResponse.getStatus());
 
                         if (supplierModel != null) {
+                            supplierDetailSession.setId(supplierDetailSession.getId());
                             supplierDetailSession.setImage(supplierModel.getImage());
                             supplierDetailSession.setName(supplierModel.getName());
                             supplierDetailSession.setEmail(supplierModel.getEmail());
@@ -414,7 +395,7 @@ public class ProfilePage extends AppCompatActivity {
                             supplierDetailSession.setState(supplierModel.getState());
                             supplierDetailSession.setCountry(supplierModel.getCountry());
                             supplierDetailSession.setStoreAddress(supplierModel.getStore_address());
-                            supplierDetailSession.setStorrname(supplierModel.getStore_name());
+                            supplierDetailSession.setStoreName(supplierModel.getStore_name());
                             supplierDetailSession.setPhoneNo(supplierModel.getMobile_number());
                         }
                         Toast.makeText(ProfilePage.this, "" + supplierProfileResponse.getMessage(), Toast.LENGTH_SHORT).show();
@@ -429,6 +410,7 @@ public class ProfilePage extends AppCompatActivity {
                     loadingOverlay.setVisibility(View.GONE);
                 }
             });
+        }
         }
     }
 
@@ -488,6 +470,17 @@ public class ProfilePage extends AppCompatActivity {
         }
     }
 
+    private boolean validateSpinner(AppCompatSpinner spinner, int message) {
+        if (spinner.getSelectedItem() == null || spinner.getSelectedItem().toString() == null) {
+            Toast.makeText(getApplicationContext(), getString(message), Toast.LENGTH_SHORT);
+            return false;
+        }
+        return true;
+    }
+
+    private boolean validateAllSpinners() {
+        return validateSpinner(countrySpinner, R.string.toast_select_country) && validateSpinner(stateSpinner, R.string.toast_select_state) && validateSpinner(citySpinner, R.string.toast_select_city) && validateSpinner(pincodeSpinner, R.string.toast_select_pincode);
+    }
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
