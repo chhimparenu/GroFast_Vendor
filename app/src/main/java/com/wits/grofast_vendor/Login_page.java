@@ -3,6 +3,8 @@ package com.wits.grofast_vendor;
 import static android.content.ContentValues.TAG;
 
 import static com.wits.grofast_vendor.CommonUtilities.handleApiError;
+import static com.wits.grofast_vendor.CommonUtilities.setEditTextListeners;
+import static com.wits.grofast_vendor.CommonUtilities.startCountdown;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatButton;
@@ -32,6 +34,9 @@ import com.wits.grofast_vendor.Api.Interface.UserInterface;
 import com.wits.grofast_vendor.Api.Model.SupplierModel;
 import com.wits.grofast_vendor.Api.Response.LoginResponse;
 import com.wits.grofast_vendor.Api.Response.OtpResponse;
+import com.wits.grofast_vendor.Policy.PrivacyPolicyActivity;
+import com.wits.grofast_vendor.Policy.ReturnPolicy;
+import com.wits.grofast_vendor.Policy.TermsConditionPolicy;
 import com.wits.grofast_vendor.session.SupplierActivitySession;
 import com.wits.grofast_vendor.session.SupplierDetailSession;
 
@@ -48,6 +53,7 @@ public class Login_page extends AppCompatActivity {
     SupplierActivitySession session;
     SupplierDetailSession supplierDetailSession;
     ProgressBar progressBar;
+    TextView privacy_policy, return_plocy, terms_condition;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,8 +66,35 @@ public class Login_page extends AppCompatActivity {
         Login = findViewById(R.id.login_button);
         phoneNo = findViewById(R.id.phone_no);
         progressBar = findViewById(R.id.loading_login);
+        privacy_policy = findViewById(R.id.text_privacy_policy);
+        return_plocy = findViewById(R.id.text_return_policy);
+        terms_condition = findViewById(R.id.text_terms_policy);
         session = new SupplierActivitySession(getApplicationContext());
         supplierDetailSession = new SupplierDetailSession(getApplicationContext());
+
+        return_plocy.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent in = new Intent(getApplicationContext(), ReturnPolicy.class);
+                startActivity(in);
+            }
+        });
+
+        privacy_policy.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent in = new Intent(getApplicationContext(), PrivacyPolicyActivity.class);
+                startActivity(in);
+            }
+        });
+
+        terms_condition.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent in = new Intent(getApplicationContext(), TermsConditionPolicy.class);
+                startActivity(in);
+            }
+        });
 
         Login.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -126,14 +159,15 @@ public class Login_page extends AppCompatActivity {
         textphone.setText(phone);
         resend = dialogView.findViewById(R.id.resend_otp_button);
         countDownTimer = dialogView.findViewById(R.id.countdown_timer);
-        startCountdown(resend, countDownTimer, getApplicationContext(), COUNTDOWN_TIME_MILLIS);
 
         digit1 = dialogView.findViewById(R.id.otp_digit1);
         digit2 = dialogView.findViewById(R.id.otp_digit2);
         digit3 = dialogView.findViewById(R.id.otp_digit3);
         digit4 = dialogView.findViewById(R.id.otp_digit4);
         Continue_otp_page = dialogView.findViewById(R.id.Continue_otp_page);
-        setEditTextListeners();
+
+        startCountdown(resend, countDownTimer, getApplicationContext(), COUNTDOWN_TIME_MILLIS);
+        setEditTextListeners(digit1, digit2, digit3, digit4);
 
         close_change_phone_number = dialogView.findViewById(R.id.close_change_phone_number);
         close_change_phone_number.setOnClickListener(new View.OnClickListener() {
@@ -258,96 +292,6 @@ public class Login_page extends AppCompatActivity {
         return valid;
     }
 
-    private void setEditTextListeners() {
-        digit1.requestFocus();
-        digit1.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (count > 0) {
-                    digit2.requestFocus();
-                }
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-            }
-        });
-
-        digit2.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (count > 0) {
-                    digit3.requestFocus();
-                }
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-            }
-        });
-
-        digit3.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (count > 0) {
-                    digit4.requestFocus();
-                }
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-            }
-        });
-
-        digit2.setOnKeyListener(new View.OnKeyListener() {
-            @Override
-            public boolean onKey(View v, int keyCode, KeyEvent event) {
-                if (event.getAction() == KeyEvent.ACTION_DOWN && keyCode == KeyEvent.KEYCODE_DEL) {
-                    if (digit2.getText().toString().isEmpty()) {
-                        digit1.requestFocus();
-                    }
-                }
-                return false;
-            }
-        });
-
-        digit3.setOnKeyListener(new View.OnKeyListener() {
-            @Override
-            public boolean onKey(View v, int keyCode, KeyEvent event) {
-                if (event.getAction() == KeyEvent.ACTION_DOWN && keyCode == KeyEvent.KEYCODE_DEL) {
-                    if (digit3.getText().toString().isEmpty()) {
-                        digit2.requestFocus();
-                    }
-                }
-                return false;
-            }
-        });
-
-        digit4.setOnKeyListener(new View.OnKeyListener() {
-            @Override
-            public boolean onKey(View v, int keyCode, KeyEvent event) {
-                if (event.getAction() == KeyEvent.ACTION_DOWN && keyCode == KeyEvent.KEYCODE_DEL) {
-                    if (digit4.getText().toString().isEmpty()) {
-                        digit3.requestFocus();
-                    }
-                }
-                return false;
-            }
-        });
-    }
-
     private boolean isValidPhoneNumber(String phone) {
         return phone != null && phone.length() == 10 && phone.matches("\\d+");
     }
@@ -364,30 +308,5 @@ public class Login_page extends AppCompatActivity {
             imm.showSoftInput(view, InputMethodManager.SHOW_IMPLICIT);
         }
     }
-
-    public static void startCountdown(AppCompatButton resend, TextView countDownTimer, Context context, long countDownTime) {
-        new CountDownTimer(countDownTime, 1000) {
-            @Override
-            public void onTick(long millisUntilFinished) {
-                int minutes = (int) (millisUntilFinished / 1000) / 60;
-                int seconds = (int) (millisUntilFinished / 1000) % 60;
-                String timeLeftFormatted = String.format(Locale.getDefault(), "%02d:%02d", minutes, seconds);
-                countDownTimer.setText(timeLeftFormatted);
-
-                resend.setClickable(false);
-                resend.setBackgroundDrawable(context.getDrawable(R.drawable.textview_design));
-                resend.setTextColor(context.getColor(R.color.default_color));
-            }
-
-            @Override
-            public void onFinish() {
-                resend.setClickable(true);
-                countDownTimer.setText("00:00");
-                resend.setBackgroundDrawable(context.getDrawable(R.drawable.button_round));
-                resend.setTextColor(context.getColor(R.color.button_text_color));
-            }
-        }.start();
-    }
-
 }
 

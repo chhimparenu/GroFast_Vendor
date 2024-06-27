@@ -18,7 +18,6 @@
 
 
     <color name="main_heading_color">#FF000000</color>
-    <color name="color_button">#00ae65</color>
     <color name="button_text_color">#FFFFFFFF</color>
     <color name="default_color">#787a7d</color>
     <color name="action_text_color">#FFFFFFFF</color>

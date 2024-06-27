@@ -3,6 +3,8 @@ package com.wits.grofast_vendor.Details;
 
 import static com.wits.grofast_vendor.CommonUtilities.getPathFromUri;
 import static com.wits.grofast_vendor.CommonUtilities.handleApiError;
+import static com.wits.grofast_vendor.CommonUtilities.setEditTextListeners;
+import static com.wits.grofast_vendor.CommonUtilities.startCountdown;
 
 import android.app.AlertDialog;
 import android.content.Context;
@@ -19,7 +21,10 @@ import android.view.View;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.RadioButton;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -168,12 +173,115 @@ public class ProfilePage extends AppCompatActivity {
             }
         });
 
+        changephonenumber.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                OpenChangePhoneNumberDialog();
+            }
+        });
+
         saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 updateUserProfile();
             }
         });
+    }
+
+    private void OpenChangePhoneNumberDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        View dialogView = getLayoutInflater().inflate(R.layout.change_phone_number_layout, null);
+        builder.setView(dialogView);
+        AlertDialog dialog = builder.create();
+        dialog.setCanceledOnTouchOutside(false);
+
+        ImageView close = dialogView.findViewById(R.id.close_change_phone_number);
+        EditText phone = dialogView.findViewById(R.id.edit_phone_no);
+        AppCompatButton changenumber = dialogView.findViewById(R.id.change_number);
+        ProgressBar progressBar = dialogView.findViewById(R.id.loader_edit_phone_number);
+        String currentPhoneNumber = supplierDetailSession.getPhoneNo();
+        phone.setText(currentPhoneNumber);
+
+        close.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+
+        changenumber.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String newPhoneNumber = phone.getText().toString().trim();
+                if (newPhoneNumber.equals(currentPhoneNumber)) {
+                    Toast.makeText(ProfilePage.this, getString(R.string.toast_message_new_phone), Toast.LENGTH_SHORT).show();
+                } else {
+                    progressBar.setVisibility(View.VISIBLE);
+                    changenumber.setVisibility(View.GONE);
+//                    sendOtp(newPhoneNumber, dialog);
+                    openOtpPage(newPhoneNumber);
+                }
+            }
+        });
+
+        if (dialog.getWindow() != null) {
+            dialog.getWindow().setBackgroundDrawableResource(R.drawable.dailogbox_background);
+        }
+        dialog.show();
+    }
+
+    private void openOtpPage(String phone) {
+        EditText digit1, digit2, digit3, digit4;
+        AppCompatButton resentOtp, continueButton;
+        TextView phoneNo, countDownTimer;
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        View dialogView = getLayoutInflater().inflate(R.layout.otp_page, null);
+        builder.setView(dialogView);
+        AlertDialog dialog = builder.create();
+        dialog.setCanceledOnTouchOutside(false);
+        ImageView close_change_phone_number;
+
+
+        close_change_phone_number = dialogView.findViewById(R.id.close_change_phone_number);
+        close_change_phone_number.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+        phoneNo = dialogView.findViewById(R.id.otp_phone_no);
+        phoneNo.setText(phone);
+
+        digit1 = dialogView.findViewById(R.id.otp_digit1);
+        digit2 = dialogView.findViewById(R.id.otp_digit2);
+        digit3 = dialogView.findViewById(R.id.otp_digit3);
+        digit4 = dialogView.findViewById(R.id.otp_digit4);
+
+        resentOtp = dialogView.findViewById(R.id.resend_otp_button);
+        continueButton = dialogView.findViewById(R.id.Continue_otp_page);
+        countDownTimer = dialogView.findViewById(R.id.countdown_timer);
+
+        startCountdown(resentOtp, countDownTimer, getApplicationContext(), COUNTDOWN_TIME_MILLIS);
+        setEditTextListeners(digit1, digit2, digit3, digit4);
+
+        resentOtp.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (countDownTimer.getText().toString().equals("00:00")) {
+                    loadingOverlay.setVisibility(View.VISIBLE);
+                    startCountdown(resentOtp, countDownTimer, getApplicationContext(), COUNTDOWN_TIME_MILLIS);
+//                    sendOtp(phone, dialog);
+                } else {
+                    Toast.makeText(getApplicationContext(), getString(R.string.toast_message_resend_otp), Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
+        if (dialog.getWindow() != null) {
+            dialog.getWindow().setBackgroundDrawableResource(R.drawable.dailogbox_background);
+        }
+        dialog.show();
     }
 
     private void openGallery() {
