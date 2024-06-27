@@ -148,133 +148,136 @@ public class AddProduct extends AppCompatActivity {
         addproduct.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                addproduct.setEnabled(false);
-                String selectedreturnpolicy = null;
-                if (return_true.isChecked()) {
-                    selectedreturnpolicy = return_true.getText().toString();
-                } else if (return_false.isChecked()) {
-                    selectedreturnpolicy = return_false.getText().toString();
-                }
-
-                int selectedReturnPolicy = return_true.isChecked() ? 1 : 0;
-                int selectedStockPolicy = stock_true.isChecked() ? 1 : 0;
-
-                String selectedstock = null;
-                if (stock_true.isChecked()) {
-                    selectedstock = stock_true.getText().toString();
-                } else if (stock_false.isChecked()) {
-                    selectedstock = stock_false.getText().toString();
-                }
-
-                String uname = name.getText().toString().trim();
-                SpinnerModel ucategories = (SpinnerModel) categories.getSelectedItem();
-                TaxModel utax = (TaxModel) tax.getSelectedItem();
-                UnitModel uunit = (UnitModel) unit.getSelectedItem();
-                String uper = per.getText().toString().trim();
-                String uprice = price.getText().toString().trim();
-                String udiscount = descount.getText().toString().trim();
-                String udetails = detail.getText().toString().trim();
-
-                if (uname.isEmpty()) {
-                    showToastAndFocus(getString(R.string.toast_message_enter_name), name);
-
-                    return;
-                }
-
-                if (ucategories == null || ucategories.equals(getString(R.string.select_category))) {
-                    showToastAndFocus(getString(R.string.toast_message_select_categories), categories);
-                    return;
-                }
-
-                if (utax == null || tax.equals(getString(R.string.select_tax))) {
-                    showToastAndFocus(getString(R.string.toast_message_select_tax), tax);
-                    return;
-                }
-
-                if (uper.isEmpty()) {
-                    showToastAndFocus(getString(R.string.toast_message_enter_per), per);
-                    return;
-                }
-
-                if (uunit == null || unit.equals(getString(R.string.select_unit))) {
-                    showToastAndFocus(getString(R.string.toast_message_select_unit), unit);
-                    return;
-                }
-
-                if (uprice.isEmpty()) {
-                    showToastAndFocus(getString(R.string.toast_message_enter_price), price);
-                    return;
-                }
-
-                if (udiscount.isEmpty()) {
-                    showToastAndFocus(getString(R.string.toast_message_enter_discount), descount);
-                    return;
-                }
-                if (udetails.isEmpty()) {
-                    showToastAndFocus(getString(R.string.toast_message_enter_detail), detail);
-                    return;
-                }
-
-                if (selectedstock == null) {
-                    showToastAndFocus(getString(R.string.toast_message_select_stock), return_true);
-                    return;
-                }
-
-                if (selectedreturnpolicy == null) {
-                    showToastAndFocus(getString(R.string.toast_message_select_return_policy), return_true);
-                    return;
-                }
-
-                RequestBody adname = RequestBody.create(MediaType.parse("text/plain"), name.getText().toString());
-                RequestBody adcategories = RequestBody.create(MediaType.parse("text/plain"), String.valueOf(ucategories.getId()));
-                RequestBody adunit = RequestBody.create(MediaType.parse("text/plain"), String.valueOf(uunit.getId()));
-                RequestBody adtax = RequestBody.create(MediaType.parse("text/plain"), String.valueOf(utax.getId()));
-                RequestBody adprice = RequestBody.create(MediaType.parse("text/plain"), price.getText().toString());
-                RequestBody addiscount = RequestBody.create(MediaType.parse("text/plain"), descount.getText().toString());
-                RequestBody adproductdetail = RequestBody.create(MediaType.parse("text/plain"), detail.getText().toString());
-                RequestBody adper = RequestBody.create(MediaType.parse("text/plain"), per.getText().toString());
-
-                if (selectedreturnpolicy != null && selectedstock != null) {
-                    RequestBody policy = RequestBody.create(MediaType.parse("text/plain"), String.valueOf(selectedReturnPolicy));
-                    RequestBody stock = RequestBody.create(MediaType.parse("text/plain"), String.valueOf(selectedStockPolicy));
-                    progressBar.setVisibility(View.VISIBLE);
-                    addproduct.setVisibility(View.GONE);
-                    Call<ProductResponse> addProductResponseCall = Retrofirinstance.getClient(session.getToken()).create(ProductInterface.class).addProduct(adname, adcategories, adunit, adtax, adprice, addiscount, policy, adproductdetail, stock, adper, image);
-                    addProductResponseCall.enqueue(new Callback<ProductResponse>() {
-                        @Override
-                        public void onResponse(Call<ProductResponse> call, Response<ProductResponse> response) {
-                            progressBar.setVisibility(View.GONE);
-                            addproduct.setVisibility(View.VISIBLE);
-                            addproduct.setEnabled(true);
-                            if (response.isSuccessful()) {
-                                ProductResponse productResponse = response.body();
-                                Log.e(TAG, "Message " + productResponse.getMessage());
-                                Log.e(TAG, "Status " + productResponse.getStatus());
-                                Log.e(TAG, "Product " + productResponse.getProduct());
-                                showSuccessDialog(productResponse.getMessage());
-                            } else {
-                                try {
-                                    String errorBody = response.errorBody().string();
-                                    Log.d(TAG, "onResponse -> status: " + response.code());
-                                    Log.d(TAG, "onResponse -> errorMessage: " + errorBody);
-                                } catch (IOException e) {
-                                    e.printStackTrace();
-                                }
-                                handleApiError(TAG, response, getApplicationContext());
-                            }
-                        }
-
-                        @Override
-                        public void onFailure(Call<ProductResponse> call, Throwable t) {
-                            t.printStackTrace();
-                            progressBar.setVisibility(View.GONE);
-                            addproduct.setVisibility(View.VISIBLE);
-                            addproduct.setEnabled(true);
-                        }
-                    });
-                }
+               adduserproduct();
             }
         });
+    }
+
+    private void adduserproduct() {
+        String selectedreturnpolicy = null;
+        if (return_true.isChecked()) {
+            selectedreturnpolicy = return_true.getText().toString();
+        } else if (return_false.isChecked()) {
+            selectedreturnpolicy = return_false.getText().toString();
+        }
+
+        int selectedReturnPolicy = return_true.isChecked() ? 1 : 0;
+        int selectedStockPolicy = stock_true.isChecked() ? 1 : 0;
+
+        String selectedstock = null;
+        if (stock_true.isChecked()) {
+            selectedstock = stock_true.getText().toString();
+        } else if (stock_false.isChecked()) {
+            selectedstock = stock_false.getText().toString();
+        }
+
+        String uname = name.getText().toString().trim();
+        SpinnerModel ucategories = (SpinnerModel) categories.getSelectedItem();
+        TaxModel utax = (TaxModel) tax.getSelectedItem();
+        UnitModel uunit = (UnitModel) unit.getSelectedItem();
+        String uper = per.getText().toString().trim();
+        String uprice = price.getText().toString().trim();
+        String udiscount = descount.getText().toString().trim();
+        String udetails = detail.getText().toString().trim();
+
+        if (uname.isEmpty()) {
+            showToastAndFocus(getString(R.string.toast_message_enter_name), name);
+
+            return;
+        }
+
+        if (ucategories == null || ucategories.equals(getString(R.string.select_category))) {
+            showToastAndFocus(getString(R.string.toast_message_select_categories), categories);
+            return;
+        }
+
+        if (utax == null || tax.equals(getString(R.string.select_tax))) {
+            showToastAndFocus(getString(R.string.toast_message_select_tax), tax);
+            return;
+        }
+
+        if (uper.isEmpty()) {
+            showToastAndFocus(getString(R.string.toast_message_enter_per), per);
+            return;
+        }
+
+        if (uunit == null || unit.equals(getString(R.string.select_unit))) {
+            showToastAndFocus(getString(R.string.toast_message_select_unit), unit);
+            return;
+        }
+
+        if (uprice.isEmpty()) {
+            showToastAndFocus(getString(R.string.toast_message_enter_price), price);
+            return;
+        }
+
+        if (udiscount.isEmpty()) {
+            showToastAndFocus(getString(R.string.toast_message_enter_discount), descount);
+            return;
+        }
+        if (udetails.isEmpty()) {
+            showToastAndFocus(getString(R.string.toast_message_enter_detail), detail);
+            return;
+        }
+
+        if (selectedstock == null) {
+            showToastAndFocus(getString(R.string.toast_message_select_stock), return_true);
+            return;
+        }
+
+        if (selectedreturnpolicy == null) {
+            showToastAndFocus(getString(R.string.toast_message_select_return_policy), return_true);
+            return;
+        }
+
+        RequestBody adname = RequestBody.create(MediaType.parse("text/plain"), name.getText().toString());
+        RequestBody adcategories = RequestBody.create(MediaType.parse("text/plain"), String.valueOf(ucategories.getId()));
+        RequestBody adunit = RequestBody.create(MediaType.parse("text/plain"), String.valueOf(uunit.getId()));
+        RequestBody adtax = RequestBody.create(MediaType.parse("text/plain"), String.valueOf(utax.getId()));
+        RequestBody adprice = RequestBody.create(MediaType.parse("text/plain"), price.getText().toString());
+        RequestBody addiscount = RequestBody.create(MediaType.parse("text/plain"), descount.getText().toString());
+        RequestBody adproductdetail = RequestBody.create(MediaType.parse("text/plain"), detail.getText().toString());
+        RequestBody adper = RequestBody.create(MediaType.parse("text/plain"), per.getText().toString());
+
+        if (selectedreturnpolicy != null && selectedstock != null) {
+            RequestBody policy = RequestBody.create(MediaType.parse("text/plain"), String.valueOf(selectedReturnPolicy));
+            RequestBody stock = RequestBody.create(MediaType.parse("text/plain"), String.valueOf(selectedStockPolicy));
+            progressBar.setVisibility(View.VISIBLE);
+            addproduct.setVisibility(View.GONE);
+            Call<ProductResponse> addProductResponseCall = Retrofirinstance.getClient(session.getToken()).create(ProductInterface.class).addProduct(adname, adcategories, adunit, adtax, adprice, addiscount, policy, adproductdetail, stock, adper, image);
+            addProductResponseCall.enqueue(new Callback<ProductResponse>()  {
+                @Override
+                public void onResponse(Call<ProductResponse> call, Response<ProductResponse> response) {
+                    progressBar.setVisibility(View.GONE);
+                    addproduct.setVisibility(View.VISIBLE);
+                    addproduct.setEnabled(true);
+                    if (response.isSuccessful()) {
+                        ProductResponse productResponse = response.body();
+                        Log.e(TAG, "Message " + productResponse.getMessage());
+                        Log.e(TAG, "Status " + productResponse.getStatus());
+                        Log.e(TAG, "Product " + productResponse.getProduct());
+                        showSuccessDialog(productResponse.getMessage());
+                    } else {
+                        try {
+                            String errorBody = response.errorBody().string();
+                            Log.d(TAG, "onResponse -> status: " + response.code());
+                            Log.d(TAG, "onResponse -> errorMessage: " + errorBody);
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                        handleApiError(TAG, response, getApplicationContext());
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<ProductResponse> call, Throwable t) {
+                    t.printStackTrace();
+                    progressBar.setVisibility(View.GONE);
+                    addproduct.setVisibility(View.VISIBLE);
+                    addproduct.setEnabled(true);
+                }
+            });
+        }
     }
 
     private void showSuccessDialog(String message) {
@@ -305,7 +308,6 @@ public class AddProduct extends AppCompatActivity {
 
     private void reloadPage() {
         finish();
-//        startActivity(getIntent());
     }
 
     private void showDialog() {

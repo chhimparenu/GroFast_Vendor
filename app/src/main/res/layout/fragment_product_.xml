@@ -9,10 +9,11 @@
     android:layout_marginRight="@dimen/linear_padding"
     tools:context=".Homepage.Product_Fragment">
 
-    <androidx.core.widget.NestedScrollView
+    <LinearLayout
         android:id="@+id/scroll_product_layout"
         android:layout_width="match_parent"
         android:paddingTop="@dimen/linear_padding"
+        android:orientation="vertical"
         android:layout_height="match_parent">
 
         <LinearLayout
@@ -54,7 +55,7 @@
 
         </LinearLayout>
 
-    </androidx.core.widget.NestedScrollView>
+    </LinearLayout>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/new_product_add"

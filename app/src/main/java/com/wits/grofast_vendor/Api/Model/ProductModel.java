@@ -12,6 +12,7 @@ import com.google.gson.annotations.SerializedName;
 import java.io.Serializable;
 
 public class ProductModel implements Parcelable {
+    private Integer id;
     private String name;
     private String image;
     private String product_code;
@@ -108,7 +109,6 @@ public class ProductModel implements Parcelable {
     private String product_detail;
     private String uuid;
     private String created_at;
-    private Integer id;
 
     public String getCreated_at() {
         return formatDate(created_at);
