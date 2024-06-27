@@ -29,12 +29,11 @@ public class Notification extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        EdgeToEdge.enable(this);
-        setContentView(R.layout.activity_notification);
         this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         getSupportActionBar().setTitle(getString(R.string.notification_page_name));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.outline_arrow_back_24);
+        setContentView(R.layout.activity_notification);
         recyclerView = findViewById(R.id.notification_recycle);
         NotificationItems = new ArrayList<>();
 
@@ -76,5 +75,5 @@ public class Notification extends AppCompatActivity {
         }
         return super.onOptionsItemSelected(item);
 
-}
+    }
 }

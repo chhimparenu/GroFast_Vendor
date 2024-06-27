@@ -11,10 +11,9 @@
 
     //Slider Layout
     <string name="your_store_name">Your Store Name</string>
-
     <string name="edit_profile_page_name">Edit Profile</string>
     <string name="notification_page_name">Notification</string>
-    <string name="notification_setting_page_name">Notification Preferences</string>
+    <string name="notification_setting_page_name">Notification Setting</string>
 
     //Main Activity
     <string name="Log_in_usename">Enter Username</string>
@@ -233,5 +232,19 @@
     <string name="Invoice">Invoice</string>
     <string name="qty">Qty : - </string>
     <string name="Total">Total : </string>
+
+    //Delete Confirmation
+    <string name="delete_account_confirmation">Delete Account</string>
+    <string name="are_you_sure_delete_account">Are you sure, you want to delete this account.</string>
+
+    <!-- Links -->
+    <string name="privancy_policy_link">https://grofast.in/privacy-policy</string>
+    <string name="term_and_condition_link">https://grofast.in/terms-and-conditions</string>
+    <string name="delete_data_policy_link">https://grofast.in/data-delete</string>
+    <string name="delete_Account_policy_link">https://grofast.in/account-delete</string>
+    <string name="return_policy_link">https://grofast.in/account-delete</string>
+    <string name="refund_policy_link">https://grofast.in/privacy-policy</string>
+    <string name="cancellation_policy_link">https://grofast.in/privacy-policy</string>
+    <string name="report_policy_link">https://grofast.in/privacy-policy</string>
 
 </resources>

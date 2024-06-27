@@ -175,35 +175,40 @@
             android:id="@+id/resend_otp_button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="10dp"
-            android:layout_weight="1"
+            android:background="@drawable/button_round"
             android:text="@string/otp_resed_button"
+            android:layout_weight="1"
+            android:visibility="gone"
+            android:layout_marginStart="10dp"
             android:textAllCaps="false"
+            android:textColor="@color/button_text_color"
             android:textSize="@dimen/hint_text_size" />
+
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/countdown_timer"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="10dp"
+            android:layout_height="match_parent"
             android:layout_weight="1"
             android:background="@drawable/border_color"
             android:text="@string/otp_time"
             android:textAlignment="center"
             android:textAllCaps="false"
-            android:textColor="@color/color_button"
+            android:textColor="@color/app_theme"
+            android:textSize="@dimen/hint_text_size" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/Continue_otp_page"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/button_round"
+            android:text="@string/continue_button"
+            android:layout_weight="1"
+            android:layout_marginStart="10dp"
+            android:textAllCaps="false"
+            android:textColor="@color/button_text_color"
             android:textSize="@dimen/hint_text_size" />
 
     </LinearLayout>
 
-    <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/Continue_otp_page"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/top_margin"
-        android:background="@drawable/button_round"
-        android:text="@string/continue_button"
-        android:textAllCaps="false"
-        android:textColor="@color/button_text_color"
-        android:textSize="@dimen/button_text_size" />
 </LinearLayout>

@@ -177,6 +177,7 @@
                     android:orientation="horizontal">
 
                     <TextView
+                        android:id="@+id/text_privacy_policy"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
@@ -187,6 +188,7 @@
                         android:textSize="@dimen/small_text_size" />
 
                     <TextView
+                        android:id="@+id/text_terms_policy"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
@@ -197,6 +199,7 @@
                         android:textSize="@dimen/small_text_size" />
 
                     <TextView
+                        android:id="@+id/text_return_policy"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
