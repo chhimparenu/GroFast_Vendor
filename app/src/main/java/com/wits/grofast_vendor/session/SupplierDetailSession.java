@@ -65,17 +65,13 @@ public class SupplierDetailSession {
     public String getUuid() {
         return sharedPreferences.getString("userUUID", "");
     }
-    public void setUserId(Integer userId) {
-        editor.putInt("userId", userId);
-        editor.apply();
-    }
 
-    public void setStorrname(String storename) {
+    public void setStoreName(String storename) {
         editor.putString("storeName", storename);
         editor.apply();
     }
 
-    public String getStorrname() {
+    public String getStoreName() {
         return sharedPreferences.getString("storeName", "");
     }
 
@@ -142,8 +138,12 @@ public class SupplierDetailSession {
         return sharedPreferences.getString("status", "");
     }
 
-    public Integer getUserId() {
-        return sharedPreferences.getInt("userId", 0);
+    public void setId(int id) {
+        editor.putInt("supplierId", id);
+        editor.apply();
+    }
+    public int getId() {
+        return sharedPreferences.getInt("supplierId", 0);
     }
 
 

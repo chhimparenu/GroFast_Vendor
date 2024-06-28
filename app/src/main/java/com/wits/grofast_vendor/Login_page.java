@@ -200,11 +200,11 @@ public class Login_page extends AppCompatActivity {
                                 session.setLoginStaus(true);
                                 session.setToken(otpVerifyResponse.getAccessToken());
 
-                                supplierDetailSession.setUserId(supplierModel.getId());
+                                supplierDetailSession.setId(supplierModel.getId());
                                 supplierDetailSession.setUuid(supplierModel.getUuid());
                                 supplierDetailSession.setImage(supplierModel.getImage());
                                 supplierDetailSession.setName(supplierModel.getName());
-                                supplierDetailSession.setStorrname(supplierModel.getStore_name());
+                                supplierDetailSession.setStoreName(supplierModel.getStore_name());
                                 supplierDetailSession.setEmail(supplierModel.getEmail());
                                 supplierDetailSession.setPhoneNo(supplierModel.getMobile_number());
                                 supplierDetailSession.setDescription(supplierModel.getDescription());
