@@ -7,6 +7,7 @@ import static com.wits.grofast_vendor.CommonUtilities.handleApiError;
 import static com.wits.grofast_vendor.CommonUtilities.setEditTextListeners;
 import static com.wits.grofast_vendor.CommonUtilities.startCountdown;
 
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -74,7 +75,8 @@ public class ProfilePage extends AppCompatActivity {
     private final String TAG = "EditProfile";
     private RadioButton radioMale, radioFemale, radioOther;
     private TextInputEditText email, storeaddress, name, storename, description;
-    AppCompatSpinner pincodeSpinner, citySpinner, stateSpinner, countrySpinner;
+    private AppCompatSpinner pincodeSpinner, citySpinner, stateSpinner, countrySpinner;
+    private CustomSpinnerAdapter countryAdapter, stateAdapter, cityAdapter, pincodeAdapter;
     private TextView tvPhone;
     NestedScrollView scrollView;
     private SupplierActivitySession supplierActivitySession;
@@ -82,7 +84,7 @@ public class ProfilePage extends AppCompatActivity {
     LinearLayout loadingOverlay;
     private final int defaultImage = R.drawable.account;
     private boolean isRemoveProfile = false;
-    private long COUNTDOWN_TIME_MILLIS = 30000;
+    private final long COUNTDOWN_TIME_MILLIS = 30000;
 
     private String selectedCountry, selectedState, selectedCity, selectedPincode;
     private List<SpinnerItemModel> countryList, stateList, citylist, pincodeList;
@@ -90,6 +92,7 @@ public class ProfilePage extends AppCompatActivity {
     List<SpinnerModel> stateSpinnerList = new ArrayList<>();
     List<SpinnerModel> citySpinnerList = new ArrayList<>();
     List<SpinnerModel> pincodeSpinnerList = new ArrayList<>();
+    private boolean isFirstTimeAutoset = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -163,11 +166,16 @@ public class ProfilePage extends AppCompatActivity {
         Log.e(TAG, "Profile Image" + supplierDetailSession.getImage());
 
         getCountries();
+        countryAdapter = new CustomSpinnerAdapter(getApplicationContext(), countrySpinnerList, getString(R.string.hint_select_country));
+        stateAdapter = new CustomSpinnerAdapter(getApplicationContext(), stateSpinnerList, getString(R.string.hint_select_state));
+        cityAdapter = new CustomSpinnerAdapter(getApplicationContext(), citySpinnerList, getString(R.string.hint_select_city));
+        pincodeAdapter = new CustomSpinnerAdapter(getApplicationContext(), pincodeSpinnerList, getString(R.string.hint_select_pincode));
 
-        countrySpinner.setAdapter(new CustomSpinnerAdapter(getApplicationContext(), countrySpinnerList, getString(R.string.hint_select_country)));
-        stateSpinner.setAdapter(new CustomSpinnerAdapter(getApplicationContext(), stateSpinnerList, getString(R.string.hint_select_state)));
-        citySpinner.setAdapter(new CustomSpinnerAdapter(getApplicationContext(), citySpinnerList, getString(R.string.hint_select_city)));
-        pincodeSpinner.setAdapter(new CustomSpinnerAdapter(getApplicationContext(), pincodeSpinnerList, getString(R.string.hint_select_pincode)));
+        countrySpinner.setAdapter(countryAdapter);
+        stateSpinner.setAdapter(stateAdapter);
+        citySpinner.setAdapter(cityAdapter);
+        pincodeSpinner.setAdapter(pincodeAdapter);
+
 
         addProfileImage.setOnClickListener(v -> openGallery());
 
@@ -356,8 +364,10 @@ public class ProfilePage extends AppCompatActivity {
             return;
         }
 
-
-        if (validateAllSpinners()) {
+        if (!validateAllSpinners()) {
+            Log.e(TAG, "updateUserProfile: spinners not validated");
+            return;
+        }
         RequestBody evphoneno = RequestBody.create(MediaType.parse("text/plain"), tvPhone.getText().toString());
         RequestBody evname = RequestBody.create(MediaType.parse("text/plain"), name.getText().toString());
         RequestBody evdescription = RequestBody.create(MediaType.parse("text/plain"), description.getText().toString());
@@ -390,7 +400,7 @@ public class ProfilePage extends AppCompatActivity {
                     if (response.isSuccessful()) {
                         SupplierProfileResponse supplierProfileResponse = response.body();
                         SupplierModel supplierModel = supplierProfileResponse.getSupplierprofile();
-                        Log.d(TAG, "" + supplierProfileResponse.getMessage());
+                        Log.d(TAG, supplierProfileResponse.getMessage());
                         Log.d(TAG, "" + supplierProfileResponse.getStatus());
 
                         if (supplierModel != null) {
@@ -408,7 +418,7 @@ public class ProfilePage extends AppCompatActivity {
                             supplierDetailSession.setStoreName(supplierModel.getStore_name());
                             supplierDetailSession.setPhoneNo(supplierModel.getMobile_number());
                         }
-                        Toast.makeText(ProfilePage.this, "" + supplierProfileResponse.getMessage(), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(ProfilePage.this, supplierProfileResponse.getMessage(), Toast.LENGTH_SHORT).show();
                     } else handleApiError(TAG, response, getApplicationContext());
                 }
 
@@ -421,7 +431,7 @@ public class ProfilePage extends AppCompatActivity {
                 }
             });
         }
-        }
+
     }
 
     private void showEditProfileButton() {
@@ -480,9 +490,11 @@ public class ProfilePage extends AppCompatActivity {
         }
     }
 
+    @SuppressLint("ShowToast")
     private boolean validateSpinner(AppCompatSpinner spinner, int message) {
-        if (spinner.getSelectedItem() == null || spinner.getSelectedItem().toString() == null) {
-            Toast.makeText(getApplicationContext(), getString(message), Toast.LENGTH_SHORT);
+        SpinnerModel model = (SpinnerModel) spinner.getSelectedItem();
+        if (model == null || model.getName() == null) {
+            Toast.makeText(getApplicationContext(), getString(message), Toast.LENGTH_SHORT).show();
             return false;
         }
         return true;
@@ -514,9 +526,19 @@ public class ProfilePage extends AppCompatActivity {
                         countrySpinnerList.add(new SpinnerModel(model.getName(), model.getId()));
                     }
 
-                    countrySpinner.setAdapter(new CustomSpinnerAdapter(getApplicationContext(), countrySpinnerList, getString(R.string.hint_select_country)));
-                    countrySpinner.setSelection(getSelectedSpinnerItemPosition(countrySpinnerList, supplierDetailSession.getCountry()));
+                    countryAdapter.notifyDataSetChanged();
+                    if (isFirstTimeAutoset)
+                        countrySpinner.setSelection(getSelectedSpinnerItemPosition(countrySpinnerList, supplierDetailSession.getCountry()));
 
+                    if (countrySpinnerList.isEmpty()) {
+                        stateSpinnerList.clear();
+                        citySpinnerList.clear();
+                        pincodeSpinnerList.clear();
+
+                        stateSpinner.setSelection(0);
+                        citySpinner.setSelection(0);
+                        pincodeSpinner.setSelection(0);
+                    }
                 }
             }
 
@@ -540,8 +562,18 @@ public class ProfilePage extends AppCompatActivity {
                     for (SpinnerItemModel model : stateList) {
                         stateSpinnerList.add(new SpinnerModel(model.getName(), model.getId()));
                     }
-                    stateSpinner.setAdapter(new CustomSpinnerAdapter(getApplicationContext(), stateSpinnerList, getString(R.string.hint_select_state)));
-                    stateSpinner.setSelection(getSelectedSpinnerItemPosition(stateSpinnerList, supplierDetailSession.getState()));
+
+                    stateAdapter.notifyDataSetChanged();
+                    if (isFirstTimeAutoset)
+                        stateSpinner.setSelection(getSelectedSpinnerItemPosition(stateSpinnerList, supplierDetailSession.getState()));
+
+                    if (stateSpinnerList.isEmpty()) {
+                        citySpinnerList.clear();
+                        pincodeSpinnerList.clear();
+
+                        citySpinner.setSelection(0);
+                        pincodeSpinner.setSelection(0);
+                    }
                 }
             }
 
@@ -566,8 +598,14 @@ public class ProfilePage extends AppCompatActivity {
                         citySpinnerList.add(new SpinnerModel(model.getName(), model.getId()));
                     }
 
-                    citySpinner.setAdapter(new CustomSpinnerAdapter(getApplicationContext(), citySpinnerList, getString(R.string.hint_select_city)));
-                    citySpinner.setSelection(getSelectedSpinnerItemPosition(citySpinnerList, supplierDetailSession.getCity()));
+                    cityAdapter.notifyDataSetChanged();
+                    if (isFirstTimeAutoset)
+                        citySpinner.setSelection(getSelectedSpinnerItemPosition(citySpinnerList, supplierDetailSession.getCity()));
+
+                    if (citySpinnerList.isEmpty()) {
+                        pincodeSpinnerList.clear();
+                        pincodeSpinner.setSelection(0);
+                    }
                 }
             }
 
@@ -593,8 +631,11 @@ public class ProfilePage extends AppCompatActivity {
                         pincodeSpinnerList.add(new SpinnerModel(model.getCode(), model.getId()));
                     }
 
-                    pincodeSpinner.setAdapter(new CustomSpinnerAdapter(getApplicationContext(), pincodeSpinnerList, getString(R.string.hint_select_pincode)));
-                    pincodeSpinner.setSelection(getSelectedSpinnerItemPosition(pincodeSpinnerList, supplierDetailSession.getPincode()));
+                    pincodeAdapter.notifyDataSetChanged();
+                    if (isFirstTimeAutoset) {
+                        pincodeSpinner.setSelection(getSelectedSpinnerItemPosition(pincodeSpinnerList, supplierDetailSession.getPincode()));
+                        isFirstTimeAutoset = false;
+                    }
                 }
             }
 
