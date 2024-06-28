@@ -2,10 +2,12 @@ package com.wits.grofast_vendor.Details;
 
 
 import static com.wits.grofast_vendor.CommonUtilities.getPathFromUri;
+import static com.wits.grofast_vendor.CommonUtilities.getSelectedSpinnerItemPosition;
 import static com.wits.grofast_vendor.CommonUtilities.handleApiError;
 import static com.wits.grofast_vendor.CommonUtilities.setEditTextListeners;
 import static com.wits.grofast_vendor.CommonUtilities.startCountdown;
 
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -19,6 +21,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -35,6 +39,7 @@ import androidx.core.widget.NestedScrollView;
 import com.bumptech.glide.Glide;
 import com.google.android.material.textfield.TextInputEditText;
 import com.wits.grofast_vendor.Adapter.CustomSpinnerAdapter;
+import com.wits.grofast_vendor.Api.Interface.AddressInterface;
 import com.wits.grofast_vendor.Api.Interface.UserInterface;
 import com.wits.grofast_vendor.Api.Model.SpinnerItemModel;
 import com.wits.grofast_vendor.Api.Model.SpinnerModel;
@@ -51,7 +56,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import okhttp3.MediaType;
@@ -71,7 +75,8 @@ public class ProfilePage extends AppCompatActivity {
     private final String TAG = "EditProfile";
     private RadioButton radioMale, radioFemale, radioOther;
     private TextInputEditText email, storeaddress, name, storename, description;
-    AppCompatSpinner pincodeSpinner, citySpinner, stateSpinner, countrySpinner;
+    private AppCompatSpinner pincodeSpinner, citySpinner, stateSpinner, countrySpinner;
+    private CustomSpinnerAdapter countryAdapter, stateAdapter, cityAdapter, pincodeAdapter;
     private TextView tvPhone;
     NestedScrollView scrollView;
     private SupplierActivitySession supplierActivitySession;
@@ -79,13 +84,15 @@ public class ProfilePage extends AppCompatActivity {
     LinearLayout loadingOverlay;
     private final int defaultImage = R.drawable.account;
     private boolean isRemoveProfile = false;
-    private long COUNTDOWN_TIME_MILLIS = 30000;
+    private final long COUNTDOWN_TIME_MILLIS = 30000;
 
+    private String selectedCountry, selectedState, selectedCity, selectedPincode;
     private List<SpinnerItemModel> countryList, stateList, citylist, pincodeList;
     List<SpinnerModel> countrySpinnerList = new ArrayList<>();
     List<SpinnerModel> stateSpinnerList = new ArrayList<>();
     List<SpinnerModel> citySpinnerList = new ArrayList<>();
     List<SpinnerModel> pincodeSpinnerList = new ArrayList<>();
+    private boolean isFirstTimeAutoset = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -159,14 +166,16 @@ public class ProfilePage extends AppCompatActivity {
         Log.e(TAG, "Profile Image" + supplierDetailSession.getImage());
 
         getCountries();
-        getStates(1);
-        getCities(1);
-        getPincodes(1);
+        countryAdapter = new CustomSpinnerAdapter(getApplicationContext(), countrySpinnerList, getString(R.string.hint_select_country));
+        stateAdapter = new CustomSpinnerAdapter(getApplicationContext(), stateSpinnerList, getString(R.string.hint_select_state));
+        cityAdapter = new CustomSpinnerAdapter(getApplicationContext(), citySpinnerList, getString(R.string.hint_select_city));
+        pincodeAdapter = new CustomSpinnerAdapter(getApplicationContext(), pincodeSpinnerList, getString(R.string.hint_select_pincode));
 
-        countrySpinner.setAdapter(new CustomSpinnerAdapter(getApplicationContext(), countrySpinnerList, getString(R.string.hint_select_country)));
-        citySpinner.setAdapter(new CustomSpinnerAdapter(getApplicationContext(), citySpinnerList, getString(R.string.hint_select_country)));
-        stateSpinner.setAdapter(new CustomSpinnerAdapter(getApplicationContext(), stateSpinnerList, getString(R.string.hint_select_country)));
-        pincodeSpinner.setAdapter(new CustomSpinnerAdapter(getApplicationContext(), pincodeSpinnerList, getString(R.string.hint_select_country)));
+        countrySpinner.setAdapter(countryAdapter);
+        stateSpinner.setAdapter(stateAdapter);
+        citySpinner.setAdapter(cityAdapter);
+        pincodeSpinner.setAdapter(pincodeAdapter);
+
 
         addProfileImage.setOnClickListener(v -> openGallery());
 
@@ -174,6 +183,11 @@ public class ProfilePage extends AppCompatActivity {
 
         saveButton.setOnClickListener(v -> updateUserProfile());
         changephonenumber.setOnClickListener(v -> OpenChangePhoneNumberDialog());
+
+        countrySpinner.setOnItemSelectedListener(getCountrySpinnerListner());
+        stateSpinner.setOnItemSelectedListener(getStateSpinnerListner());
+        citySpinner.setOnItemSelectedListener(getCitySpinnerListner());
+        pincodeSpinner.setOnItemSelectedListener(getPincodeSpinnerListner());
 
     }
 
@@ -350,16 +364,10 @@ public class ProfilePage extends AppCompatActivity {
             return;
         }
 
-
-        if (validateAllSpinners()) {
-
-            SpinnerModel countryModel, stateModel, cityModel, pincodeModel;
-            countryModel = (SpinnerModel) countrySpinner.getSelectedItem();
-            stateModel = (SpinnerModel) stateSpinner.getSelectedItem();
-            cityModel = (SpinnerModel) citySpinner.getSelectedItem();
-            pincodeModel = (SpinnerModel) pincodeSpinner.getSelectedItem();
-
-
+        if (!validateAllSpinners()) {
+            Log.e(TAG, "updateUserProfile: spinners not validated");
+            return;
+        }
         RequestBody evphoneno = RequestBody.create(MediaType.parse("text/plain"), tvPhone.getText().toString());
         RequestBody evname = RequestBody.create(MediaType.parse("text/plain"), name.getText().toString());
         RequestBody evdescription = RequestBody.create(MediaType.parse("text/plain"), description.getText().toString());
@@ -368,10 +376,10 @@ public class ProfilePage extends AppCompatActivity {
         RequestBody evstoreaddress = RequestBody.create(MediaType.parse("text/plain"), storeaddress.getText().toString());
 
 //        RequestBody evpincode = RequestBody.create(MediaType.parse("text/plain"), String.valueOf(uepincode.));
-            RequestBody evcountry = RequestBody.create(MediaType.parse("text/plain"), countryModel.getName());
-            RequestBody evstate = RequestBody.create(MediaType.parse("text/plain"), stateModel.getName());
-            RequestBody evcity = RequestBody.create(MediaType.parse("text/plain"), cityModel.getName());
-            RequestBody evpincode = RequestBody.create(MediaType.parse("text/plain"), pincodeModel.getName());
+            RequestBody evcountry = RequestBody.create(MediaType.parse("text/plain"), selectedCountry);
+            RequestBody evstate = RequestBody.create(MediaType.parse("text/plain"), selectedState);
+            RequestBody evcity = RequestBody.create(MediaType.parse("text/plain"), selectedCity);
+            RequestBody evpincode = RequestBody.create(MediaType.parse("text/plain"), selectedPincode);
 
 
         if (selectedGender != null) {
@@ -392,7 +400,7 @@ public class ProfilePage extends AppCompatActivity {
                     if (response.isSuccessful()) {
                         SupplierProfileResponse supplierProfileResponse = response.body();
                         SupplierModel supplierModel = supplierProfileResponse.getSupplierprofile();
-                        Log.d(TAG, "" + supplierProfileResponse.getMessage());
+                        Log.d(TAG, supplierProfileResponse.getMessage());
                         Log.d(TAG, "" + supplierProfileResponse.getStatus());
 
                         if (supplierModel != null) {
@@ -402,15 +410,15 @@ public class ProfilePage extends AppCompatActivity {
                             supplierDetailSession.setEmail(supplierModel.getEmail());
                             supplierDetailSession.setGender(supplierModel.getGender());
                             supplierDetailSession.setDescription(supplierModel.getDescription());
+                            supplierDetailSession.setCountry(supplierModel.getCountry());
+                            supplierDetailSession.setState(supplierModel.getState());
                             supplierDetailSession.setCiy(supplierModel.getCity());
                             supplierDetailSession.setPincode(supplierModel.getPin_code());
-                            supplierDetailSession.setState(supplierModel.getState());
-                            supplierDetailSession.setCountry(supplierModel.getCountry());
                             supplierDetailSession.setStoreAddress(supplierModel.getStore_address());
                             supplierDetailSession.setStoreName(supplierModel.getStore_name());
                             supplierDetailSession.setPhoneNo(supplierModel.getMobile_number());
                         }
-                        Toast.makeText(ProfilePage.this, "" + supplierProfileResponse.getMessage(), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(ProfilePage.this, supplierProfileResponse.getMessage(), Toast.LENGTH_SHORT).show();
                     } else handleApiError(TAG, response, getApplicationContext());
                 }
 
@@ -423,7 +431,7 @@ public class ProfilePage extends AppCompatActivity {
                 }
             });
         }
-        }
+
     }
 
     private void showEditProfileButton() {
@@ -482,9 +490,11 @@ public class ProfilePage extends AppCompatActivity {
         }
     }
 
+    @SuppressLint("ShowToast")
     private boolean validateSpinner(AppCompatSpinner spinner, int message) {
-        if (spinner.getSelectedItem() == null || spinner.getSelectedItem().toString() == null) {
-            Toast.makeText(getApplicationContext(), getString(message), Toast.LENGTH_SHORT);
+        SpinnerModel model = (SpinnerModel) spinner.getSelectedItem();
+        if (model == null || model.getName() == null) {
+            Toast.makeText(getApplicationContext(), getString(message), Toast.LENGTH_SHORT).show();
             return false;
         }
         return true;
@@ -503,28 +513,219 @@ public class ProfilePage extends AppCompatActivity {
     }
 
     private void getCountries() {
-        for (int i = 1; i < 6; i++) {
-            countrySpinnerList.add(new SpinnerModel("country " + i, i));
-        }
+        Call<List<SpinnerItemModel>> call = Retrofirinstance.getClient(supplierActivitySession.getToken()).create(AddressInterface.class).getCountries();
+
+        call.enqueue(new Callback<List<SpinnerItemModel>>() {
+            @Override
+            public void onResponse(Call<List<SpinnerItemModel>> call, Response<List<SpinnerItemModel>> response) {
+                if (response.isSuccessful()) {
+                    countryList = response.body();
+
+                    countrySpinnerList.clear();
+                    for (SpinnerItemModel model : countryList) {
+                        countrySpinnerList.add(new SpinnerModel(model.getName(), model.getId()));
+                    }
+
+                    countryAdapter.notifyDataSetChanged();
+                    if (isFirstTimeAutoset)
+                        countrySpinner.setSelection(getSelectedSpinnerItemPosition(countrySpinnerList, supplierDetailSession.getCountry()));
+
+                    if (countrySpinnerList.isEmpty()) {
+                        stateSpinnerList.clear();
+                        citySpinnerList.clear();
+                        pincodeSpinnerList.clear();
+
+                        stateSpinner.setSelection(0);
+                        citySpinner.setSelection(0);
+                        pincodeSpinner.setSelection(0);
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<SpinnerItemModel>> call, Throwable t) {
+                t.printStackTrace();
+            }
+        });
     }
 
     private void getStates(int countryId) {
-        for (int i = 1; i < 6; i++) {
-            stateSpinnerList.add(new SpinnerModel("state " + i, i));
-        }
+        Call<List<SpinnerItemModel>> call = Retrofirinstance.getClient(supplierActivitySession.getToken()).create(AddressInterface.class).getStates(countryId);
+
+        call.enqueue(new Callback<List<SpinnerItemModel>>() {
+            @Override
+            public void onResponse(Call<List<SpinnerItemModel>> call, Response<List<SpinnerItemModel>> response) {
+                if (response.isSuccessful()) {
+                    stateList = response.body();
+
+                    stateSpinnerList.clear();
+                    for (SpinnerItemModel model : stateList) {
+                        stateSpinnerList.add(new SpinnerModel(model.getName(), model.getId()));
+                    }
+
+                    stateAdapter.notifyDataSetChanged();
+                    if (isFirstTimeAutoset)
+                        stateSpinner.setSelection(getSelectedSpinnerItemPosition(stateSpinnerList, supplierDetailSession.getState()));
+
+                    if (stateSpinnerList.isEmpty()) {
+                        citySpinnerList.clear();
+                        pincodeSpinnerList.clear();
+
+                        citySpinner.setSelection(0);
+                        pincodeSpinner.setSelection(0);
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<SpinnerItemModel>> call, Throwable t) {
+                t.printStackTrace();
+            }
+        });
     }
 
     private void getCities(int stateId) {
-        for (int i = 1; i < 6; i++) {
-            citySpinnerList.add(new SpinnerModel("city " + i, i));
-        }
+        Call<List<SpinnerItemModel>> call = Retrofirinstance.getClient(supplierActivitySession.getToken()).create(AddressInterface.class).getCities(stateId);
+
+        call.enqueue(new Callback<List<SpinnerItemModel>>() {
+            @Override
+            public void onResponse(Call<List<SpinnerItemModel>> call, Response<List<SpinnerItemModel>> response) {
+                if (response.isSuccessful()) {
+                    citylist = response.body();
+
+                    citySpinnerList.clear();
+                    for (SpinnerItemModel model : citylist) {
+                        citySpinnerList.add(new SpinnerModel(model.getName(), model.getId()));
+                    }
+
+                    cityAdapter.notifyDataSetChanged();
+                    if (isFirstTimeAutoset)
+                        citySpinner.setSelection(getSelectedSpinnerItemPosition(citySpinnerList, supplierDetailSession.getCity()));
+
+                    if (citySpinnerList.isEmpty()) {
+                        pincodeSpinnerList.clear();
+                        pincodeSpinner.setSelection(0);
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<SpinnerItemModel>> call, Throwable t) {
+                t.printStackTrace();
+            }
+        });
     }
 
     private void getPincodes(int cityId) {
-        for (int i = 1; i < 6; i++) {
-            Random random = new Random();
-            int randomPincode = 100000 + random.nextInt(900000);
-            pincodeSpinnerList.add(new SpinnerModel("" + randomPincode, i));
-        }
+        Call<List<SpinnerItemModel>> call = Retrofirinstance.getClient(supplierActivitySession.getToken()).create(AddressInterface.class).getPincodes(cityId);
+
+        call.enqueue(new Callback<List<SpinnerItemModel>>() {
+            @Override
+            public void onResponse(Call<List<SpinnerItemModel>> call, Response<List<SpinnerItemModel>> response) {
+                if (response.isSuccessful()) {
+                    pincodeList = response.body();
+
+
+                    pincodeSpinnerList.clear();
+                    for (SpinnerItemModel model : pincodeList) {
+                        pincodeSpinnerList.add(new SpinnerModel(model.getCode(), model.getId()));
+                    }
+
+                    pincodeAdapter.notifyDataSetChanged();
+                    if (isFirstTimeAutoset) {
+                        pincodeSpinner.setSelection(getSelectedSpinnerItemPosition(pincodeSpinnerList, supplierDetailSession.getPincode()));
+                        isFirstTimeAutoset = false;
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<SpinnerItemModel>> call, Throwable t) {
+                t.printStackTrace();
+            }
+        });
+    }
+
+    private OnItemSelectedListener getCountrySpinnerListner() {
+        return new OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                if (!countrySpinnerList.isEmpty()) {
+                    SpinnerModel model = (SpinnerModel) countrySpinner.getSelectedItem();
+                    if (model != null) {
+                        selectedCountry = model.getName();
+//                        Log.e(TAG, "onItemSelected: country : " + model.getName() + " id : " + model.getId());
+                        getStates(model.getId());
+                    }
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        };
+    }
+
+    private OnItemSelectedListener getStateSpinnerListner() {
+        return new OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                if (!stateSpinnerList.isEmpty()) {
+                    SpinnerModel model = (SpinnerModel) stateSpinner.getSelectedItem();
+                    if (model != null) {
+                        selectedState = model.getName();
+//                        Log.e(TAG, "onItemSelected: state : " + model.getName() + " id : " + model.getId());
+                        getCities(model.getId());
+                    }
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        };
+    }
+
+    private OnItemSelectedListener getCitySpinnerListner() {
+        return new OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                if (!citySpinnerList.isEmpty()) {
+                    SpinnerModel model = (SpinnerModel) citySpinner.getSelectedItem();
+                    if (model != null) {
+                        selectedCity = model.getName();
+//                        Log.e(TAG, "onItemSelected: city : " + model.getName() + " id : " + model.getId());
+                        getPincodes(model.getId());
+                    }
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        };
+    }
+
+    private OnItemSelectedListener getPincodeSpinnerListner() {
+        return new OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                if (!pincodeSpinnerList.isEmpty()) {
+                    SpinnerModel model = (SpinnerModel) pincodeSpinner.getSelectedItem();
+                    if (model != null) {
+                        selectedPincode = model.getName();
+//                        Log.e(TAG, "onItemSelected: pincode : " + model.getName() + " id : " + model.getId());
+                    }
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        };
     }
 }
