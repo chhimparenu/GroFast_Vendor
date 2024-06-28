@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@color/background_color"
     android:orientation="vertical">
 
@@ -17,9 +17,9 @@
         <LinearLayout
             android:id="@+id/show_some_deatils"
             android:layout_width="match_parent"
-            android:visibility="gone"
             android:layout_height="match_parent"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:visibility="visible">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -65,34 +65,29 @@
 
                         <TextView
                             android:id="@+id/resent_order_id"
-                            android:layout_width="match_parent"
+                            android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="5dp"
-                            android:layout_weight="1"
                             android:text="Order Id"
                             android:textColor="@color/default_color"
                             android:textSize="@dimen/hint_text_size"
                             android:textStyle="bold" />
 
+                        <TextView
+                            android:id="@+id/resent_order_status"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:layout_weight="1"
+                            android:layout_marginStart="@dimen/_2sdp"
+                            android:gravity="center"
+                            android:text="Status"
+                            android:textAllCaps="false"
+                            android:textColor="@color/textview_text_color"
+                            android:textSize="@dimen/hint_text_size"
+                            android:textStyle="bold" />
+
                     </LinearLayout>
-
-                    <TextView
-                        android:id="@+id/resent_order_customer_name"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="Customer name"
-                        android:textColor="@color/default_color"
-                        android:textSize="@dimen/hint_text_size"
-                        android:textStyle="bold" />
-
-                    <TextView
-                        android:id="@+id/resent_order_customer_phone"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="Phone Number"
-                        android:textColor="@color/default_color"
-                        android:textSize="@dimen/hint_text_size"
-                        android:textStyle="bold" />
 
                     <TextView
                         android:id="@+id/resent_order_customer_price"
@@ -114,26 +109,21 @@
                         <androidx.appcompat.widget.AppCompatButton
                             android:layout_width="match_parent"
                             android:layout_height="@dimen/_25sdp"
+                            android:layout_marginRight="@dimen/_5sdp"
                             android:layout_weight="1"
                             android:background="@drawable/round_background"
                             android:text="@string/Invoice"
                             android:textAllCaps="false"
-                            android:textSize="@dimen/hint_text_size"
-                            android:layout_marginRight="5dp"
-                            android:textColor="@color/white" />
+                            android:textColor="@color/white"
+                            android:textSize="@dimen/hint_text_size" />
 
-                        <androidx.appcompat.widget.AppCompatButton
+                        <androidx.appcompat.widget.AppCompatSpinner
+                            android:id="@+id/Update_order_status_Spinner"
                             android:layout_width="match_parent"
                             android:layout_height="@dimen/_25sdp"
-                            android:background="@drawable/round_background"
+                            android:layout_gravity="center"
                             android:layout_weight="1"
-                            android:paddingEnd="10dp"
-                            android:paddingBottom="3dp"
-                            android:text="Status"
-                            android:textAllCaps="false"
-                            android:textColor="@color/white"
-                            android:textSize="@dimen/hint_text_size"
-                            android:textStyle="bold" />
+                            android:gravity="center" />
 
                     </LinearLayout>
 
@@ -148,33 +138,41 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:visibility="visible">
+            android:visibility="gone">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/colo"
+                android:background="@color/app_theme"
+                android:gravity="center"
                 android:orientation="horizontal"
                 android:padding="10dp">
 
                 <TextView
-                    android:id="@+id/resent_order_detail_customer_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/order_id"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/hint_text_size"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/history_order_id"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginStart="5dp"
                     android:layout_weight="1"
-                    android:text="Customer Name"
+                    android:text="Order Id"
                     android:textColor="@color/white"
-                    android:textStyle="bold"
                     android:textSize="@dimen/hint_text_size" />
 
                 <TextView
+                    android:id="@+id/history_order_status"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:paddingStart="10dp"
-                    android:paddingTop="3dp"
-                    android:paddingEnd="10dp"
-                    android:paddingBottom="3dp"
-                    android:text="@string/Invoice"
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:text="Status"
                     android:textColor="@color/white"
                     android:textSize="@dimen/hint_text_size"
                     android:textStyle="bold" />
@@ -185,49 +183,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="vertical">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:gravity="center"
-                    android:orientation="horizontal"
-                    android:padding="10dp">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/order_id"
-                        android:textColor="@color/app_theme"
-                        android:textSize="@dimen/hint_text_size"
-                        android:textStyle="bold" />
-
-                    <TextView
-                        android:id="@+id/history_product_order_id"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="5dp"
-                        android:layout_weight="1"
-                        android:text="Order Id"
-                        android:textColor="@color/textview_text_color"
-                        android:textSize="@dimen/hint_text_size" />
-
-                    <TextView
-                        android:id="@+id/history_product_status"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:gravity="center"
-                        android:text="Status"
-                        android:textColor="@color/app_theme"
-                        android:textSize="@dimen/hint_text_size"
-                        android:textStyle="bold" />
-
-                </LinearLayout>
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:background="@color/line_color" />
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/history_product_inner_recycleview"
@@ -246,14 +201,50 @@
                     android:orientation="horizontal"
                     android:padding="10dp">
 
-                    <TextView
-                        android:id="@+id/history_product_date"
+                    <androidx.appcompat.widget.AppCompatButton
+                        android:id="@+id/delivery_date_add"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/_30sdp"
+                        android:layout_weight="1"
+                        android:background="@drawable/round_background"
+                        android:text="@string/delivery_date"
+                        android:textAllCaps="false"
+                        android:textColor="@color/white"
+                        android:textSize="@dimen/hint_text_size" />
+
+                    <LinearLayout
+                        android:id="@+id/history_delivery_date_layout"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="Date"
-                        android:textColor="@color/default_color"
-                        android:textSize="@dimen/hint_text_size" />
+                        android:visibility="gone"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/delivery_date_text"
+                            android:textColor="@color/default_color"
+                            android:textSize="@dimen/hint_text_size" />
+
+                        <TextView
+                            android:id="@+id/delivery_date_show"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="@dimen/_5sdp"
+                            android:text="Date"
+                            android:textColor="@color/default_color"
+                            android:textSize="@dimen/hint_text_size" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_gravity="center"
+                        android:gravity="center|end"
+                        android:orientation="horizontal">
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -263,7 +254,7 @@
                         android:textSize="@dimen/hint_text_size" />
 
                     <TextView
-                        android:id="@+id/history_product_price"
+                        android:id="@+id/history_oredr_price"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:drawableStart="@drawable/baseline_currency_rupee_24"
@@ -271,6 +262,8 @@
                         android:text="Price"
                         android:textColor="@color/default_color"
                         android:textSize="@dimen/hint_text_size" />
+
+                    </LinearLayout>
 
                 </LinearLayout>
 

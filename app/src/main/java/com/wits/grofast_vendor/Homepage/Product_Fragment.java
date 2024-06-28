@@ -49,8 +49,7 @@ public class Product_Fragment extends Fragment {
     private List<ProductModel> productList = new ArrayList<>();
     SupplierActivitySession supplierActivitySession;
     private final String TAG = "Product Fragment";
-    LinearLayout product_layout;
-    LinearLayout no_product_layout;
+    LinearLayout no_product_layout, product_layout;
     TextView nomsg1, nomsg2;
     private ShimmerFrameLayout shimmerFrameLayout;
     LinearLayoutManager layoutManager;
@@ -67,13 +66,6 @@ public class Product_Fragment extends Fragment {
         View root = inflater.inflate(R.layout.fragment_product_, container, false);
 
         addproduct = root.findViewById(R.id.new_product_add);
-        addproduct.setOnTouchListener(new DraggableTouchListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent in = new Intent(getContext(), AddProduct.class);
-                startActivity(in);
-            }
-        }));
         supplierActivitySession = new SupplierActivitySession(getContext());
         no_product_layout = root.findViewById(R.id.no_product_layout);
         product_layout = root.findViewById(R.id.scroll_product_layout);
@@ -113,6 +105,13 @@ public class Product_Fragment extends Fragment {
             }
         });
 
+        addproduct.setOnTouchListener(new DraggableTouchListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent in = new Intent(getContext(), AddProduct.class);
+                startActivity(in);
+            }
+        }));
 
         final View rootLayout = root.findViewById(R.id.fram_product);
         KeyboardUtil.setKeyboardVisibilityListener(rootLayout, new KeyboardUtil.KeyboardVisibilityListener() {
@@ -143,9 +142,9 @@ public class Product_Fragment extends Fragment {
                         ProductPaginatedRes paginatedResponse = productResponse.getPaginatedProducts();
                         if (currentPage == 1) {
                             productList = paginatedResponse.getProductList();
-                            allProductAdapter = new AllProductAdapter(getContext(),productList);
+                            allProductAdapter = new AllProductAdapter(getContext(), productList);
                             productrecycleview.setAdapter(allProductAdapter);
-                        }else {
+                        } else {
                             List<ProductModel> list = paginatedResponse.getProductList();
                             for (ProductModel model : list) {
                                 productList.add(model);
