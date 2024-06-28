@@ -2,6 +2,7 @@ package com.wits.grofast_vendor.Details;
 
 
 import static com.wits.grofast_vendor.CommonUtilities.getPathFromUri;
+import static com.wits.grofast_vendor.CommonUtilities.getSelectedSpinnerItemPosition;
 import static com.wits.grofast_vendor.CommonUtilities.handleApiError;
 import static com.wits.grofast_vendor.CommonUtilities.setEditTextListeners;
 import static com.wits.grofast_vendor.CommonUtilities.startCountdown;
@@ -399,10 +400,10 @@ public class ProfilePage extends AppCompatActivity {
                             supplierDetailSession.setEmail(supplierModel.getEmail());
                             supplierDetailSession.setGender(supplierModel.getGender());
                             supplierDetailSession.setDescription(supplierModel.getDescription());
+                            supplierDetailSession.setCountry(supplierModel.getCountry());
+                            supplierDetailSession.setState(supplierModel.getState());
                             supplierDetailSession.setCiy(supplierModel.getCity());
                             supplierDetailSession.setPincode(supplierModel.getPin_code());
-                            supplierDetailSession.setState(supplierModel.getState());
-                            supplierDetailSession.setCountry(supplierModel.getCountry());
                             supplierDetailSession.setStoreAddress(supplierModel.getStore_address());
                             supplierDetailSession.setStoreName(supplierModel.getStore_name());
                             supplierDetailSession.setPhoneNo(supplierModel.getMobile_number());
@@ -508,13 +509,14 @@ public class ProfilePage extends AppCompatActivity {
                 if (response.isSuccessful()) {
                     countryList = response.body();
 
-                    if (!countryList.isEmpty()) {
-                        countrySpinnerList.clear();
-                        for (SpinnerItemModel model : countryList) {
-                            countrySpinnerList.add(new SpinnerModel(model.getName(), model.getId()));
-                        }
+                    countrySpinnerList.clear();
+                    for (SpinnerItemModel model : countryList) {
+                        countrySpinnerList.add(new SpinnerModel(model.getName(), model.getId()));
                     }
+
                     countrySpinner.setAdapter(new CustomSpinnerAdapter(getApplicationContext(), countrySpinnerList, getString(R.string.hint_select_country)));
+                    countrySpinner.setSelection(getSelectedSpinnerItemPosition(countrySpinnerList, supplierDetailSession.getCountry()));
+
                 }
             }
 
@@ -534,13 +536,12 @@ public class ProfilePage extends AppCompatActivity {
                 if (response.isSuccessful()) {
                     stateList = response.body();
 
-                    if (!stateList.isEmpty()) {
-                        stateSpinnerList.clear();
-                        for (SpinnerItemModel model : stateList) {
-                            stateSpinnerList.add(new SpinnerModel(model.getName(), model.getId()));
-                        }
+                    stateSpinnerList.clear();
+                    for (SpinnerItemModel model : stateList) {
+                        stateSpinnerList.add(new SpinnerModel(model.getName(), model.getId()));
                     }
                     stateSpinner.setAdapter(new CustomSpinnerAdapter(getApplicationContext(), stateSpinnerList, getString(R.string.hint_select_state)));
+                    stateSpinner.setSelection(getSelectedSpinnerItemPosition(stateSpinnerList, supplierDetailSession.getState()));
                 }
             }
 
@@ -560,13 +561,13 @@ public class ProfilePage extends AppCompatActivity {
                 if (response.isSuccessful()) {
                     citylist = response.body();
 
-                    if (!citylist.isEmpty()) {
-                        citySpinnerList.clear();
-                        for (SpinnerItemModel model : citylist) {
-                            citySpinnerList.add(new SpinnerModel(model.getName(), model.getId()));
-                        }
+                    citySpinnerList.clear();
+                    for (SpinnerItemModel model : citylist) {
+                        citySpinnerList.add(new SpinnerModel(model.getName(), model.getId()));
                     }
+
                     citySpinner.setAdapter(new CustomSpinnerAdapter(getApplicationContext(), citySpinnerList, getString(R.string.hint_select_city)));
+                    citySpinner.setSelection(getSelectedSpinnerItemPosition(citySpinnerList, supplierDetailSession.getCity()));
                 }
             }
 
@@ -586,13 +587,14 @@ public class ProfilePage extends AppCompatActivity {
                 if (response.isSuccessful()) {
                     pincodeList = response.body();
 
-                    if (!pincodeList.isEmpty()) {
-                        pincodeSpinnerList.clear();
-                        for (SpinnerItemModel model : pincodeList) {
-                            pincodeSpinnerList.add(new SpinnerModel(model.getCode(), model.getId()));
-                        }
+
+                    pincodeSpinnerList.clear();
+                    for (SpinnerItemModel model : pincodeList) {
+                        pincodeSpinnerList.add(new SpinnerModel(model.getCode(), model.getId()));
                     }
+
                     pincodeSpinner.setAdapter(new CustomSpinnerAdapter(getApplicationContext(), pincodeSpinnerList, getString(R.string.hint_select_pincode)));
+                    pincodeSpinner.setSelection(getSelectedSpinnerItemPosition(pincodeSpinnerList, supplierDetailSession.getPincode()));
                 }
             }
 
