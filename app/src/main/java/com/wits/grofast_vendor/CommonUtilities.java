@@ -14,6 +14,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.widget.AppCompatButton;
 
 import com.google.gson.Gson;
@@ -21,6 +22,8 @@ import com.google.gson.JsonObject;
 import com.wits.grofast_vendor.Api.Model.SpinnerModel;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Locale;
@@ -215,4 +218,15 @@ public class CommonUtilities {
         });
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    public static String getDateFromTimestamp(String isoTimestamp) {
+        if (isoTimestamp == null || isoTimestamp.isEmpty()) {
+            return "";
+        }
+        ZonedDateTime zonedDateTime = ZonedDateTime.parse(isoTimestamp);
+        ZonedDateTime istDateTime = zonedDateTime.withZoneSameInstant(ZoneId.of("Asia/Kolkata"));
+
+        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        return istDateTime.format(dateFormatter);
+    }
 }

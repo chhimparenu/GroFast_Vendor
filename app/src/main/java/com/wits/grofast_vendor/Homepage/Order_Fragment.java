@@ -1,31 +1,59 @@
 package com.wits.grofast_vendor.Homepage;
 
+import static android.view.View.GONE;
+
+import static com.wits.grofast_vendor.CommonUtilities.handleApiError;
+
+import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.facebook.shimmer.ShimmerFrameLayout;
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import com.wits.grofast_vendor.Adapter.AllResentOrderAdapter;
+import com.wits.grofast_vendor.Api.Interface.OrderInterface;
+import com.wits.grofast_vendor.Api.Model.OrderModel;
+import com.wits.grofast_vendor.Api.Response.OrderResponse;
+import com.wits.grofast_vendor.Api.Retrofirinstance;
 import com.wits.grofast_vendor.R;
+import com.wits.grofast_vendor.session.SupplierActivitySession;
+import com.wits.grofast_vendor.session.SupplierDetailSession;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class Order_Fragment extends Fragment {
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
+public class Order_Fragment extends Fragment implements AllResentOrderAdapter.OnOrderStatusChangeListener{
     RecyclerView recyclerView;
     AllResentOrderAdapter resentOrderAdapter;
-    List<Map<String, Object>> resentorderlist;
+    private List<OrderModel> orderList = new ArrayList<>();
     LinearLayoutManager layoutManager;
+    SupplierActivitySession supplierActivitySession;
+    private static String TAG = "Order Fragment";
+    LinearLayout no_oredr_layout, order_layout;
+    TextView nomsg1, nomsg2;
+    private ShimmerFrameLayout shimmerFrameLayout;
 
     @Nullable
     @Override
@@ -36,128 +64,85 @@ public class Order_Fragment extends Fragment {
         ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         ((AppCompatActivity) getActivity()).getSupportActionBar().setHomeAsUpIndicator(R.drawable.back);
 
+        supplierActivitySession = new SupplierActivitySession(getContext());
+        no_oredr_layout = view.findViewById(R.id.no_order_layout);
+        order_layout = view.findViewById(R.id.show_order_data);
+        nomsg1 = view.findViewById(R.id.no_order_text1);
+        nomsg2 = view.findViewById(R.id.no_order_text2);
+        shimmerFrameLayout = view.findViewById(R.id.shimmer_layout_order);
+
+        ShowPageLoader();
+
+        //Order Item List
         recyclerView = view.findViewById(R.id.all_resent_order_recycleview);
-        resentorderlist = new ArrayList<>();
-        loadResetOredrItem();
         layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
         recyclerView.setLayoutManager(layoutManager);
-        resentOrderAdapter = new AllResentOrderAdapter(getContext(), resentorderlist);
-        recyclerView.setAdapter(resentOrderAdapter);
+        loadOrder();
 
         return view;
     }
 
-    private void loadResetOredrItem() {
-        Map<String, Object> item1 = new HashMap<>();
-        item1.put("Order id", "1258");
-        item1.put("Customer name", "priya");
-        item1.put("Phone number", "2589632514");
-        item1.put("Date", transformDate("30 MARCH 2024"));
-        item1.put("Price", "2000");
+    private void loadOrder() {
+        Call<OrderResponse> call = Retrofirinstance.getClient(supplierActivitySession.getToken()).create(OrderInterface.class).fetchProducts();
+        call.enqueue(new Callback<OrderResponse>() {
+            @Override
+            public void onResponse(Call<OrderResponse> call, Response<OrderResponse> response) {
+                HidePageLoader();
+                if (response.isSuccessful()) {
+                    OrderResponse orderResponse = response.body();
+                    List<OrderModel> list = orderResponse.getOrderList();
+                    for (OrderModel model : list) {
+                        orderList.add(model);
+                        resentOrderAdapter = new AllResentOrderAdapter(getContext(), orderList);
+                        recyclerView.setAdapter(resentOrderAdapter);
+                        Log.e(TAG, "onResponse: order message " + orderResponse.getMessage());
+                        Log.e(TAG, "onResponse: order status " + orderResponse.getStatus());
+                        Log.e(TAG, "onResponse: order model Id " + model.getId());
+                    }
+                } else if (response.code() == 422) {
+                    try {
+                        String errorBodyString = response.errorBody().string();
+                        Gson gson = new Gson();
+                        JsonObject errorBodyJson = gson.fromJson(errorBodyString, JsonObject.class);
 
-        // Inner item 1
-        List<Map<String, Object>> innerData1 = new ArrayList<>();
-        Map<String, Object> innerItem1 = new HashMap<>();
-        innerItem1.put("Quantity", "3");
-        innerItem1.put("Product_Name", "Apple");
-        innerItem1.put("Price", "20");
-        innerItem1.put("image", R.drawable.gobhi_image);
-        innerData1.add(innerItem1);
+                        String errorMessage = errorBodyJson.has("errorMessage") ? errorBodyJson.get("errorMessage").getAsString() : "No errorMessage";
+                        String message = errorBodyJson.has("message") ? errorBodyJson.get("message").getAsString() : "No message";
 
-        Map<String, Object> innerItem2 = new HashMap<>();
-        innerItem2.put("Quantity", "4");
-        innerItem2.put("Product_Name", "Banana");
-        innerItem2.put("Price", "20");
-        innerItem2.put("image", R.drawable.gobhi_image);
-        innerData1.add(innerItem2);
+                        showNoOrderMessage(message, errorMessage);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                } else {
+                    if (isAdded()) handleApiError(TAG, response, getContext());
+                }
+            }
 
-        Map<String, Object> innerItem3 = new HashMap<>();
-        innerItem3.put("Quantity", "5");
-        innerItem3.put("Product_Name", "Mango apple banana ");
-        innerItem3.put("Price", "20");
-        innerItem3.put("image", R.drawable.gobhi_image);
-        innerData1.add(innerItem3);
+            @Override
+            public void onFailure(Call<OrderResponse> call, Throwable t) {
 
-        item1.put("InnerData", innerData1);
-
-        // Other Inner Items
-        List<Map<String, Object>> inData1 = new ArrayList<>();
-        Map<String, Object> otherInnerItem1 = new HashMap<>();
-        otherInnerItem1.put("Name", "Apple");
-        otherInnerItem1.put("SubName", "4");
-        inData1.add(otherInnerItem1);
-
-        Map<String, Object> otherInnerItem2 = new HashMap<>();
-        otherInnerItem2.put("Name", "Apple");
-        otherInnerItem2.put("SubName", "3");
-        inData1.add(otherInnerItem2);
-
-        Map<String, Object> otherInnerItem3 = new HashMap<>();
-        otherInnerItem3.put("Name", "Apple");
-        otherInnerItem3.put("SubName", "2");
-        inData1.add(otherInnerItem3);
-
-        Map<String, Object> otherInnerItem4 = new HashMap<>();
-        otherInnerItem4.put("Name", "Apple");
-        otherInnerItem4.put("SubName", "0");
-        inData1.add(otherInnerItem4);
-
-        item1.put("OtherInnerData", inData1);
-
-        // Item 2
-        Map<String, Object> item2 = new HashMap<>();
-        item2.put("Order id", "1288");
-        item2.put("Customer name", "Riya");
-        item2.put("Phone number", "9638251444");
-        item2.put("Date", transformDate("30 MARCH 2024"));
-        item2.put("Price", "2000");
-
-        List<Map<String, Object>> innerData2 = new ArrayList<>();
-        Map<String, Object> innerItem5 = new HashMap<>();
-        innerItem5.put("Quantity", "6");
-        innerItem5.put("Product_Name", "Orange hena khana hai");
-        innerItem5.put("Price", "20");
-        innerItem5.put("image", R.drawable.gobhi_image);
-        innerData2.add(innerItem2);
-        item2.put("InnerData", innerData2);
-
-        // Item 3
-        Map<String, Object> item3 = new HashMap<>();
-        item3.put("Order id", "1258");
-        item3.put("Customer name", "priya");
-        item3.put("Phone number", "2589632514");
-        item3.put("Date", transformDate("30 MARCH 2024"));
-        item3.put("Price", "2000");
-
-        List<Map<String, Object>> innerData3 = new ArrayList<>();
-        Map<String, Object> innerItem10 = new HashMap<>();
-        innerItem10.put("Quantity", "1");
-        innerItem10.put("Product_Name", "Pizza");
-        innerItem10.put("Price", "20");
-        innerItem10.put("image", R.drawable.gobhi_image);
-        innerData3.add(innerItem3);
-        item3.put("InnerData", innerData3);
-
-        resentorderlist.add(item1);
-        resentorderlist.add(item2);
-        resentorderlist.add(item3);
+            }
+        });
     }
 
-    private String transformDate(String date) {
-        String[] parts = date.split(" ");
-
-        String part1 = parts[0]; // "DAY"
-        String part2 = parts[1]; // "MONTH"
-        String part3 = parts[2]; // "YEAR"
-
-        // Simulate 10 dp space with newlines (approximation)
-        String spacing1 = "\n\n";
-
-        // Simulate 2 dp space with a single space (approximation)
-        String spacing2 = "\n\n";
-
-        return part1 + spacing1 + part2 + spacing2 + part3;
+    private void showNoOrderMessage(String message, String errorMessage) {
+        order_layout.setVisibility(View.GONE);
+        no_oredr_layout.setVisibility(View.VISIBLE);
+        nomsg1.setText(errorMessage);
+        nomsg2.setText(message);
     }
+
+    private void ShowPageLoader() {
+        shimmerFrameLayout.startShimmer();
+        shimmerFrameLayout.setVisibility(View.VISIBLE);
+        order_layout.setVisibility(View.GONE);
+    }
+
+    private void HidePageLoader() {
+        shimmerFrameLayout.setVisibility(View.GONE);
+        shimmerFrameLayout.stopShimmer();
+        order_layout.setVisibility(View.VISIBLE);
+    }
+
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
@@ -166,5 +151,11 @@ public class Order_Fragment extends Fragment {
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onOrderStatusChanged() {
+        ShowPageLoader();
+        loadOrder();
     }
 }
