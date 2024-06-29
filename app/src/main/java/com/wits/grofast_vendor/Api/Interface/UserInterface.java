@@ -37,4 +37,10 @@ public interface UserInterface {
 
     @POST("verify-supplier-otp")
     Call<OtpResponse> Otp(@Query("mobile_number") String Phone_no, @Query("otp") Integer Otp);
+
+    @POST("send-phone-update-otp")
+    Call<LoginResponse> sendPhoneUpdateOtp(@Query("mobile_number") String Phone_no);
+
+    @POST("verifyOtp-Change-Phone")
+    Call<LoginResponse> verifyPhoneUpdateOtp(@Query("mobile_number") String Phone_no, @Query("otp") int Otp);
 }
