@@ -221,8 +221,8 @@ public class ProfilePage extends AppCompatActivity {
                 } else {
                     progressBar.setVisibility(View.VISIBLE);
                     changenumber.setVisibility(View.GONE);
-//                    sendOtp(newPhoneNumber, dialog);
-                    openOtpPage(newPhoneNumber);
+                    sendOtp(newPhoneNumber, dialog);
+
                 }
             }
         });
@@ -231,6 +231,11 @@ public class ProfilePage extends AppCompatActivity {
             dialog.getWindow().setBackgroundDrawableResource(R.drawable.dailogbox_background);
         }
         dialog.show();
+    }
+
+    private void sendOtp(String phone, AlertDialog dialog) {
+        openOtpPage(phone);
+        dialog.dismiss();
     }
 
     private void openOtpPage(String phone) {
