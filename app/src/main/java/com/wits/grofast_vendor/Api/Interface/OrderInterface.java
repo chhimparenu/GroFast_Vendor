@@ -8,7 +8,6 @@ import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
-import retrofit2.http.Query;
 
 public interface OrderInterface {
     @GET("fetch-new-orders")
@@ -23,7 +22,7 @@ public interface OrderInterface {
 
     @POST("update-order-status")
     @FormUrlEncoded
-    Call<OrderStatusResponse> addDeliveryDate(
+    Call<OrderStatusResponse> updateDeliveryDate(
             @Field("order_id") int orderId,
             @Field("delivery_date") String delivery_date
     );
