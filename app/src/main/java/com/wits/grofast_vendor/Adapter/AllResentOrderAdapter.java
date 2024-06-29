@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -149,6 +150,7 @@ public class AllResentOrderAdapter extends RecyclerView.Adapter<AllResentOrderAd
             holder.delivery_date_layout.setVisibility(View.GONE);
             holder.delivery_date_add.setOnClickListener(v -> showDatePickerDialog(holder, model));
         }
+        holder.delivery_date_change.setOnClickListener(v -> showDatePickerDialog(holder, model));
     }
 
     private int getStatusPosition(String statusLabel) {
@@ -167,7 +169,7 @@ public class AllResentOrderAdapter extends RecyclerView.Adapter<AllResentOrderAd
             selectedDateCalendar.set(year, month, dayOfMonth);
             SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yy", Locale.getDefault());
             String selectedDate = dateFormat.format(selectedDateCalendar.getTime());
-            AddDeliverydate(model.getId(), selectedDate);
+            UpdateDeliverydate(model.getId(), selectedDate);
             holder.delivery_date_show.setText(selectedDate);
             holder.delivery_date_layout.setVisibility(View.VISIBLE);
             holder.delivery_date_add.setVisibility(View.GONE);
@@ -175,8 +177,8 @@ public class AllResentOrderAdapter extends RecyclerView.Adapter<AllResentOrderAd
         datePickerDialog.show();
     }
 
-    private void AddDeliverydate(int orderId, String selectedDate) {
-        Call<OrderStatusResponse> call = Retrofirinstance.getClient(supplierActivitySession.getToken()).create(OrderInterface.class).addDeliveryDate(orderId, selectedDate);
+    private void UpdateDeliverydate(int orderId, String selectedDate) {
+        Call<OrderStatusResponse> call = Retrofirinstance.getClient(supplierActivitySession.getToken()).create(OrderInterface.class).updateDeliveryDate(orderId, selectedDate);
         call.enqueue(new Callback<OrderStatusResponse>() {
             @Override
             public void onResponse(Call<OrderStatusResponse> call, Response<OrderStatusResponse> response) {
@@ -231,6 +233,7 @@ public class AllResentOrderAdapter extends RecyclerView.Adapter<AllResentOrderAd
         RecyclerView recyclerView;
         AppCompatSpinner status_spinner;
         AppCompatButton delivery_date_add;
+        ImageView delivery_date_change;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -246,6 +249,7 @@ public class AllResentOrderAdapter extends RecyclerView.Adapter<AllResentOrderAd
             delivery_date_show = itemView.findViewById(R.id.delivery_date_show);
             delivery_date_add = itemView.findViewById(R.id.delivery_date_add);
             delivery_date_layout = itemView.findViewById(R.id.history_delivery_date_layout);
+            delivery_date_change = itemView.findViewById(R.id.delivery_date_change);
 
             detailsView = itemView.findViewById(R.id.details_view);
             detailshide = itemView.findViewById(R.id.show_some_deatils);
