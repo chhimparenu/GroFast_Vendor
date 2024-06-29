@@ -88,6 +88,7 @@ public class CommonUtilities {
         return dateTimeString;
     }
 
+
     public static int getSelectedSpinnerItemPosition(List<SpinnerModel> spinnerItemList, String selectedItem) {
         int position = 1;
         for (SpinnerModel model : spinnerItemList) {

@@ -20,4 +20,11 @@ public interface OrderInterface {
             @Field("order_id") int orderId,
             @Field("status") int status
     );
+
+    @POST("update-order-status")
+    @FormUrlEncoded
+    Call<OrderStatusResponse> addDeliveryDate(
+            @Field("order_id") int orderId,
+            @Field("delivery_date") String delivery_date
+    );
 }

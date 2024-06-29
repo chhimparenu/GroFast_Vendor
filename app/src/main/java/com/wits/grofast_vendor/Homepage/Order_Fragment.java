@@ -1,10 +1,7 @@
 package com.wits.grofast_vendor.Homepage;
 
-import static android.view.View.GONE;
-
 import static com.wits.grofast_vendor.CommonUtilities.handleApiError;
 
-import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -18,8 +15,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -77,6 +72,8 @@ public class Order_Fragment extends Fragment implements AllResentOrderAdapter.On
         recyclerView = view.findViewById(R.id.all_resent_order_recycleview);
         layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
         recyclerView.setLayoutManager(layoutManager);
+        resentOrderAdapter = new AllResentOrderAdapter(getContext(), orderList);
+//        resentOrderAdapter.setOnOrderStatusChangeListener(Order_Fragment.this);
         loadOrder();
 
         return view;
@@ -93,7 +90,6 @@ public class Order_Fragment extends Fragment implements AllResentOrderAdapter.On
                     List<OrderModel> list = orderResponse.getOrderList();
                     for (OrderModel model : list) {
                         orderList.add(model);
-                        resentOrderAdapter = new AllResentOrderAdapter(getContext(), orderList);
                         recyclerView.setAdapter(resentOrderAdapter);
                         Log.e(TAG, "onResponse: order message " + orderResponse.getMessage());
                         Log.e(TAG, "onResponse: order status " + orderResponse.getStatus());
