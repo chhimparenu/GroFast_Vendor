@@ -3,6 +3,7 @@
     <dimen name="card_corner_radius">@dimen/_5sdp</dimen>
     <dimen name="main_heading_size">@dimen/_25sdp</dimen>
     <dimen name="text_Size">@dimen/_15sdp</dimen>
+    <dimen name="text_size">@dimen/_15sdp</dimen>
     <dimen name="small_text_size">@dimen/_10sdp</dimen>
     <dimen name="button_text_size">@dimen/_18sdp</dimen>
     <dimen name="hint_text_size">@dimen/_12sdp</dimen>
