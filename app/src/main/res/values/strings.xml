@@ -123,7 +123,7 @@
     <string name="otp_message">We have sent a verification code to</string>
     <string name="otp_resed_button">Resend SMS</string>
     <string name="delivery_date">Delivery Date</string>
-    <string name="delivery_date_text">Delivery Date : </string>
+    <string name="delivery_date_text">Delivery : </string>
     <string name="otp_time">Time</string>
 
     //Menu Item

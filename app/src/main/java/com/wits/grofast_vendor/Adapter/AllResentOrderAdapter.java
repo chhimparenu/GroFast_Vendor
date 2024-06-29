@@ -2,6 +2,7 @@ package com.wits.grofast_vendor.Adapter;
 
 import static com.wits.grofast_vendor.CommonUtilities.getDateFromTimestamp;
 
+import android.app.DatePickerDialog;
 import android.content.Context;
 import android.graphics.Color;
 import android.os.Build;
@@ -29,8 +30,11 @@ import com.wits.grofast_vendor.Api.Retrofirinstance;
 import com.wits.grofast_vendor.R;
 import com.wits.grofast_vendor.session.SupplierActivitySession;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import retrofit2.Call;
@@ -42,7 +46,6 @@ public class AllResentOrderAdapter extends RecyclerView.Adapter<AllResentOrderAd
     private List<OrderModel> orderList;
     private Context context;
     private final String TAG = "AllHistoryAdapter";
-    private AllResentOrderAdapter adapter;
     private SupplierActivitySession supplierActivitySession;
     private OnOrderStatusChangeListener orderStatusChangeListener;
     private static final Map<String, Integer> STATUS_MAP = new HashMap<String, Integer>() {{
@@ -74,9 +77,9 @@ public class AllResentOrderAdapter extends RecyclerView.Adapter<AllResentOrderAd
     @Override
     public void onBindViewHolder(@NonNull AllResentOrderAdapter.ViewHolder holder, int position) {
         supplierActivitySession = new SupplierActivitySession(context);
-        adapter = this;
         OrderModel model = orderList.get(position);
         holder.order_id.setText("" + model.getId());
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             holder.date.setText(getDateFromTimestamp(model.getCreated_at()));
         } else holder.date.setText(model.getCreated_at());
@@ -126,7 +129,6 @@ public class AllResentOrderAdapter extends RecyclerView.Adapter<AllResentOrderAd
         holder.status_spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
-                // Handle status change
                 String selectedStatus = (String) parent.getItemAtPosition(pos);
                 int statusValue = STATUS_MAP.get(selectedStatus);
                 updateOrderStatus(model.getId(), statusValue);
@@ -134,9 +136,19 @@ public class AllResentOrderAdapter extends RecyclerView.Adapter<AllResentOrderAd
 
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
-                // Do nothing
             }
         });
+
+        // Delivery Date
+        if (model.getDelivery_date() != null && !model.getDelivery_date().isEmpty()) {
+            holder.delivery_date_show.setText(model.getDelivery_date());
+            holder.delivery_date_layout.setVisibility(View.VISIBLE);
+            holder.delivery_date_add.setVisibility(View.GONE);
+        } else {
+            holder.delivery_date_add.setVisibility(View.VISIBLE);
+            holder.delivery_date_layout.setVisibility(View.GONE);
+            holder.delivery_date_add.setOnClickListener(v -> showDatePickerDialog(holder, model));
+        }
     }
 
     private int getStatusPosition(String statusLabel) {
@@ -146,6 +158,41 @@ public class AllResentOrderAdapter extends RecyclerView.Adapter<AllResentOrderAd
             }
         }
         return 0;
+    }
+
+    private void showDatePickerDialog(ViewHolder holder, OrderModel model) {
+        Calendar calendar = Calendar.getInstance();
+        DatePickerDialog datePickerDialog = new DatePickerDialog(context, (view, year, month, dayOfMonth) -> {
+            Calendar selectedDateCalendar = Calendar.getInstance();
+            selectedDateCalendar.set(year, month, dayOfMonth);
+            SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yy", Locale.getDefault());
+            String selectedDate = dateFormat.format(selectedDateCalendar.getTime());
+            AddDeliverydate(model.getId(), selectedDate);
+            holder.delivery_date_show.setText(selectedDate);
+            holder.delivery_date_layout.setVisibility(View.VISIBLE);
+            holder.delivery_date_add.setVisibility(View.GONE);
+        }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH));
+        datePickerDialog.show();
+    }
+
+    private void AddDeliverydate(int orderId, String selectedDate) {
+        Call<OrderStatusResponse> call = Retrofirinstance.getClient(supplierActivitySession.getToken()).create(OrderInterface.class).addDeliveryDate(orderId, selectedDate);
+        call.enqueue(new Callback<OrderStatusResponse>() {
+            @Override
+            public void onResponse(Call<OrderStatusResponse> call, Response<OrderStatusResponse> response) {
+                if (response.isSuccessful()) {
+                    OrderStatusResponse orderResponse = response.body();
+                    Log.e(TAG, "onResponse: Message : " + orderResponse.getMessage());
+                    Log.e(TAG, "onResponse: status : " + orderResponse.getStatus());
+                    Log.e(TAG, "onResponse: Delivery Date : " + orderResponse.getOrder().getDelivery_date());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<OrderStatusResponse> call, Throwable t) {
+
+            }
+        });
     }
 
     private void updateOrderStatus(int orderId, int status) {
