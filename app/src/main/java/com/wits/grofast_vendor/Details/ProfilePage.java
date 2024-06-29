@@ -44,6 +44,7 @@ import com.wits.grofast_vendor.Api.Interface.UserInterface;
 import com.wits.grofast_vendor.Api.Model.SpinnerItemModel;
 import com.wits.grofast_vendor.Api.Model.SpinnerModel;
 import com.wits.grofast_vendor.Api.Model.SupplierModel;
+import com.wits.grofast_vendor.Api.Response.LoginResponse;
 import com.wits.grofast_vendor.Api.Response.SupplierProfileResponse;
 import com.wits.grofast_vendor.Api.Retrofirinstance;
 import com.wits.grofast_vendor.R;
@@ -221,8 +222,8 @@ public class ProfilePage extends AppCompatActivity {
                 } else {
                     progressBar.setVisibility(View.VISIBLE);
                     changenumber.setVisibility(View.GONE);
-//                    sendOtp(newPhoneNumber, dialog);
-                    openOtpPage(newPhoneNumber);
+                    sendOtp(newPhoneNumber, dialog);
+
                 }
             }
         });
@@ -274,13 +275,20 @@ public class ProfilePage extends AppCompatActivity {
                 if (countDownTimer.getText().toString().equals("00:00")) {
                     loadingOverlay.setVisibility(View.VISIBLE);
                     startCountdown(resentOtp, countDownTimer, getApplicationContext(), COUNTDOWN_TIME_MILLIS);
-//                    sendOtp(phone, dialog);
+                    sendOtp(phone, null);
                 } else {
                     Toast.makeText(getApplicationContext(), getString(R.string.toast_message_resend_otp), Toast.LENGTH_SHORT).show();
                 }
             }
         });
 
+        continueButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String userOtp = digit1.getText().toString() + digit2.getText().toString() + digit3.getText().toString() + digit4.getText().toString();
+                verifyOtp(phone, userOtp, dialog);
+            }
+        });
         if (dialog.getWindow() != null) {
             dialog.getWindow().setBackgroundDrawableResource(R.drawable.dailogbox_background);
         }
@@ -727,5 +735,49 @@ public class ProfilePage extends AppCompatActivity {
 
             }
         };
+    }
+
+    private void sendOtp(String phone, AlertDialog dialog) {
+        Call<LoginResponse> call = Retrofirinstance.getClient(supplierActivitySession.getToken()).create(UserInterface.class).sendPhoneUpdateOtp(phone);
+
+        call.enqueue(new Callback<LoginResponse>() {
+            @Override
+            public void onResponse(Call<LoginResponse> call, Response<LoginResponse> response) {
+                if (response.isSuccessful()) {
+                    openOtpPage(phone);
+                    Toast.makeText(ProfilePage.this, "" + response.body().getMessage(), Toast.LENGTH_SHORT).show();
+                    if (dialog != null) dialog.dismiss();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<LoginResponse> call, Throwable t) {
+                t.printStackTrace();
+            }
+        });
+
+    }
+
+    private void verifyOtp(String phone, String otp, AlertDialog dialog) {
+        Call<LoginResponse> call = Retrofirinstance.getClient(supplierActivitySession.getToken()).create(UserInterface.class).verifyPhoneUpdateOtp(phone, Integer.parseInt(otp));
+
+        call.enqueue(new Callback<LoginResponse>() {
+            @Override
+            public void onResponse(Call<LoginResponse> call, Response<LoginResponse> response) {
+                if (response.isSuccessful()) {
+                    LoginResponse loginResponse = response.body();
+
+                    supplierDetailSession.setPhoneNo(loginResponse.getPhone_no());
+                    tvPhone.setText(loginResponse.getPhone_no());
+                    dialog.dismiss();
+                    Toast.makeText(ProfilePage.this, "" + loginResponse.getMessage(), Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<LoginResponse> call, Throwable t) {
+                t.printStackTrace();
+            }
+        });
     }
 }
