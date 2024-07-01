@@ -124,6 +124,7 @@ public class Home_page extends AppCompatActivity {
                 return false;
             }
         });
+
         // Set default fragment when activity is first created
         bottomNavigationView.setSelectedItemId(R.id.venhome);
 
