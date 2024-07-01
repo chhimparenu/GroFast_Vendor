@@ -86,7 +86,6 @@ public class ProfilePage extends AppCompatActivity {
     private final int defaultImage = R.drawable.account;
     private boolean isRemoveProfile = false;
     private final long COUNTDOWN_TIME_MILLIS = 30000;
-
     private String selectedCountry, selectedState, selectedCity, selectedPincode;
     private List<SpinnerItemModel> countryList, stateList, citylist, pincodeList;
     List<SpinnerModel> countrySpinnerList = new ArrayList<>();
