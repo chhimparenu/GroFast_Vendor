@@ -244,6 +244,9 @@
     <string name="delete_account_confirmation">Delete Account</string>
     <string name="are_you_sure_delete_account">Are you sure, you want to delete this account.</string>
 
+    <string name="delete_product_confirmation">Delete Product</string>
+    <string name="are_you_sure_delete_product">Are you sure, you want to delete this product.</string>
+
     <!-- Links -->
     <string name="privancy_policy_link">https://grofast.in/privacy-policy</string>
     <string name="term_and_condition_link">https://grofast.in/terms-and-conditions</string>

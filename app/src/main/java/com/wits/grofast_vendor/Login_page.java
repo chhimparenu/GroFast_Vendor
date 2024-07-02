@@ -28,12 +28,14 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.messaging.FirebaseMessaging;
 import com.wits.grofast_vendor.Api.Retrofirinstance;
 import com.wits.grofast_vendor.Homepage.Home_page;
 import com.wits.grofast_vendor.Api.Interface.UserInterface;
 import com.wits.grofast_vendor.Api.Model.SupplierModel;
 import com.wits.grofast_vendor.Api.Response.LoginResponse;
 import com.wits.grofast_vendor.Api.Response.OtpResponse;
+import com.wits.grofast_vendor.Notification.NotificationInterface;
 import com.wits.grofast_vendor.Policy.PrivacyPolicyActivity;
 import com.wits.grofast_vendor.Policy.ReturnPolicy;
 import com.wits.grofast_vendor.Policy.TermsConditionPolicy;
@@ -52,9 +54,10 @@ public class Login_page extends AppCompatActivity {
     String enteredPhone, enteredOtp = "";
     SupplierActivitySession session;
     SupplierDetailSession supplierDetailSession;
+    SupplierActivitySession supplierActivitySession;
     ProgressBar progressBar;
     TextView privacy_policy, return_plocy, terms_condition;
-
+    AlertDialog dialog;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -71,7 +74,7 @@ public class Login_page extends AppCompatActivity {
         terms_condition = findViewById(R.id.text_terms_policy);
         session = new SupplierActivitySession(getApplicationContext());
         supplierDetailSession = new SupplierDetailSession(getApplicationContext());
-
+        supplierActivitySession = new SupplierActivitySession(getApplicationContext());
         return_plocy.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -152,7 +155,7 @@ public class Login_page extends AppCompatActivity {
         AlertDialog.Builder builder = new AlertDialog.Builder(Login_page.this);
         View dialogView = getLayoutInflater().inflate(R.layout.otp_page, null);
         builder.setView(dialogView);
-        AlertDialog dialog = builder.create();
+        dialog = builder.create();
         dialog.setCanceledOnTouchOutside(false);
         ImageView close_change_phone_number;
         textphone = dialogView.findViewById(R.id.otp_phone_no);
@@ -180,60 +183,8 @@ public class Login_page extends AppCompatActivity {
         Continue_otp_page.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent in = new Intent(getApplicationContext(), Home_page.class);
-                in.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-                enteredOtp = digit1.getText().toString().trim() + digit2.getText().toString().trim() + digit3.getText().toString().trim() + digit4.getText().toString().trim();
-                Log.e(TAG, "onCreate: enteredOtp " + enteredOtp);
-                Log.e(TAG, "onCreate: enteredPhone_no " + phone);
-                if (isOtpValid()) {
-                    Integer userOtp = Integer.parseInt(enteredOtp);
-                    Call<OtpResponse> call = Retrofirinstance.getUnAuthorizedClient().create(UserInterface.class).Otp(phone, userOtp);
-                    call.enqueue(new Callback<OtpResponse>() {
-                        @Override
-                        public void onResponse(Call<OtpResponse> call, Response<OtpResponse> response) {
-                            if (response.isSuccessful()) {
-                                OtpResponse otpVerifyResponse = response.body();
-                                SupplierModel supplierModel = otpVerifyResponse.getUser();
-
-                                Log.e(TAG, "id " + supplierModel.getId());
-                                Log.e(TAG, "phone no " + supplierModel.getMobile_number());
-                                session.setLoginStaus(true);
-                                session.setToken(otpVerifyResponse.getAccessToken());
-
-                                supplierDetailSession.setId(supplierModel.getId());
-                                supplierDetailSession.setUuid(supplierModel.getUuid());
-                                supplierDetailSession.setImage(supplierModel.getImage());
-                                supplierDetailSession.setName(supplierModel.getName());
-                                supplierDetailSession.setStoreName(supplierModel.getStore_name());
-                                supplierDetailSession.setEmail(supplierModel.getEmail());
-                                supplierDetailSession.setPhoneNo(supplierModel.getMobile_number());
-                                supplierDetailSession.setDescription(supplierModel.getDescription());
-                                supplierDetailSession.setStoreAddress(supplierModel.getStore_address());
-                                supplierDetailSession.setPincode(supplierModel.getPin_code());
-                                supplierDetailSession.setCiy(supplierModel.getCity());
-                                supplierDetailSession.setState(supplierModel.getState());
-                                supplierDetailSession.setCountry(supplierModel.getCountry());
-                                supplierDetailSession.setStatus(supplierModel.getStatus());
-                                supplierDetailSession.setGender(supplierModel.getGender());
-
-                                startActivity(in);
-                                Toast.makeText(Login_page.this, "" + otpVerifyResponse.getMessage(), Toast.LENGTH_SHORT).show();
-                            } else {
-                                Log.e(TAG, "code " + response.code());
-                                handleApiError(TAG, response, getApplicationContext());
-                            }
-                        }
-
-                        @Override
-                        public void onFailure(Call<OtpResponse> call, Throwable t) {
-                            t.printStackTrace();
-                        }
-                    });
-                } else {
-                    showToastAndFocus(getString(R.string.toast_message_enter_otp));
-                }
+                otpVerify(phone);
             }
-
         });
 
         resend.setOnClickListener(new View.OnClickListener() {
@@ -272,6 +223,63 @@ public class Login_page extends AppCompatActivity {
         dialog.show();
     }
 
+    private void otpVerify(String phone) {
+        Intent in = new Intent(getApplicationContext(), Home_page.class);
+        in.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+        enteredOtp = digit1.getText().toString().trim() + digit2.getText().toString().trim() + digit3.getText().toString().trim() + digit4.getText().toString().trim();
+        Log.e(TAG, "onCreate: enteredOtp " + enteredOtp);
+        Log.e(TAG, "onCreate: enteredPhone_no " + phone);
+        if (isOtpValid()) {
+            Integer userOtp = Integer.parseInt(enteredOtp);
+            Call<OtpResponse> call = Retrofirinstance.getUnAuthorizedClient().create(UserInterface.class).Otp(phone, userOtp);
+            call.enqueue(new Callback<OtpResponse>() {
+                @Override
+                public void onResponse(Call<OtpResponse> call, Response<OtpResponse> response) {
+                    if (response.isSuccessful()) {
+                        OtpResponse otpVerifyResponse = response.body();
+                        SupplierModel supplierModel = otpVerifyResponse.getUser();
+
+                        Log.e(TAG, "id " + supplierModel.getId());
+                        Log.e(TAG, "phone no " + supplierModel.getMobile_number());
+                        session.setLoginStaus(true);
+                        session.setToken(otpVerifyResponse.getAccessToken());
+
+                        supplierDetailSession.setId(supplierModel.getId());
+                        supplierDetailSession.setUuid(supplierModel.getUuid());
+                        supplierDetailSession.setImage(supplierModel.getImage());
+                        supplierDetailSession.setName(supplierModel.getName());
+                        supplierDetailSession.setStoreName(supplierModel.getStore_name());
+                        supplierDetailSession.setEmail(supplierModel.getEmail());
+                        supplierDetailSession.setPhoneNo(supplierModel.getMobile_number());
+                        supplierDetailSession.setDescription(supplierModel.getDescription());
+                        supplierDetailSession.setStoreAddress(supplierModel.getStore_address());
+                        supplierDetailSession.setPincode(supplierModel.getPin_code());
+                        supplierDetailSession.setCiy(supplierModel.getCity());
+                        supplierDetailSession.setState(supplierModel.getState());
+                        supplierDetailSession.setCountry(supplierModel.getCountry());
+                        supplierDetailSession.setStatus(supplierModel.getStatus());
+                        supplierDetailSession.setGender(supplierModel.getGender());
+
+                        saveFcmToServer();
+                        startActivity(in);
+                        dialog.dismiss();
+                        Toast.makeText(Login_page.this, "" + otpVerifyResponse.getMessage(), Toast.LENGTH_SHORT).show();
+                    } else {
+                        Log.e(TAG, "code " + response.code());
+                        handleApiError(TAG, response, getApplicationContext());
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<OtpResponse> call, Throwable t) {
+                    t.printStackTrace();
+                }
+            });
+        } else {
+            showToastAndFocus(getString(R.string.toast_message_enter_otp));
+        }
+    }
+
     private boolean isOtpValid() {
         boolean valid = true;
         if (digit1.getText().toString().trim().isEmpty()) {
@@ -294,6 +302,33 @@ public class Login_page extends AppCompatActivity {
 
     private boolean isValidPhoneNumber(String phone) {
         return phone != null && phone.length() == 10 && phone.matches("\\d+");
+    }
+
+    private void saveFcmToServer() {
+        FirebaseMessaging.getInstance().getToken().addOnCompleteListener(task -> {
+            if (!task.isSuccessful()) {
+                Log.w(TAG, "Fetching FCM registration token failed", task.getException());
+                return;
+            }
+
+            // Get the FCM token
+            Call<Void> call = Retrofirinstance.getClient(supplierActivitySession.getToken()).create(NotificationInterface.class).storeFcmtoServer(task.getResult());
+            Log.e(TAG, "onResponse: fcm token " + task.getResult());
+
+            call.enqueue(new Callback<Void>() {
+                @Override
+                public void onResponse(Call<Void> call, Response<Void> response) {
+                    if (!response.isSuccessful()) {
+                        handleApiError(TAG, response, getApplicationContext());
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<Void> call, Throwable t) {
+                    t.printStackTrace();
+                }
+            });
+        });
     }
 
     private void showToastAndFocus(String message) {

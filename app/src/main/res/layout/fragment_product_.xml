@@ -5,14 +5,14 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:id="@+id/fram_product"
-    android:paddingLeft="@dimen/linear_padding"
-    android:layout_marginRight="@dimen/linear_padding"
+    android:paddingLeft="@dimen/padding"
+    android:layout_marginRight="@dimen/padding"
     tools:context=".Homepage.Product_Fragment">
 
     <LinearLayout
         android:id="@+id/scroll_product_layout"
         android:layout_width="match_parent"
-        android:paddingTop="@dimen/linear_padding"
+        android:paddingTop="@dimen/padding"
         android:orientation="vertical"
         android:layout_height="match_parent">
 
@@ -51,7 +51,7 @@
                 android:id="@+id/product_list"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginTop="@dimen/_10sdp" />
+                android:layout_marginTop="@dimen/padding" />
 
         </LinearLayout>
 
