@@ -48,4 +48,7 @@ public interface ProductInterface {
             @Part("per") RequestBody per,
             @Part MultipartBody.Part image
     );
+
+    @POST("delete-supplier-product")
+    Call<ProductResponse> deleteProduct(@Query("uuid") String uuid);
 }

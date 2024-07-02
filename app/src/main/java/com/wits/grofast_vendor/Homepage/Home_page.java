@@ -10,6 +10,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -48,6 +49,7 @@ public class Home_page extends AppCompatActivity {
     ImageView menu;
     SupplierDetailSession supplierDetailSession;
     SupplierActivitySession supplierActivitySession;
+    LinearLayout slider_layout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -157,6 +159,11 @@ public class Home_page extends AppCompatActivity {
         userName = headerView.findViewById(R.id.user_name);
         userPhoneNo = headerView.findViewById(R.id.user_phone_no);
         userProfile = headerView.findViewById(R.id.user_profile);
+        slider_layout = headerView.findViewById(R.id.slide_layout);
+
+        slider_layout.setOnClickListener(v -> {
+            startActivity(new Intent(getApplicationContext(),ProfilePage.class));
+        });
 
         userPhoneNo.setText(supplierDetailSession.getPhoneNo());
         String name = supplierDetailSession.getName();

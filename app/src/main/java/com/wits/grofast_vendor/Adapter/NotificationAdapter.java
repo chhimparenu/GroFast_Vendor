@@ -1,6 +1,9 @@
 package com.wits.grofast_vendor.Adapter;
 
+import static com.wits.grofast_vendor.CommonUtilities.getDateFromTimestamp;
+
 import android.content.Context;
+import android.os.Build;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,16 +12,17 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.wits.grofast_vendor.Notification.InAppNotificationModel;
 import com.wits.grofast_vendor.R;
 
 import java.util.List;
 import java.util.Map;
 
 public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapter.ViewHolders> {
-    private List<Map<String, Object>> NotificationItems;
+    private List<InAppNotificationModel> NotificationItems;
     private Context context;
 
-    public NotificationAdapter(Context context, List<Map<String, Object>> NotificationItems) {
+    public NotificationAdapter(Context context, List<InAppNotificationModel> NotificationItems) {
         this.context = context;
         this.NotificationItems = NotificationItems;
     }
@@ -31,11 +35,16 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
 
     @Override
     public void onBindViewHolder(@NonNull NotificationAdapter.ViewHolders holder, int position) {
-        Map<String, Object> item = NotificationItems.get(position);
-        holder.header.setText((String) item.get("Header"));
-        holder.description.setText((String) item.get("Description"));
-        holder.day.setText((String) item.get("Day"));
+        InAppNotificationModel item = NotificationItems.get(position);
+        holder.header.setText(item.getTitle());
+        holder.description.setText(item.getBody());
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            holder.day.setText(getDateFromTimestamp(item.getCreated_at()));
+        } else holder.day.setText(item.getCreated_at());
+
     }
+
 
     @Override
     public int getItemCount() {

@@ -1,8 +1,10 @@
 package com.wits.grofast_vendor.Adapter;
 
 import static com.wits.grofast_vendor.Api.Retrofirinstance.domain;
+import static com.wits.grofast_vendor.CommonUtilities.handleApiError;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
@@ -13,25 +15,35 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupMenu;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RestrictTo;
 import androidx.appcompat.widget.AppCompatButton;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.wits.grofast_vendor.Api.Interface.ProductInterface;
 import com.wits.grofast_vendor.Api.Model.ProductModel;
+import com.wits.grofast_vendor.Api.Response.ProductResponse;
+import com.wits.grofast_vendor.Api.Retrofirinstance;
 import com.wits.grofast_vendor.Details.EditProduct;
 import com.wits.grofast_vendor.R;
+import com.wits.grofast_vendor.session.SupplierActivitySession;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 import de.hdodenhof.circleimageview.CircleImageView;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class AllProductAdapter extends RecyclerView.Adapter<AllProductAdapter.listViewHolder> {
     private List<ProductModel> productList = new ArrayList<>();
@@ -39,6 +51,7 @@ public class AllProductAdapter extends RecyclerView.Adapter<AllProductAdapter.li
     private final String TAG = "AllProductAdapter";
     private SparseBooleanArray expandedItems;
     private int expandedPosition = -1;
+    SupplierActivitySession supplierActivitySession;
 
     public AllProductAdapter(Context context, List<ProductModel> productList) {
         this.context = context;
@@ -55,6 +68,8 @@ public class AllProductAdapter extends RecyclerView.Adapter<AllProductAdapter.li
     @Override
     public void onBindViewHolder(@NonNull AllProductAdapter.listViewHolder holder, @SuppressLint("RecyclerView") int position) {
         ProductModel item = productList.get(position);
+        supplierActivitySession = new SupplierActivitySession(context);
+
         holder.id.setText(item.getId().toString());
         holder.name.setText(item.getName());
         holder.price.setText(item.getPrice());
@@ -128,6 +143,80 @@ public class AllProductAdapter extends RecyclerView.Adapter<AllProductAdapter.li
             notifyItemChanged(previousExpandedPosition);
             notifyItemChanged(expandedPosition);
         });
+
+        holder.delete.setOnClickListener(v -> {
+            DeleteProductConfirmation(item.getUuid());
+        });
+    }
+
+    private void DeleteProductConfirmation(String uuid) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        View dialogButtonsView = LayoutInflater.from(context).inflate(R.layout.confirmationdelete, null);
+        builder.setView(dialogButtonsView);
+
+        // Find the buttons in the custom layout
+        TextView title = dialogButtonsView.findViewById(R.id.delete_confirmation_title);
+        TextView msg = dialogButtonsView.findViewById(R.id.delete_confirmation_msg);
+        Button btnNo = dialogButtonsView.findViewById(R.id.btnNo);
+        Button btnYes = dialogButtonsView.findViewById(R.id.btnYes);
+        AlertDialog dialog = builder.create();
+
+        title.setText(R.string.delete_product_confirmation);
+        msg.setText(R.string.are_you_sure_delete_product);
+        btnNo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+
+        btnYes.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                deleteProduct(uuid);
+                dialog.dismiss();
+            }
+        });
+
+        dialog.show();
+    }
+
+
+    private void deleteProduct(String uuid) {
+        Call<ProductResponse> call = Retrofirinstance.getClient(supplierActivitySession.getToken()).create(ProductInterface.class).deleteProduct(uuid);
+        call.enqueue(new Callback<ProductResponse>() {
+            @Override
+            public void onResponse(Call<ProductResponse> call, Response<ProductResponse> response) {
+                if (response.isSuccessful()) {
+                    ProductResponse productResponse = response.body();
+                    Log.e(TAG, "onResponse: status : " + productResponse.getStatus());
+                    Log.e(TAG, "onResponse: Message : " + productResponse.getMessage());
+                    Log.e(TAG, "onResponse: uuid : " + uuid);
+                    Toast.makeText(context, "" + productResponse.getMessage(), Toast.LENGTH_SHORT).show();
+
+                    // Remove the deleted product from the list
+                    int position = getProductPositionByUuid(uuid);
+                    if (position != -1) {
+                        productList.remove(position);
+                        notifyItemRemoved(position);
+                    }
+                } else handleApiError(TAG, response, context);
+            }
+
+            @Override
+            public void onFailure(Call<ProductResponse> call, Throwable t) {
+                t.printStackTrace();
+            }
+        });
+    }
+
+    private int getProductPositionByUuid(String uuid) {
+        for (int i = 0; i < productList.size(); i++) {
+            if (productList.get(i).getUuid().equals(uuid)) {
+                return i;
+            }
+        }
+        return -1;
     }
 
     private void editproduct(ProductModel item) {
@@ -138,7 +227,6 @@ public class AllProductAdapter extends RecyclerView.Adapter<AllProductAdapter.li
 
     @Override
     public int getItemCount() {
-//        Log.e("TAG", "getItemCount: size " + productList.size());
         return productList.size();
     }
 
