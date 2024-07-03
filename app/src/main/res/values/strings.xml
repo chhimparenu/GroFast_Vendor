@@ -66,6 +66,7 @@
     <string name="return_plociy">Is Returnable</string>
     <string name="Yes">Yes</string>
     <string name="No">No</string>
+    <string name="okay">Ok</string>
     <string name="select_category">Select Categories</string>
     <string name="select_tax">Select Tax</string>
     <string name="select_unit">Select Unit</string>
@@ -246,6 +247,10 @@
 
     <string name="delete_product_confirmation">Delete Product</string>
     <string name="are_you_sure_delete_product">Are you sure, you want to delete this product.</string>
+
+    <string name="account_deletion_title">Account Deletion</string>
+    <string name="account_deletion_message">Your account will be deleted in %1$d days.</string>
+
 
     <!-- Links -->
     <string name="privancy_policy_link">https://grofast.in/privacy-policy</string>
