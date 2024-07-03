@@ -234,6 +234,8 @@
     <string name="settings_account">Account</string>
     <string name="settings_deactivate_account">Deactivate account</string>
     <string name="settings_delete_account">Delete account</string>
+    <string name="message_for_delete_account">You\'re account is processing to delete</string>
+    <string name="recover_account">Recover Account</string>
 
 
     <string name="order_id">Order Id :</string>
@@ -250,6 +252,8 @@
 
     <string name="account_deletion_title">Account Deletion</string>
     <string name="account_deletion_message">Your account will be deleted in %1$d days.</string>
+
+    <string name="product_delete_title">Product Delete</string>
 
 
     <!-- Links -->

@@ -24,6 +24,7 @@ import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.AppCompatButton;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
@@ -52,10 +53,12 @@ import retrofit2.Response;
 
 public class Settings extends AppCompatActivity {
     RadioButton englosh_rd;
-    LinearLayout delete_account, privacy_policy, terms_condition_policy, delete_data_policy, delete_account_policy, refund_policy, cancellation_policy, report_policy, return_policy;
+    LinearLayout delete_account, privacy_policy, terms_condition_policy, delete_data_policy, delete_account_policy, refund_policy, cancellation_policy, report_policy, return_policy, delete_Account_message_layout;
     SupplierActivitySession supplierActivitySession;
     SupplierDetailSession supplierDetailSession;
     private final String TAG = "SettingPage";
+    AppCompatButton recover_account;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,6 +80,8 @@ public class Settings extends AppCompatActivity {
         cancellation_policy = findViewById(R.id.cancellation_policy);
         report_policy = findViewById(R.id.report_policy);
         return_policy = findViewById(R.id.return_policy);
+        delete_Account_message_layout = findViewById(R.id.delete_Account_message_layout);
+        recover_account = findViewById(R.id.recover_delete_account);
 
         supplierActivitySession = new SupplierActivitySession(this);
         supplierDetailSession = new SupplierDetailSession(this);
@@ -195,6 +200,8 @@ public class Settings extends AppCompatActivity {
                     if (loginResponse != null) {
                         String message = loginResponse.getMessage();
                         showToast(getApplicationContext(), message);
+                        delete_Account_message_layout.setVisibility(View.VISIBLE);
+                        delete_account.setVisibility(View.GONE);
                         storeDeletionDate();
                     }
                 } else if (response.code() == 422) {
@@ -204,7 +211,8 @@ public class Settings extends AppCompatActivity {
                         JsonObject errorBodyJson = gson.fromJson(errorBodyString, JsonObject.class);
 
                         String message = errorBodyJson.has("message") ? errorBodyJson.get("message").getAsString() : "No message";
-
+                        delete_Account_message_layout.setVisibility(View.GONE);
+                        delete_account.setVisibility(View.VISIBLE);
                         showCustomeDialog(message);
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -233,6 +241,9 @@ public class Settings extends AppCompatActivity {
         Button btnYes = dialogButtonsView.findViewById(R.id.btnYes);
         Button btnOkay = dialogButtonsView.findViewById(R.id.btnOkay);
         AlertDialog dialog = builder.create();
+
+        dialog.setCancelable(false);
+        dialog.setCanceledOnTouchOutside(false);
 
         title.setText(R.string.account_deletion_title);
         msg.setText(message);

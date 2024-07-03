@@ -28,6 +28,8 @@ import androidx.appcompat.widget.AppCompatButton;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import com.wits.grofast_vendor.Api.Interface.ProductInterface;
 import com.wits.grofast_vendor.Api.Model.ProductModel;
 import com.wits.grofast_vendor.Api.Response.ProductResponse;
@@ -161,6 +163,9 @@ public class AllProductAdapter extends RecyclerView.Adapter<AllProductAdapter.li
         Button btnYes = dialogButtonsView.findViewById(R.id.btnYes);
         AlertDialog dialog = builder.create();
 
+        dialog.setCancelable(false);
+        dialog.setCanceledOnTouchOutside(false);
+
         title.setText(R.string.delete_product_confirmation);
         msg.setText(R.string.are_you_sure_delete_product);
         btnNo.setOnClickListener(new View.OnClickListener() {
@@ -192,7 +197,7 @@ public class AllProductAdapter extends RecyclerView.Adapter<AllProductAdapter.li
                     Log.e(TAG, "onResponse: status : " + productResponse.getStatus());
                     Log.e(TAG, "onResponse: Message : " + productResponse.getMessage());
                     Log.e(TAG, "onResponse: uuid : " + uuid);
-                    Toast.makeText(context, "" + productResponse.getMessage(), Toast.LENGTH_SHORT).show();
+                    showCustomeDialog(productResponse.getMessage());
 
                     // Remove the deleted product from the list
                     int position = getProductPositionByUuid(uuid);
@@ -200,7 +205,21 @@ public class AllProductAdapter extends RecyclerView.Adapter<AllProductAdapter.li
                         productList.remove(position);
                         notifyItemRemoved(position);
                     }
-                } else handleApiError(TAG, response, context);
+                }else if (response.code() == 422) {
+                    try {
+                        String errorBodyString = response.errorBody().string();
+                        Gson gson = new Gson();
+                        JsonObject errorBodyJson = gson.fromJson(errorBodyString, JsonObject.class);
+
+                        String message = errorBodyJson.has("message") ? errorBodyJson.get("message").getAsString() : "No message";
+
+                        showCustomeDialog(message);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                } else {
+                    handleApiError(TAG, response, context);
+                }
             }
 
             @Override
@@ -208,6 +227,35 @@ public class AllProductAdapter extends RecyclerView.Adapter<AllProductAdapter.li
                 t.printStackTrace();
             }
         });
+    }
+
+    private void showCustomeDialog(String message) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        View dialogButtonsView = LayoutInflater.from(context).inflate(R.layout.confirmationdelete, null);
+        builder.setView(dialogButtonsView);
+
+        // Find the buttons in the custom layout
+        TextView title = dialogButtonsView.findViewById(R.id.delete_confirmation_title);
+        TextView msg = dialogButtonsView.findViewById(R.id.delete_confirmation_msg);
+        Button btnNo = dialogButtonsView.findViewById(R.id.btnNo);
+        Button btnYes = dialogButtonsView.findViewById(R.id.btnYes);
+        Button btnOkay = dialogButtonsView.findViewById(R.id.btnOkay);
+        AlertDialog dialog = builder.create();
+
+        dialog.setCancelable(false);
+        dialog.setCanceledOnTouchOutside(false);
+
+        title.setText(R.string.product_delete_title);
+        msg.setText(message);
+        btnNo.setVisibility(View.GONE);
+        btnYes.setVisibility(View.GONE);
+        btnOkay.setVisibility(View.VISIBLE);
+
+        btnOkay.setOnClickListener(v -> {
+            dialog.dismiss();
+        });
+
+        dialog.show();
     }
 
     private int getProductPositionByUuid(String uuid) {
