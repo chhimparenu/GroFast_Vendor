@@ -8,9 +8,13 @@ import android.os.CountDownTimer;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -229,5 +233,26 @@ public class CommonUtilities {
 
         DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
         return istDateTime.format(dateFormatter);
+    }
+
+    public static String showToast(Context context, String message) {
+        View toastView = LayoutInflater.from(context).inflate(R.layout.toast_delete_message, null);
+        TextView toastMessage = toastView.findViewById(R.id.toast_delete_message);
+        ImageView imageView = toastView.findViewById(R.id.toast_delete_image);
+        toastMessage.setText(message);
+
+        FrameLayout frameLayout = new FrameLayout(toastView.getContext());
+        FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT, FrameLayout.LayoutParams.WRAP_CONTENT);
+        layoutParams.gravity = Gravity.CENTER; // Center the layout
+        toastView.setLayoutParams(layoutParams);
+
+        frameLayout.addView(toastView);
+
+        Toast toast = new Toast(toastView.getContext());
+        toast.setView(frameLayout);
+        toast.setDuration(Toast.LENGTH_SHORT);
+        toast.setGravity(Gravity.CENTER, 0, 0); // Center the toast on the screen
+        toast.show();
+        return message;
     }
 }

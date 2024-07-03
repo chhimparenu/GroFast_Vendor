@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@color/background_color"
     android:orientation="vertical">
 
@@ -31,10 +31,10 @@
                 android:id="@+id/delete_confirmation_msg"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingLeft="@dimen/padding"
-                android:paddingRight="@dimen/padding"
                 android:layout_marginTop="@dimen/_20sdp"
                 android:layout_marginBottom="@dimen/_20sdp"
+                android:paddingLeft="@dimen/padding"
+                android:paddingRight="@dimen/padding"
                 android:text="hello"
                 android:textColor="@color/textview_text_color"
                 android:textSize="@dimen/hint_text_size" />
@@ -43,6 +43,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@color/background_color"
+                android:gravity="end"
                 android:orientation="horizontal"
                 android:padding="@dimen/padding">
 
@@ -51,9 +52,9 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:background="@drawable/button_round"
+                    android:backgroundTint="@color/active"
                     android:text="@string/Yes"
                     android:textAllCaps="false"
-                    android:backgroundTint="@color/active"
                     android:textColor="@color/white" />
 
                 <androidx.appcompat.widget.AppCompatButton
@@ -63,8 +64,20 @@
                     android:layout_marginStart="@dimen/_10sdp"
                     android:background="@drawable/button_round"
                     android:backgroundTint="@color/expired"
-                    android:textAllCaps="false"
                     android:text="@string/No"
+                    android:textAllCaps="false"
+                    android:textColor="@color/white" />
+
+
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/btnOkay"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/button_round"
+                    android:backgroundTint="@color/default_color"
+                    android:text="@string/okay"
+                    android:visibility="gone"
+                    android:textAllCaps="false"
                     android:textColor="@color/white" />
 
             </LinearLayout>

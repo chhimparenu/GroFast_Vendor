@@ -1,7 +1,14 @@
 package com.wits.grofast_vendor.Details;
 
+import static com.wits.grofast_vendor.CommonUtilities.handleApiError;
+import static com.wits.grofast_vendor.CommonUtilities.showToast;
+
+import android.app.AlarmManager;
 import android.app.AlertDialog;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -21,6 +28,12 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import com.wits.grofast_vendor.Api.Interface.UserInterface;
+import com.wits.grofast_vendor.Api.Response.LoginResponse;
+import com.wits.grofast_vendor.Api.Retrofirinstance;
+import com.wits.grofast_vendor.Login_page;
 import com.wits.grofast_vendor.Policy.CancellationPolicy;
 import com.wits.grofast_vendor.Policy.DeleteAccountPolicy;
 import com.wits.grofast_vendor.Policy.DeleteDataPolicy;
@@ -39,10 +52,11 @@ import retrofit2.Response;
 
 public class Settings extends AppCompatActivity {
     RadioButton englosh_rd;
-    LinearLayout delete_account, privacy_policy, terms_condition_policy, delete_data_policy, delete_account_policy, refund_policy, cancellation_policy, report_policy,return_policy;
+    LinearLayout delete_account, privacy_policy, terms_condition_policy, delete_data_policy, delete_account_policy, refund_policy, cancellation_policy, report_policy, return_policy;
     SupplierActivitySession supplierActivitySession;
     SupplierDetailSession supplierDetailSession;
     private final String TAG = "SettingPage";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -66,13 +80,6 @@ public class Settings extends AppCompatActivity {
 
         supplierActivitySession = new SupplierActivitySession(this);
         supplierDetailSession = new SupplierDetailSession(this);
-
-        delete_account.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                DeleteAccountConfirmation();
-            }
-        });
 
         privacy_policy.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -137,6 +144,13 @@ public class Settings extends AppCompatActivity {
                 startActivity(in);
             }
         });
+
+        delete_account.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                DeleteAccountConfirmation();
+            }
+        });
     }
 
     private void DeleteAccountConfirmation() {
@@ -172,33 +186,73 @@ public class Settings extends AppCompatActivity {
     }
 
     private void DeleteAccount() {
-//        Call<LoginResponse> call = RetrofitService.getClient(userActivitySession.getToken()).create(UserInterface.class).deleteaccount();
-//        call.enqueue(new Callback<LoginResponse>() {
-//            @Override
-//            public void onResponse(Call<LoginResponse> call, Response<LoginResponse> response) {
-//                if (response.isSuccessful()) {
-//                    LoginResponse loginResponse = response.body();
-//                    if (loginResponse != null) {
-//                        String message = loginResponse.getMessage();
-//                        userActivitySession.setLoginStaus(false);
-//                        userActivitySession.clearSession();
-//                        userDetailSession.clearSession();
-//                        cartDetailSession.clearSession();
-//                        Intent i = new Intent(getApplicationContext(), MainActivity.class);
-//                        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-//                        startActivity(i);
-//                        Log.e(TAG, "onResponse: delete account " + message);
-//                        Toast.makeText(SettingsPage.this, message, Toast.LENGTH_SHORT).show();
-//                    }
-//                }
-//                handleApiError(TAG, response, getApplicationContext());
-//            }
-//
-//            @Override
-//            public void onFailure(Call<LoginResponse> call, Throwable t) {
-//                t.printStackTrace();
-//            }
-//        });
+        Call<LoginResponse> call = Retrofirinstance.getClient(supplierActivitySession.getToken()).create(UserInterface.class).DeleteAccount();
+        call.enqueue(new Callback<LoginResponse>() {
+            @Override
+            public void onResponse(Call<LoginResponse> call, Response<LoginResponse> response) {
+                if (response.isSuccessful()) {
+                    LoginResponse loginResponse = response.body();
+                    if (loginResponse != null) {
+                        String message = loginResponse.getMessage();
+                        showToast(getApplicationContext(), message);
+                        storeDeletionDate();
+                    }
+                } else if (response.code() == 422) {
+                    try {
+                        String errorBodyString = response.errorBody().string();
+                        Gson gson = new Gson();
+                        JsonObject errorBodyJson = gson.fromJson(errorBodyString, JsonObject.class);
+
+                        String message = errorBodyJson.has("message") ? errorBodyJson.get("message").getAsString() : "No message";
+
+                        showCustomeDialog(message);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                } else {
+                    handleApiError(TAG, response, getApplicationContext());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<LoginResponse> call, Throwable t) {
+                t.printStackTrace();
+            }
+        });
+    }
+
+    private void showCustomeDialog(String message) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        View dialogButtonsView = LayoutInflater.from(this).inflate(R.layout.confirmationdelete, null);
+        builder.setView(dialogButtonsView);
+
+        // Find the buttons in the custom layout
+        TextView title = dialogButtonsView.findViewById(R.id.delete_confirmation_title);
+        TextView msg = dialogButtonsView.findViewById(R.id.delete_confirmation_msg);
+        Button btnNo = dialogButtonsView.findViewById(R.id.btnNo);
+        Button btnYes = dialogButtonsView.findViewById(R.id.btnYes);
+        Button btnOkay = dialogButtonsView.findViewById(R.id.btnOkay);
+        AlertDialog dialog = builder.create();
+
+        title.setText(R.string.account_deletion_title);
+        msg.setText(message);
+        btnNo.setVisibility(View.GONE);
+        btnYes.setVisibility(View.GONE);
+        btnOkay.setVisibility(View.VISIBLE);
+
+        btnOkay.setOnClickListener(v -> {
+            dialog.dismiss();
+        });
+
+        dialog.show();
+    }
+
+    private void storeDeletionDate() {
+        SharedPreferences sharedPreferences = getSharedPreferences("AccountDeletion", MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        long deletionDate = System.currentTimeMillis() + (15 * 24 * 60 * 60 * 1000L);
+        editor.putLong("deletionDate", deletionDate);
+        editor.apply();
     }
 
     @Override

@@ -23,8 +23,11 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.wits.grofast_vendor.Adapter.AllResentOrderAdapter;
 import com.wits.grofast_vendor.Api.Interface.OrderInterface;
+import com.wits.grofast_vendor.Api.Interface.ProductInterface;
 import com.wits.grofast_vendor.Api.Model.OrderModel;
+import com.wits.grofast_vendor.Api.PaginationResponse.OrderPaginatedRes;
 import com.wits.grofast_vendor.Api.Response.OrderResponse;
+import com.wits.grofast_vendor.Api.Response.ProductResponse;
 import com.wits.grofast_vendor.Api.Retrofirinstance;
 import com.wits.grofast_vendor.R;
 import com.wits.grofast_vendor.session.SupplierActivitySession;
@@ -39,7 +42,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class Order_Fragment extends Fragment implements AllResentOrderAdapter.OnOrderStatusChangeListener{
+public class Order_Fragment extends Fragment  {
     RecyclerView recyclerView;
     AllResentOrderAdapter resentOrderAdapter;
     private List<OrderModel> orderList = new ArrayList<>();
@@ -49,6 +52,11 @@ public class Order_Fragment extends Fragment implements AllResentOrderAdapter.On
     LinearLayout no_oredr_layout, order_layout;
     TextView nomsg1, nomsg2;
     private ShimmerFrameLayout shimmerFrameLayout;
+    private int currentPage = 1;
+    private int lastPage = 1;
+    private int visibleThreshold = 4;
+    private Call<OrderResponse> call;
+    private boolean isLoading = false;
 
     @Nullable
     @Override
@@ -72,52 +80,86 @@ public class Order_Fragment extends Fragment implements AllResentOrderAdapter.On
         recyclerView = view.findViewById(R.id.all_resent_order_recycleview);
         layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
         recyclerView.setLayoutManager(layoutManager);
-        resentOrderAdapter = new AllResentOrderAdapter(getContext(), orderList);
-//        resentOrderAdapter.setOnOrderStatusChangeListener(Order_Fragment.this);
-        loadOrder();
+
+        call = Retrofirinstance.getClient(supplierActivitySession.getToken()).create(OrderInterface.class).fetchOrders(currentPage);
+        loadOrder(call);
+
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                int totalItemCount = layoutManager.getItemCount();
+                int firstVisibleItemPosition = layoutManager.findFirstVisibleItemPosition();
+                int lastVisibleItem = layoutManager.findLastVisibleItemPosition();
+
+                if (!isLoading && totalItemCount < lastVisibleItem + visibleThreshold) {
+                    Log.e("TAG", "onScrolled: firstVisibleItem : " + firstVisibleItemPosition);
+                    Log.e("TAG", "onScrolled: lastVisibleItem : " + lastVisibleItem);
+                    Log.e("TAG", "onScrolled:  totalItemCount : " + totalItemCount);
+                    Log.e("TAG", "onScrolled: lastVisibleItem + visibleThreshold : " + (lastVisibleItem + visibleThreshold));
+                    Log.e("TAG", "onScrolled: current page " + currentPage);
+
+                    isLoading = true;
+                    call = Retrofirinstance.getClient(supplierActivitySession.getToken()).create(OrderInterface.class).fetchOrders(currentPage);
+                    loadOrder(call);
+                }
+            }
+        });
 
         return view;
     }
 
-    private void loadOrder() {
-        Call<OrderResponse> call = Retrofirinstance.getClient(supplierActivitySession.getToken()).create(OrderInterface.class).fetchProducts();
-        call.enqueue(new Callback<OrderResponse>() {
-            @Override
-            public void onResponse(Call<OrderResponse> call, Response<OrderResponse> response) {
-                HidePageLoader();
-                if (response.isSuccessful()) {
-                    OrderResponse orderResponse = response.body();
-                    List<OrderModel> list = orderResponse.getOrderList();
-                    for (OrderModel model : list) {
-                        orderList.add(model);
-                        recyclerView.setAdapter(resentOrderAdapter);
-                        Log.e(TAG, "onResponse: order message " + orderResponse.getMessage());
-                        Log.e(TAG, "onResponse: order status " + orderResponse.getStatus());
-                        Log.e(TAG, "onResponse: order model Id " + model.getId());
-                    }
-                } else if (response.code() == 422) {
-                    try {
-                        String errorBodyString = response.errorBody().string();
-                        Gson gson = new Gson();
-                        JsonObject errorBodyJson = gson.fromJson(errorBodyString, JsonObject.class);
+    private void loadOrder(Call<OrderResponse> call) {
+        Log.e("TAG", "getProducts:     last page  " + lastPage);
+        Log.e("TAG", "getProducts: curremnt page  " + currentPage);
+        if (lastPage >= currentPage) {
+            call.enqueue(new Callback<OrderResponse>() {
+                @Override
+                public void onResponse(Call<OrderResponse> call, Response<OrderResponse> response) {
+                    HidePageLoader();
+                    isLoading = false;
+                    if (response.isSuccessful()) {
+                        OrderResponse orderResponse = response.body();
+                        OrderPaginatedRes orderPaginatedRes = orderResponse.getPaginatedOrder();
+                        if (currentPage == 1) {
+                            orderList = orderPaginatedRes.getOrderlist();
+                            resentOrderAdapter = new AllResentOrderAdapter(getContext(), orderList);
+                            recyclerView.setAdapter(resentOrderAdapter);
+                        } else {
+                            List<OrderModel> list = orderPaginatedRes.getOrderlist();
+                            for (OrderModel model : list) {
+                                orderList.add(model);
+                                recyclerView.setAdapter(resentOrderAdapter);
+                            }
+                        }
+                        currentPage++;
+                        lastPage = orderPaginatedRes.getLast_page();
+                    } else if (response.code() == 422) {
+                        try {
+                            String errorBodyString = response.errorBody().string();
+                            Gson gson = new Gson();
+                            JsonObject errorBodyJson = gson.fromJson(errorBodyString, JsonObject.class);
 
-                        String errorMessage = errorBodyJson.has("errorMessage") ? errorBodyJson.get("errorMessage").getAsString() : "No errorMessage";
-                        String message = errorBodyJson.has("message") ? errorBodyJson.get("message").getAsString() : "No message";
+                            String errorMessage = errorBodyJson.has("errorMessage") ? errorBodyJson.get("errorMessage").getAsString() : "No errorMessage";
+                            String message = errorBodyJson.has("message") ? errorBodyJson.get("message").getAsString() : "No message";
 
-                        showNoOrderMessage(message, errorMessage);
-                    } catch (Exception e) {
-                        e.printStackTrace();
+                            showNoOrderMessage(message, errorMessage);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    } else {
+                        if (isAdded()) handleApiError(TAG, response, getContext());
                     }
-                } else {
-                    if (isAdded()) handleApiError(TAG, response, getContext());
                 }
-            }
 
-            @Override
-            public void onFailure(Call<OrderResponse> call, Throwable t) {
-
-            }
-        });
+                @Override
+                public void onFailure(Call<OrderResponse> call, Throwable t) {
+                    isLoading = false;
+                    HidePageLoader();
+                    t.printStackTrace();
+                }
+            });
+        }
     }
 
     private void showNoOrderMessage(String message, String errorMessage) {
@@ -147,11 +189,5 @@ public class Order_Fragment extends Fragment implements AllResentOrderAdapter.On
             return true;
         }
         return super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    public void onOrderStatusChanged() {
-        ShowPageLoader();
-        loadOrder();
     }
 }

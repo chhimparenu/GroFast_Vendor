@@ -43,4 +43,7 @@ public interface UserInterface {
 
     @POST("verifyOtp-Change-Phone")
     Call<LoginResponse> verifyPhoneUpdateOtp(@Query("mobile_number") String Phone_no, @Query("otp") int Otp);
+
+    @POST("delete-supplier")
+    Call<LoginResponse> DeleteAccount();
 }
