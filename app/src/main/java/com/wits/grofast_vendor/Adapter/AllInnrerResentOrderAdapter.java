@@ -44,7 +44,7 @@ public class AllInnrerResentOrderAdapter extends RecyclerView.Adapter<AllInnrerR
             holder.productname.setText("" + product.getName());
             Glide.with(context).load(product.getImage()).placeholder(R.mipmap.ic_launcher).into(holder.image);
         }
-        holder.price.setText(item.getPrice());
+        holder.price.setText(""+item.getSubtotal());
     }
 
     @Override
