@@ -1,5 +1,6 @@
 package com.wits.grofast_vendor.Homepage;
 
+import android.graphics.Color;
 import android.os.Bundle;
 
 import androidx.appcompat.widget.AppCompatButton;
@@ -13,9 +14,16 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.github.mikephil.charting.charts.BarChart;
+import com.github.mikephil.charting.charts.PieChart;
+import com.github.mikephil.charting.data.BarData;
+import com.github.mikephil.charting.data.BarDataSet;
+import com.github.mikephil.charting.data.BarEntry;
+import com.github.mikephil.charting.data.PieData;
+import com.github.mikephil.charting.data.PieDataSet;
+import com.github.mikephil.charting.data.PieEntry;
+import com.github.mikephil.charting.utils.ColorTemplate;
 import com.wits.grofast_vendor.Adapter.BannerAdapter;
-import com.wits.grofast_vendor.Adapter.HomeOrderHistoryAdapter;
-import com.wits.grofast_vendor.Api.Model.HomeOrderHistoryModel;
 import com.wits.grofast_vendor.R;
 
 import java.util.ArrayList;
@@ -23,21 +31,19 @@ import java.util.Arrays;
 import java.util.List;
 
 public class Home_Fragment extends Fragment {
-    RecyclerView bannerrecyclview, recentorderrecycleview;
+    RecyclerView bannerrecyclview;
     BannerAdapter bannerAdapter;
     private List<Integer> bannerImages;
     private int currentBannerPosition = 0;
     private Handler handler = new Handler();
-    private HomeOrderHistoryAdapter orderHistoryAdapter;
-    private ArrayList<HomeOrderHistoryModel> orderHistoryModels;
-    AppCompatButton view_all_order_history;
+    BarChart barChart;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View root = inflater.inflate(R.layout.fragment_home_, container, false);
-        view_all_order_history = root.findViewById(R.id.home_page_view_all);
+
         //Banner Recycleview
         bannerrecyclview = root.findViewById(R.id.banner_home_recycleview);
         bannerImages = Arrays.asList(R.drawable.banner1, R.drawable.banner2, R.drawable.banner3);
@@ -46,29 +52,33 @@ public class Home_Fragment extends Fragment {
         bannerrecyclview.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, true));
         startAutoScroll();
 
-        //Table layout
-        orderHistoryModels = new ArrayList<>();
-        recentorderrecycleview = root.findViewById(R.id.home_recent_order_recycleview);
-        OrderList();
-        orderHistoryAdapter = new HomeOrderHistoryAdapter(getContext(), orderHistoryModels);
-        recentorderrecycleview.setLayoutManager(new LinearLayoutManager(getContext()));
-        recentorderrecycleview.setAdapter(orderHistoryAdapter);
+        //Bar chart
+        barChart = root.findViewById(R.id.home_bar_chart);
+        ArrayList<BarEntry> visitors = new ArrayList<>();
+        visitors.add(new BarEntry(2014, 420));
+        visitors.add(new BarEntry(2015, 450));
+        visitors.add(new BarEntry(2016, 490));
+        visitors.add(new BarEntry(2017, 520));
+        visitors.add(new BarEntry(2018, 420));
+        visitors.add(new BarEntry(2019, 450));
+        visitors.add(new BarEntry(2020, 490));
+        visitors.add(new BarEntry(2021, 320));
+        BarDataSet barDataSet = new BarDataSet(visitors, "visitors");
+        barDataSet.setColors(ColorTemplate.MATERIAL_COLORS);
+        barDataSet.setValueTextColor(Color.BLACK);
+        barDataSet.setValueTextSize(16f);
 
-        Log.d("Home_page", "Product list size: " + orderHistoryModels.size());
+        BarData bardata = new BarData(barDataSet);
+
+        barChart.setFitBars(true);
+        barChart.setData(bardata);
+        barChart.getDescription().setText("Bar chart");
+
+        barChart.animateY(2000);
 
         return root;
     }
 
-    private void OrderList() {
-        orderHistoryModels.add(new HomeOrderHistoryModel("#15678", "Priya singh 25858695", "30/12/1999", "₹.200"));
-        orderHistoryModels.add(new HomeOrderHistoryModel("#25679", "Ravi Kumar 12548896", "15/01/2000", "₹300"));
-        orderHistoryModels.add(new HomeOrderHistoryModel("#35680", "Asha Rani 45671258", "20/02/2001", "₹400"));
-        orderHistoryModels.add(new HomeOrderHistoryModel("#45681", "Rahul Verma 78945612", "25/03/2002", "₹500"));
-        orderHistoryModels.add(new HomeOrderHistoryModel("#55682", "Anjali Roy 32147895", "30/04/2003", "₹600"));
-        orderHistoryModels.add(new HomeOrderHistoryModel("#25679", "Ravi Kumar 12548896", "15/01/2000", "₹300"));
-        orderHistoryModels.add(new HomeOrderHistoryModel("#35680", "Asha Rani 45671258", "20/02/2001", "₹400"));
-        Log.d("Home_page", "Products added: " + orderHistoryModels.size());
-    }
 
     private void startAutoScroll() {
         handler.postDelayed(new Runnable() {
