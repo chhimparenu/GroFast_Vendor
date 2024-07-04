@@ -1,6 +1,7 @@
 package com.wits.grofast_vendor.Adapter;
 
 import static com.wits.grofast_vendor.Api.Retrofirinstance.domain;
+import static com.wits.grofast_vendor.CommonUtilities.getDateFromTimestamp;
 import static com.wits.grofast_vendor.CommonUtilities.handleApiError;
 
 import android.annotation.SuppressLint;
@@ -8,6 +9,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.os.Build;
 import android.util.Log;
 import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
@@ -105,7 +107,9 @@ public class AllProductAdapter extends RecyclerView.Adapter<AllProductAdapter.li
                 holder.detailstatus.setTextColor(context.getResources().getColor(R.color.default_color));
             }
         }
-        holder.detaildate.setText(item.getCreated_at());
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            holder.detaildate.setText(getDateFromTimestamp(item.getCreated_at()));
+        } else holder.detaildate.setText(item.getCreated_at());
         holder.detailcategories.setText(item.getCategory_name());
         holder.detailTax.setText(item.getTax_id());
         holder.detailper.setText(item.getPer());

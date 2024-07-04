@@ -1,15 +1,11 @@
 package com.wits.grofast_vendor.Api.Model;
 
-import static com.wits.grofast_vendor.CommonUtilities.formatDate;
-
 import android.os.Parcel;
 import android.os.Parcelable;
 
 import androidx.annotation.NonNull;
 
 import com.google.gson.annotations.SerializedName;
-
-import java.io.Serializable;
 
 public class ProductModel implements Parcelable {
     private Integer id;
@@ -111,7 +107,7 @@ public class ProductModel implements Parcelable {
     private String created_at;
 
     public String getCreated_at() {
-        return formatDate(created_at);
+        return created_at;
     }
 
     public String getName() {
