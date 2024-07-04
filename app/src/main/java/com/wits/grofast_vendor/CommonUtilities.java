@@ -25,10 +25,13 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.wits.grofast_vendor.Api.Model.SpinnerModel;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
@@ -70,26 +73,17 @@ public class CommonUtilities {
         return imagePath;
     }
 
-    public static String formatDate(String dateTimeString) {
-        // Parse the timestamp to LocalDateTime
-        DateTimeFormatter formatter = null;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSSSS'Z'");
+    public static String formatDate(String inputDate,String inputFormat,String outputFormat) {
+        String outputDate = null;
+        try {
+            SimpleDateFormat inputDateFormat = new SimpleDateFormat(inputFormat);
+            SimpleDateFormat outputDateFormat = new SimpleDateFormat(outputFormat);
+            Date date = inputDateFormat.parse(inputDate);
+            outputDate = outputDateFormat.format(date);
+        } catch (ParseException e) {
+            e.printStackTrace();
         }
-        LocalDateTime dateTime = null;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            dateTime = LocalDateTime.parse(dateTimeString, formatter);
-        }
-
-        // Format to show only the date
-        DateTimeFormatter dateFormatter = null;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            dateFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
-        }
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            return dateTime.format(dateFormatter);
-        }
-        return dateTimeString;
+        return outputDate;
     }
 
 
@@ -231,7 +225,7 @@ public class CommonUtilities {
         ZonedDateTime zonedDateTime = ZonedDateTime.parse(isoTimestamp);
         ZonedDateTime istDateTime = zonedDateTime.withZoneSameInstant(ZoneId.of("Asia/Kolkata"));
 
-        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd-MM-yy");
         return istDateTime.format(dateFormatter);
     }
 

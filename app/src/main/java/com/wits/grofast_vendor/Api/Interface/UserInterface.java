@@ -13,6 +13,12 @@ import retrofit2.http.Part;
 import retrofit2.http.Query;
 
 public interface UserInterface {
+    //Login
+    @POST("supplier-otp")
+    Call<LoginResponse> Login(@Query("mobile_number") String Phone_no);
+
+    @POST("verify-supplier-otp")
+    Call<OtpResponse> Otp(@Query("mobile_number") String Phone_no, @Query("otp") Integer Otp);
 
     @POST("updateSupplierDetails")
     @Multipart
@@ -30,13 +36,6 @@ public interface UserInterface {
             @Part("gender") RequestBody gender,
             @Part MultipartBody.Part image
     );
-
-    //Login
-    @POST("supplier-otp")
-    Call<LoginResponse> Login(@Query("mobile_number") String Phone_no);
-
-    @POST("verify-supplier-otp")
-    Call<OtpResponse> Otp(@Query("mobile_number") String Phone_no, @Query("otp") Integer Otp);
 
     @POST("send-phone-update-otp")
     Call<LoginResponse> sendPhoneUpdateOtp(@Query("mobile_number") String Phone_no);

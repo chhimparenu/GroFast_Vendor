@@ -1,5 +1,6 @@
 package com.wits.grofast_vendor.Adapter;
 
+import static com.wits.grofast_vendor.CommonUtilities.formatDate;
 import static com.wits.grofast_vendor.CommonUtilities.getDateFromTimestamp;
 
 import android.app.DatePickerDialog;
@@ -140,9 +141,10 @@ public class AllResentOrderAdapter extends RecyclerView.Adapter<AllResentOrderAd
             }
         });
 
+        String DeliveryDate = formatDate(model.getDelivery_date(), "yyyy-MM-dd", "dd-MM-yy");
         // Delivery Date
         if (model.getDelivery_date() != null && !model.getDelivery_date().isEmpty()) {
-            holder.delivery_date_show.setText(model.getDelivery_date());
+            holder.delivery_date_show.setText(DeliveryDate);
             holder.delivery_date_layout.setVisibility(View.VISIBLE);
             holder.delivery_date_add.setVisibility(View.GONE);
         } else {
