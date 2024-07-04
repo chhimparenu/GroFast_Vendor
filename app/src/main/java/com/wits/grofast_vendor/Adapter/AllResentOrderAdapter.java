@@ -49,7 +49,6 @@ public class AllResentOrderAdapter extends RecyclerView.Adapter<AllResentOrderAd
     private Context context;
     private final String TAG = "AllHistoryAdapter";
     private SupplierActivitySession supplierActivitySession;
-    private OnOrderStatusChangeListener orderStatusChangeListener;
     private static final Map<String, Integer> STATUS_MAP = new HashMap<String, Integer>() {{
         put("Processing", 1);
         put("Pending", 2);
@@ -62,11 +61,6 @@ public class AllResentOrderAdapter extends RecyclerView.Adapter<AllResentOrderAd
     public AllResentOrderAdapter(Context context, List<OrderModel> orderList) {
         this.orderList = orderList;
         this.context = context;
-    }
-
-
-    public void setOnOrderStatusChangeListener(OnOrderStatusChangeListener listener) {
-        this.orderStatusChangeListener = listener;
     }
 
 
@@ -87,6 +81,7 @@ public class AllResentOrderAdapter extends RecyclerView.Adapter<AllResentOrderAd
         } else holder.date.setText(model.getCreated_at());
         holder.price.setText(model.getTotal_amount());
 
+        //Order status
         OrderStatusModel orderStatus = model.getOrderStatus();
         holder.status.setText(orderStatus.getLabel());
         holder.status.setTextColor(Color.parseColor(orderStatus.getColor()));
@@ -141,8 +136,8 @@ public class AllResentOrderAdapter extends RecyclerView.Adapter<AllResentOrderAd
             }
         });
 
-        String DeliveryDate = formatDate(model.getDelivery_date(), "yyyy-MM-dd", "dd-MM-yy");
         // Delivery Date
+        String DeliveryDate = formatDate(model.getDelivery_date(), "yyyy-MM-dd", "dd-MM-yy");
         if (model.getDelivery_date() != null && !model.getDelivery_date().isEmpty()) {
             holder.delivery_date_show.setText(DeliveryDate);
             holder.delivery_date_layout.setVisibility(View.VISIBLE);
@@ -153,15 +148,6 @@ public class AllResentOrderAdapter extends RecyclerView.Adapter<AllResentOrderAd
             holder.delivery_date_add.setOnClickListener(v -> showDatePickerDialog(holder, model));
         }
         holder.delivery_date_change.setOnClickListener(v -> showDatePickerDialog(holder, model));
-    }
-
-    private int getStatusPosition(String statusLabel) {
-        for (int i = 0; i < ALL_STATUSES.length; i++) {
-            if (ALL_STATUSES[i].equalsIgnoreCase(statusLabel)) {
-                return i;
-            }
-        }
-        return 0;
     }
 
     private void showDatePickerDialog(ViewHolder holder, OrderModel model) {
@@ -194,9 +180,18 @@ public class AllResentOrderAdapter extends RecyclerView.Adapter<AllResentOrderAd
 
             @Override
             public void onFailure(Call<OrderStatusResponse> call, Throwable t) {
-
+                t.printStackTrace();
             }
         });
+    }
+
+    private int getStatusPosition(String statusLabel) {
+        for (int i = 0; i < ALL_STATUSES.length; i++) {
+            if (ALL_STATUSES[i].equalsIgnoreCase(statusLabel)) {
+                return i;
+            }
+        }
+        return 0;
     }
 
     private void updateOrderStatus(int orderId, int status) {
@@ -210,9 +205,7 @@ public class AllResentOrderAdapter extends RecyclerView.Adapter<AllResentOrderAd
                     Log.e(TAG, "onResponse: status : " + orderResponse.getStatus());
                     Log.e(TAG, "onResponse: order status : " + orderResponse.getOrder().getOrderStatus().getLabel());
                     Log.e(TAG, "onResponse: order value : " + orderResponse.getOrder().getOrderStatus().getValue());
-                    if (orderStatusChangeListener != null) {
-                        orderStatusChangeListener.onOrderStatusChanged();
-                    }
+
                 }
             }
 

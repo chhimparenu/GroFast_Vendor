@@ -36,7 +36,6 @@ public class Notification_setting extends AppCompatActivity {
     SupplierActivitySession supplierActivitySession;
     private static String TAG = "NotificationSetting";
     private boolean isInitialSetup = true;
-    ShimmerFrameLayout shimmerFrameLayout;
     LinearLayout view;
 
     @Override
@@ -56,9 +55,8 @@ public class Notification_setting extends AppCompatActivity {
         promopush = findViewById(R.id.switchPushPromos);
         socialemail = findViewById(R.id.socialemailnotification);
         socialpush = findViewById(R.id.socialpushnotification);
-        shimmerFrameLayout = findViewById(R.id.shimmer_layout_notification_setting);
         view = findViewById(R.id.view_all_notification_setting);
-        ShowPageLoader();
+
         setUpListeners();
         notificationFetch();
     }
@@ -68,7 +66,6 @@ public class Notification_setting extends AppCompatActivity {
         call1.enqueue(new Callback<NotificationResponse>() {
             @Override
             public void onResponse(Call<NotificationResponse> call, Response<NotificationResponse> response) {
-                HidePageLoader();
                 if (response.isSuccessful()) {
                     NotificationResponse notification = response.body();
                     NotificationModel notificationModel = notification.getNotificationModel();
@@ -207,18 +204,6 @@ public class Notification_setting extends AppCompatActivity {
                 t.printStackTrace();
             }
         });
-    }
-
-    private void ShowPageLoader() {
-        shimmerFrameLayout.startShimmer();
-        shimmerFrameLayout.setVisibility(View.VISIBLE);
-        view.setVisibility(View.GONE);
-    }
-
-    private void HidePageLoader() {
-        shimmerFrameLayout.setVisibility(View.GONE);
-        shimmerFrameLayout.stopShimmer();
-        view.setVisibility(View.VISIBLE);
     }
 
     @Override
