@@ -5,7 +5,9 @@ import static com.wits.grofast_vendor.CommonUtilities.getDateFromTimestamp;
 
 import android.app.DatePickerDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Build;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -148,6 +150,19 @@ public class AllResentOrderAdapter extends RecyclerView.Adapter<AllResentOrderAd
             holder.delivery_date_add.setOnClickListener(v -> showDatePickerDialog(holder, model));
         }
         holder.delivery_date_change.setOnClickListener(v -> showDatePickerDialog(holder, model));
+
+        holder.invoice.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                downloadInvoice( model.getInvoice());
+                Log.e(TAG, "onClick: Invoice : " +  model.getInvoice());
+            }
+        });
+    }
+
+    private void downloadInvoice(String downloadLink) {
+        Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(downloadLink));
+        context.startActivity(browserIntent);
     }
 
     private void showDatePickerDialog(ViewHolder holder, OrderModel model) {
@@ -227,7 +242,7 @@ public class AllResentOrderAdapter extends RecyclerView.Adapter<AllResentOrderAd
         LinearLayout detailsView, detailshide, delivery_date_layout;
         RecyclerView recyclerView;
         AppCompatSpinner status_spinner;
-        AppCompatButton delivery_date_add;
+        AppCompatButton delivery_date_add,invoice;
         ImageView delivery_date_change;
 
         public ViewHolder(@NonNull View itemView) {
@@ -240,6 +255,7 @@ public class AllResentOrderAdapter extends RecyclerView.Adapter<AllResentOrderAd
             all_detail_id = itemView.findViewById(R.id.history_order_id);
             all_detail_status = itemView.findViewById(R.id.history_order_status);
             all_detail_price = itemView.findViewById(R.id.history_oredr_price);
+            invoice = itemView.findViewById(R.id.invoice);
 
             delivery_date_show = itemView.findViewById(R.id.delivery_date_show);
             delivery_date_add = itemView.findViewById(R.id.delivery_date_add);
@@ -253,9 +269,5 @@ public class AllResentOrderAdapter extends RecyclerView.Adapter<AllResentOrderAd
             LinearLayoutManager layoutManager = new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false);
             recyclerView.setLayoutManager(layoutManager);
         }
-    }
-
-    public interface OnOrderStatusChangeListener {
-        void onOrderStatusChanged();
     }
 }
