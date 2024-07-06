@@ -11,6 +11,7 @@ public class OrderModel {
     private int supplier_id;
     private String total_amount;
     private String delivery_date;
+    private String invoice;
     private String created_at;
     @SerializedName("status")
     private OrderStatusModel orderStatus;
@@ -55,4 +56,7 @@ public class OrderModel {
         return created_at;
     }
 
+    public String getInvoice() {
+        return invoice;
+    }
 }

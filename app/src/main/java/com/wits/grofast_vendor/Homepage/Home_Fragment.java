@@ -31,8 +31,11 @@ import com.github.mikephil.charting.data.PieEntry;
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter;
 import com.github.mikephil.charting.utils.ColorTemplate;
 import com.wits.grofast_vendor.Adapter.BannerAdapter;
+import com.wits.grofast_vendor.Api.Interface.BannerInterface;
 import com.wits.grofast_vendor.Api.Interface.HomeInterface;
+import com.wits.grofast_vendor.Api.Model.BannerModel;
 import com.wits.grofast_vendor.Api.Model.OrderCountModel;
+import com.wits.grofast_vendor.Api.Response.BannerResponse;
 import com.wits.grofast_vendor.Api.Response.OrderCountResponse;
 import com.wits.grofast_vendor.Api.Response.OrderResponse;
 import com.wits.grofast_vendor.Api.Retrofirinstance;
@@ -50,7 +53,6 @@ import retrofit2.Response;
 public class Home_Fragment extends Fragment {
     RecyclerView bannerrecyclview;
     BannerAdapter bannerAdapter;
-    private List<Integer> bannerImages;
     private int currentBannerPosition = 0;
     private Handler handler = new Handler();
     BarChart barChart;
@@ -71,11 +73,8 @@ public class Home_Fragment extends Fragment {
 
         //Banner Recycleview
         bannerrecyclview = root.findViewById(R.id.banner_home_recycleview);
-        bannerImages = Arrays.asList(R.drawable.banner1, R.drawable.banner2, R.drawable.banner3);
-        bannerAdapter = new BannerAdapter(getContext(), bannerImages);
-        bannerrecyclview.setAdapter(bannerAdapter);
         bannerrecyclview.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, true));
-        startAutoScroll();
+        getbanner();
 
         //Bar chart
         barChart = root.findViewById(R.id.home_bar_chart);
@@ -159,6 +158,29 @@ public class Home_Fragment extends Fragment {
         shimmerFrameLayout.setVisibility(View.GONE);
         shimmerFrameLayout.stopShimmer();
         nestedScrollView.setVisibility(View.VISIBLE);
+    }
+
+    private void getbanner() {
+        Call<BannerResponse> call = Retrofirinstance.getClient(supplierActivitySession.getToken()).create(BannerInterface.class).fetchbanner();
+        call.enqueue(new Callback<BannerResponse>() {
+            @Override
+            public void onResponse(Call<BannerResponse> call, Response<BannerResponse> response) {
+                if (response.isSuccessful()) {
+                    List<BannerModel> banners = response.body().getBanners();
+                    bannerAdapter = new BannerAdapter(getContext(), banners);
+                    bannerrecyclview.setAdapter(bannerAdapter);
+                    bannerAdapter.notifyDataSetChanged();
+                    startAutoScroll();
+                } else {
+                    handleApiError(TAG, response, getContext());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<BannerResponse> call, Throwable t) {
+                t.printStackTrace();
+            }
+        });
     }
 
     private void startAutoScroll() {
