@@ -220,7 +220,6 @@ public class AllResentOrderAdapter extends RecyclerView.Adapter<AllResentOrderAd
                     Log.e(TAG, "onResponse: status : " + orderResponse.getStatus());
                     Log.e(TAG, "onResponse: order status : " + orderResponse.getOrder().getOrderStatus().getLabel());
                     Log.e(TAG, "onResponse: order value : " + orderResponse.getOrder().getOrderStatus().getValue());
-
                 }
             }
 
