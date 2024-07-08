@@ -1,6 +1,7 @@
 plugins {
     id 'com.android.application'
     id 'com.google.gms.google-services'
+    id 'com.google.firebase.crashlytics'
 }
 
 android {
@@ -36,7 +37,6 @@ dependencies {
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
     implementation 'androidx.appcompat:appcompat:1.7.0'
     implementation 'androidx.activity:activity:1.9.0'
-    implementation 'com.google.firebase:firebase-messaging:24.0.0'
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
@@ -53,15 +53,16 @@ dependencies {
     implementation ("com.squareup.retrofit2:retrofit:2.9.0")
     implementation ("com.squareup.retrofit2:converter-gson:2.9.0")
 
-    //    DIPENDENCY FOR SHIMMER EFFECT
+    //DIPENDENCY FOR SHIMMER EFFECT
     implementation 'com.facebook.shimmer:shimmer:0.5.0'
+
+    //DIPENDENCY FOR FIREBASE
+    implementation 'com.google.firebase:firebase-messaging:24.0.0'
+    implementation 'com.google.firebase:firebase-crashlytics:19.0.2'
+    implementation 'com.google.firebase:firebase-analytics:22.0.2'
 
     //Responsive Design
     implementation 'com.intuit.sdp:sdp-android:1.1.1'
-
-    //firebase
-    implementation platform ("com.google.firebase:firebase-bom:33.1.0")
-    implementation ("com.google.firebase:firebase-analytics")
 
     // MPAndroidChart for bar charts
     implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0'
