@@ -11,6 +11,9 @@ public class OrderCountResponse {
     private Integer status;
     @SerializedName("data")
     private List<OrderCountModel> orderCountlist;
+    private Integer total_orders;
+    private Integer total_products;
+    private Integer total_earnings;
 
     public String getMessage() {
         return message;
@@ -22,5 +25,17 @@ public class OrderCountResponse {
 
     public List<OrderCountModel> getOrderCountlist() {
         return orderCountlist;
+    }
+
+    public Integer getTotal_orders() {
+        return total_orders;
+    }
+
+    public Integer getTotal_products() {
+        return total_products;
+    }
+
+    public Integer getTotal_earnings() {
+        return total_earnings;
     }
 }
