@@ -131,6 +131,9 @@ public class Home_Fragment extends Fragment {
                     List<OrderCountModel> orderCountModels = orderResponse.getOrderCountlist();
                     Log.e(TAG, "onResponse: status : " + orderResponse.getStatus());
                     Log.e(TAG, "onResponse: Message : " + orderResponse.getMessage());
+                    total_order.setText(""+orderResponse.getTotal_orders());
+                    total_earning.setText(""+orderResponse.getTotal_earnings());
+                    total_product.setText(""+orderResponse.getTotal_products());
                     if (orderCountModels != null) {
                         Log.e(TAG, "onResponse: Order count models size: " + orderCountModels.size());
                         for (OrderCountModel model : orderCountModels) {
