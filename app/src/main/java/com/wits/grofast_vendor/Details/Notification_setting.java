@@ -1,5 +1,6 @@
 package com.wits.grofast_vendor.Details;
 
+import static android.view.View.GONE;
 import static com.wits.grofast_vendor.CommonUtilities.handleApiError;
 
 import android.annotation.SuppressLint;
@@ -37,6 +38,7 @@ public class Notification_setting extends AppCompatActivity {
     private static String TAG = "NotificationSetting";
     private boolean isInitialSetup = true;
     LinearLayout view;
+    private ShimmerFrameLayout shimmerFrameLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,6 +58,8 @@ public class Notification_setting extends AppCompatActivity {
         socialemail = findViewById(R.id.socialemailnotification);
         socialpush = findViewById(R.id.socialpushnotification);
         view = findViewById(R.id.view_all_notification_setting);
+        shimmerFrameLayout = findViewById(R.id.shimmer_layout_notifictaion_Setting);
+        ShowPageLoader();
 
         setUpListeners();
         notificationFetch();
@@ -66,6 +70,7 @@ public class Notification_setting extends AppCompatActivity {
         call1.enqueue(new Callback<NotificationResponse>() {
             @Override
             public void onResponse(Call<NotificationResponse> call, Response<NotificationResponse> response) {
+                HidePageLoader();
                 if (response.isSuccessful()) {
                     NotificationResponse notification = response.body();
                     NotificationModel notificationModel = notification.getNotificationModel();
@@ -204,6 +209,18 @@ public class Notification_setting extends AppCompatActivity {
                 t.printStackTrace();
             }
         });
+    }
+
+    private void ShowPageLoader() {
+        shimmerFrameLayout.startShimmer();
+        shimmerFrameLayout.setVisibility(View.VISIBLE);
+        view.setVisibility(View.GONE);
+    }
+
+    private void HidePageLoader() {
+        shimmerFrameLayout.setVisibility(View.GONE);
+        shimmerFrameLayout.stopShimmer();
+        view.setVisibility(View.VISIBLE);
     }
 
     @Override

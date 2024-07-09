@@ -212,6 +212,7 @@
     //pages
     <string name="add_product_page_name">Add Product</string>
     <string name="edit_product_page_name">Edit Product</string>
+    <string name="earning_page">Earning</string>
 
     <!--    SETINGS PAGE POLICIES -->
 

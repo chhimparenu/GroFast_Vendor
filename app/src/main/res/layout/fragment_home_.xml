@@ -49,6 +49,7 @@
                     app:cardElevation="10dp">
 
                     <LinearLayout
+                        android:id="@+id/home_total_product_layout"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
@@ -62,6 +63,7 @@
                             android:src="@drawable/deliverycompleted" />
 
                         <TextView
+                            android:id="@+id/home_total_product_text"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"
@@ -95,6 +97,7 @@
                     app:cardElevation="10dp">
 
                     <LinearLayout
+                        android:id="@+id/home_total_earning_layout"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
@@ -108,6 +111,7 @@
                             android:src="@drawable/deliverytotalearning" />
 
                         <TextView
+                            android:id="@+id/home_total_earning_text"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"
@@ -140,6 +144,7 @@
                     app:cardElevation="10dp">
 
                     <LinearLayout
+                        android:id="@+id/home_total_order_layout"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
@@ -153,6 +158,7 @@
                             android:src="@drawable/deliverytotal" />
 
                         <TextView
+                            android:id="@+id/home_total_order_text"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"
@@ -191,10 +197,10 @@
     <com.facebook.shimmer.ShimmerFrameLayout
         android:id="@+id/shimmer_layout_home"
         android:layout_width="match_parent"
-        android:visibility="gone"
+        android:layout_height="match_parent"
         android:layout_marginLeft="@dimen/padding"
         android:layout_marginRight="@dimen/padding"
-        android:layout_height="match_parent" >
+        android:visibility="gone">
 
         <LinearLayout
             android:layout_width="match_parent"

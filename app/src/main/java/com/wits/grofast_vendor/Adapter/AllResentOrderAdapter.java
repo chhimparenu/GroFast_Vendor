@@ -139,8 +139,8 @@ public class AllResentOrderAdapter extends RecyclerView.Adapter<AllResentOrderAd
         });
 
         // Delivery Date
-        String DeliveryDate = formatDate(model.getDelivery_date(), "yyyy-MM-dd", "dd-MM-yy");
         if (model.getDelivery_date() != null && !model.getDelivery_date().isEmpty()) {
+            String DeliveryDate = formatDate(model.getDelivery_date(), "yyyy-MM-dd", "dd-MM-yy");
             holder.delivery_date_show.setText(DeliveryDate);
             holder.delivery_date_layout.setVisibility(View.VISIBLE);
             holder.delivery_date_add.setVisibility(View.GONE);
@@ -220,7 +220,6 @@ public class AllResentOrderAdapter extends RecyclerView.Adapter<AllResentOrderAd
                     Log.e(TAG, "onResponse: status : " + orderResponse.getStatus());
                     Log.e(TAG, "onResponse: order status : " + orderResponse.getOrder().getOrderStatus().getLabel());
                     Log.e(TAG, "onResponse: order value : " + orderResponse.getOrder().getOrderStatus().getValue());
-
                 }
             }
 
