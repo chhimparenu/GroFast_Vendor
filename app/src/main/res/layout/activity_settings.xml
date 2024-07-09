@@ -400,23 +400,19 @@
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"
                         android:text="@string/message_for_delete_account"
                         android:textColor="@color/expired"
                         android:textSize="@dimen/hint_text_size"
                         android:textStyle="bold" />
 
-                    <androidx.appcompat.widget.AppCompatButton
-                        android:id="@+id/recover_delete_account"
-                        android:layout_width="wrap_content"
+                    <TextView
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/padding"
-                        android:background="@drawable/button_round"
-                        android:padding="@dimen/padding"
-                        android:visibility="gone"
+                        android:layout_marginTop="@dimen/_5sdp"
                         android:text="@string/recover_account"
-                        android:textAllCaps="false"
-                        android:textColor="@color/white" />
+                        android:textColor="@color/active"
+                        android:textSize="@dimen/hint_text_size"
+                        android:textStyle="bold" />
 
                 </LinearLayout>
 

@@ -26,6 +26,15 @@ public class SupplierActivitySession {
         editor.apply();
     }
 
+    public void setHour(int hour) {
+        editor.putInt("supplierDeleteAccount", hour);
+        editor.apply();
+    }
+
+    public int getHour() {
+        return sharedPreferences.getInt("supplierDeleteAccount", 0);
+    }
+
     public String getToken() {
         return sharedPreferences.getString("userAccessToken", "");
     }

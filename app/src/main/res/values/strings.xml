@@ -236,7 +236,7 @@
     <string name="settings_deactivate_account">Deactivate account</string>
     <string name="settings_delete_account">Delete account</string>
     <string name="message_for_delete_account">You\'re account is processing to delete</string>
-    <string name="recover_account">Recover Account</string>
+    <string name="recover_account">Note : - If you want to recover your account then after 24 hour you can re-login your account with existing mobile number.</string>
 
 
     <string name="order_id">Order Id :</string>

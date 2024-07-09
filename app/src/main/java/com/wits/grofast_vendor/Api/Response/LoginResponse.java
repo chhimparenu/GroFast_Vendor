@@ -4,6 +4,7 @@ public class LoginResponse {
     private String phone_no;
     private String message;
     private Integer status;
+    private Integer hours;
 
     public String getPhone_no() {
         return phone_no;
@@ -17,4 +18,7 @@ public class LoginResponse {
         return status;
     }
 
+    public Integer getHours() {
+        return hours;
+    }
 }

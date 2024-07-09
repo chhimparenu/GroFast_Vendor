@@ -9,16 +9,21 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.wits.grofast_vendor.Api.Model.OrderModel;
 import com.wits.grofast_vendor.R;
+import com.wits.grofast_vendor.session.SupplierActivitySession;
 
 import java.util.List;
 import java.util.Map;
 
 public class EarningAdapter extends RecyclerView.Adapter<EarningAdapter.ViewHolder> {
-    private List<Map<String, Object>> earningitem;
+    private List<OrderModel> earningitem;
     private Context context;
 
-    public EarningAdapter(Context context, List<Map<String, Object>> earningitem) {
+    private final String TAG = "AllHistoryAdapter";
+    private SupplierActivitySession supplierActivitySession;
+
+    public EarningAdapter(Context context,List<OrderModel> earningitem) {
         this.context = context;
         this.earningitem = earningitem;
     }
@@ -31,9 +36,10 @@ public class EarningAdapter extends RecyclerView.Adapter<EarningAdapter.ViewHold
 
     @Override
     public void onBindViewHolder(@NonNull EarningAdapter.ViewHolder holder, int position) {
-        Map<String, Object> item = earningitem.get(position);
-        holder.oredr_id.setText((String) item.get("Id"));
-        holder.order_amount.setText((String) item.get("Amount"));
+        supplierActivitySession = new SupplierActivitySession(context);
+        OrderModel model = earningitem.get(position);
+        holder.oredr_id.setText("" + model.getId());
+        holder.order_amount.setText("" + model.getTotal_amount());
     }
 
     @Override

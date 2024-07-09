@@ -57,7 +57,6 @@ public class Settings extends AppCompatActivity {
     SupplierActivitySession supplierActivitySession;
     SupplierDetailSession supplierDetailSession;
     private final String TAG = "SettingPage";
-    AppCompatButton recover_account;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,7 +79,6 @@ public class Settings extends AppCompatActivity {
         report_policy = findViewById(R.id.report_policy);
         return_policy = findViewById(R.id.return_policy);
         delete_Account_message_layout = findViewById(R.id.delete_Account_message_layout);
-        recover_account = findViewById(R.id.recover_delete_account);
 
         supplierActivitySession = new SupplierActivitySession(this);
         supplierDetailSession = new SupplierDetailSession(this);
@@ -95,14 +93,14 @@ public class Settings extends AppCompatActivity {
         report_policy.setOnClickListener(v -> startActivity(new Intent(getApplicationContext(), ReportPolicy.class)));
         delete_account.setOnClickListener(v -> DeleteAccountConfirmation());
 
-        checkAccountDeletionStatus();
+        checkAndUpdateVisibility();
+        Log.e(TAG, "onCreate: timme : "+ supplierActivitySession.getHour());
+
     }
 
-    private void checkAccountDeletionStatus() {
-        SharedPreferences sharedPreferences = getSharedPreferences("AccountDeletion", MODE_PRIVATE);
-        long deletionDate = sharedPreferences.getLong("deletionDate", -1);
-
-        if (deletionDate != -1 && System.currentTimeMillis() < deletionDate) {
+    private void checkAndUpdateVisibility() {
+        int storedHour = supplierActivitySession.getHour();
+        if (storedHour != 0) {
             delete_Account_message_layout.setVisibility(View.VISIBLE);
             delete_account.setVisibility(View.GONE);
         } else {
@@ -153,9 +151,10 @@ public class Settings extends AppCompatActivity {
                     if (loginResponse != null) {
                         String message = loginResponse.getMessage();
                         showToast(getApplicationContext(), message);
+                        Log.e(TAG, "onResponse: timming : " + loginResponse.getHours());
+                        supplierActivitySession.setHour(loginResponse.getHours());
                         delete_Account_message_layout.setVisibility(View.VISIBLE);
                         delete_account.setVisibility(View.GONE);
-                        storeDeletionDate();
                     }
                 } else if (response.code() == 422) {
                     try {
@@ -209,14 +208,6 @@ public class Settings extends AppCompatActivity {
         });
 
         dialog.show();
-    }
-
-    private void storeDeletionDate() {
-        SharedPreferences sharedPreferences = getSharedPreferences("AccountDeletion", MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        long deletionDate = System.currentTimeMillis() + (24 * 60 * 60 * 1000L);
-        editor.putLong("deletionDate", deletionDate);
-        editor.apply();
     }
 
     @Override
