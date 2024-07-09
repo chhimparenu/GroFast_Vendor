@@ -413,6 +413,7 @@
                         android:layout_marginTop="@dimen/padding"
                         android:background="@drawable/button_round"
                         android:padding="@dimen/padding"
+                        android:visibility="gone"
                         android:text="@string/recover_account"
                         android:textAllCaps="false"
                         android:textColor="@color/white" />

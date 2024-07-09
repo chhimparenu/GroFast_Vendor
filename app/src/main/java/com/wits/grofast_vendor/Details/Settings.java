@@ -59,7 +59,6 @@ public class Settings extends AppCompatActivity {
     private final String TAG = "SettingPage";
     AppCompatButton recover_account;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -86,76 +85,30 @@ public class Settings extends AppCompatActivity {
         supplierActivitySession = new SupplierActivitySession(this);
         supplierDetailSession = new SupplierDetailSession(this);
 
-        privacy_policy.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(Settings.this, PrivacyPolicyActivity.class);
-                startActivity(intent);
-            }
-        });
+        privacy_policy.setOnClickListener(v -> startActivity(new Intent(Settings.this, PrivacyPolicyActivity.class)));
+        terms_condition_policy.setOnClickListener(v -> startActivity(new Intent(getApplicationContext(), TermsConditionPolicy.class)));
+        delete_data_policy.setOnClickListener(v -> startActivity(new Intent(getApplicationContext(), DeleteDataPolicy.class)));
+        delete_account_policy.setOnClickListener(v -> startActivity(new Intent(getApplicationContext(), DeleteAccountPolicy.class)));
+        refund_policy.setOnClickListener(v -> startActivity(new Intent(getApplicationContext(), RefundPolicy.class)));
+        return_policy.setOnClickListener(v -> startActivity(new Intent(getApplicationContext(), ReturnPolicy.class)));
+        cancellation_policy.setOnClickListener(v -> startActivity(new Intent(getApplicationContext(), CancellationPolicy.class)));
+        report_policy.setOnClickListener(v -> startActivity(new Intent(getApplicationContext(), ReportPolicy.class)));
+        delete_account.setOnClickListener(v -> DeleteAccountConfirmation());
 
-        terms_condition_policy.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent in = new Intent(getApplicationContext(), TermsConditionPolicy.class);
-                startActivity(in);
-            }
-        });
+        checkAccountDeletionStatus();
+    }
 
-        delete_data_policy.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent in = new Intent(getApplicationContext(), DeleteDataPolicy.class);
-                startActivity(in);
-            }
-        });
+    private void checkAccountDeletionStatus() {
+        SharedPreferences sharedPreferences = getSharedPreferences("AccountDeletion", MODE_PRIVATE);
+        long deletionDate = sharedPreferences.getLong("deletionDate", -1);
 
-        delete_account_policy.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent in = new Intent(getApplicationContext(), DeleteAccountPolicy.class);
-                startActivity(in);
-            }
-        });
-
-        refund_policy.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent in = new Intent(getApplicationContext(), RefundPolicy.class);
-                startActivity(in);
-            }
-        });
-
-        return_policy.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent in = new Intent(getApplicationContext(), ReturnPolicy.class);
-                startActivity(in);
-            }
-        });
-
-        cancellation_policy.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent in = new Intent(getApplicationContext(), CancellationPolicy.class);
-                startActivity(in);
-            }
-        });
-
-        report_policy.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent in = new Intent(getApplicationContext(), ReportPolicy.class);
-                startActivity(in);
-            }
-        });
-
-        delete_account.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                DeleteAccountConfirmation();
-            }
-        });
+        if (deletionDate != -1 && System.currentTimeMillis() < deletionDate) {
+            delete_Account_message_layout.setVisibility(View.VISIBLE);
+            delete_account.setVisibility(View.GONE);
+        } else {
+            delete_Account_message_layout.setVisibility(View.GONE);
+            delete_account.setVisibility(View.VISIBLE);
+        }
     }
 
     private void DeleteAccountConfirmation() {
@@ -261,7 +214,7 @@ public class Settings extends AppCompatActivity {
     private void storeDeletionDate() {
         SharedPreferences sharedPreferences = getSharedPreferences("AccountDeletion", MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
-        long deletionDate = System.currentTimeMillis() + (15 * 24 * 60 * 60 * 1000L);
+        long deletionDate = System.currentTimeMillis() + (24 * 60 * 60 * 1000L);
         editor.putLong("deletionDate", deletionDate);
         editor.apply();
     }
