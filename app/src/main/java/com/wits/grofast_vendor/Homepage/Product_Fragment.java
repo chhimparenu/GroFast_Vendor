@@ -55,9 +55,17 @@ public class Product_Fragment extends Fragment {
     LinearLayoutManager layoutManager;
     private int currentPage = 1;
     private int lastPage = 1;
-    private int visibleThreshold = 4;
+    private final int visibleThreshold = 4;
     private Call<ProductResponse> call;
     private boolean isLoading = false;
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        ShowPageLoader();
+        resetPagination();
+        fetchProducts();
+    }
 
     @SuppressLint("ClickableViewAccessibility")
     @Override
@@ -73,15 +81,10 @@ public class Product_Fragment extends Fragment {
         nomsg2 = root.findViewById(R.id.no_product_text2);
         shimmerFrameLayout = root.findViewById(R.id.shimmer_layout_product);
 
-        ShowPageLoader();
-
         //Product Item
         productrecycleview = root.findViewById(R.id.product_list);
         layoutManager = new LinearLayoutManager(getContext());
         productrecycleview.setLayoutManager(layoutManager);
-
-        call = Retrofirinstance.getClient(supplierActivitySession.getToken()).create(ProductInterface.class).fetchProducts(currentPage);
-        getProducts(call);
 
         productrecycleview.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
@@ -99,8 +102,7 @@ public class Product_Fragment extends Fragment {
                     Log.e("TAG", "onScrolled: current page " + currentPage);
 
                     isLoading = true;
-                    call = Retrofirinstance.getClient(supplierActivitySession.getToken()).create(ProductInterface.class).fetchProducts(currentPage);
-                    getProducts(call);
+                    fetchProducts();
                 }
             }
         });
@@ -125,6 +127,20 @@ public class Product_Fragment extends Fragment {
             }
         });
         return root;
+    }
+
+    private void resetPagination() {
+        currentPage = 1;
+        lastPage = 1;
+        productList.clear();
+        if (allProductAdapter != null) {
+            allProductAdapter.notifyDataSetChanged();
+        }
+    }
+
+    private void fetchProducts() {
+        call = Retrofirinstance.getClient(supplierActivitySession.getToken()).create(ProductInterface.class).fetchProducts(currentPage);
+        getProducts(call);
     }
 
     private void getProducts(Call<ProductResponse> call) {
@@ -202,9 +218,5 @@ public class Product_Fragment extends Fragment {
         addproduct.setVisibility(View.VISIBLE);
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-    }
 }
 

@@ -555,7 +555,6 @@ public class EditProduct extends AppCompatActivity {
         int selectedPosition = getSelectedSpinnerItemPosition(unitSpinnerList, unitName);
         unitSpinner.setSelection(selectedPosition);
 
-
     }
 
     @Override
