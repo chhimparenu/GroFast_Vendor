@@ -3,12 +3,14 @@ package com.wits.grofast_vendor.Homepage;
 import static android.view.View.GONE;
 import static com.wits.grofast_vendor.CommonUtilities.handleApiError;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 
 import androidx.appcompat.widget.AppCompatButton;
 import androidx.core.widget.NestedScrollView;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -17,6 +19,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.facebook.shimmer.ShimmerFrameLayout;
 import com.github.mikephil.charting.charts.BarChart;
@@ -39,6 +43,7 @@ import com.wits.grofast_vendor.Api.Response.BannerResponse;
 import com.wits.grofast_vendor.Api.Response.OrderCountResponse;
 import com.wits.grofast_vendor.Api.Response.OrderResponse;
 import com.wits.grofast_vendor.Api.Retrofirinstance;
+import com.wits.grofast_vendor.Details.EarningPage;
 import com.wits.grofast_vendor.R;
 import com.wits.grofast_vendor.session.SupplierActivitySession;
 
@@ -60,6 +65,8 @@ public class Home_Fragment extends Fragment {
     private static String TAG = "Home_Fragment";
     private ShimmerFrameLayout shimmerFrameLayout;
     NestedScrollView nestedScrollView;
+    LinearLayout product_layout, earning_layout, order_layout;
+    TextView total_product, total_earning, total_order;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -71,6 +78,16 @@ public class Home_Fragment extends Fragment {
         nestedScrollView = root.findViewById(R.id.home_page_all_data);
         shimmerFrameLayout = root.findViewById(R.id.shimmer_layout_home);
 
+        //Linear layouts
+        product_layout = root.findViewById(R.id.home_total_product_layout);
+        earning_layout = root.findViewById(R.id.home_total_earning_layout);
+        order_layout = root.findViewById(R.id.home_total_order_layout);
+
+        //Text view
+        total_product = root.findViewById(R.id.home_total_product_text);
+        total_earning = root.findViewById(R.id.home_total_earning_text);
+        total_order = root.findViewById(R.id.home_total_order_text);
+
         //Banner Recycleview
         bannerrecyclview = root.findViewById(R.id.banner_home_recycleview);
         bannerrecyclview.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, true));
@@ -80,6 +97,26 @@ public class Home_Fragment extends Fragment {
         barChart = root.findViewById(R.id.home_bar_chart);
         fetchOrderCountData();
         ShowPageLoader();
+
+        product_layout.setOnClickListener(v -> {
+            FragmentTransaction transaction = getFragmentManager().beginTransaction();
+            transaction.replace(R.id.venfragmentn, new Product_Fragment());
+            transaction.addToBackStack(null);
+            transaction.commit();
+        });
+
+        order_layout.setOnClickListener(v -> {
+            FragmentTransaction transaction = getFragmentManager().beginTransaction();
+            transaction.replace(R.id.venfragmentn, new Order_Fragment());
+            transaction.addToBackStack(null);
+            transaction.commit();
+        });
+
+        earning_layout.setOnClickListener(v -> {
+            Intent in = new Intent(getContext(), EarningPage.class);
+            getContext().startActivity(in);
+        });
+
         return root;
     }
 
