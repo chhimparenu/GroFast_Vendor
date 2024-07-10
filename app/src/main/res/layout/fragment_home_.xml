@@ -77,10 +77,10 @@
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"
                             android:gravity="center"
+                            android:textStyle="bold"
                             android:text="@string/total_product"
                             android:textColor="@color/white"
-                            android:textSize="@dimen/hint_text_size"
-                            android:textStyle="bold" />
+                            android:textSize="@dimen/small_text_size" />
 
                     </LinearLayout>
 
@@ -127,7 +127,7 @@
                             android:gravity="center"
                             android:text="@string/total_earning"
                             android:textColor="@color/white"
-                            android:textSize="@dimen/hint_text_size"
+                            android:textSize="@dimen/small_text_size"
                             android:textStyle="bold" />
 
                     </LinearLayout>
@@ -174,7 +174,7 @@
                             android:gravity="center"
                             android:text="@string/total_order"
                             android:textColor="@color/white"
-                            android:textSize="@dimen/hint_text_size"
+                            android:textSize="@dimen/small_text_size"
                             android:textStyle="bold" />
 
                     </LinearLayout>
