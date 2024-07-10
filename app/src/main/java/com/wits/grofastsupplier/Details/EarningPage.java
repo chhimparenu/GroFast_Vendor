@@ -18,9 +18,13 @@ import com.facebook.shimmer.ShimmerFrameLayout;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.wits.grofastsupplier.Adapter.EarningAdapter;
+import com.wits.grofastsupplier.Api.Interface.HomeInterface;
 import com.wits.grofastsupplier.Api.Interface.OrderInterface;
+import com.wits.grofastsupplier.Api.Model.EarningModel;
 import com.wits.grofastsupplier.Api.Model.OrderModel;
+import com.wits.grofastsupplier.Api.PaginationResponse.EarningPaginatedRes;
 import com.wits.grofastsupplier.Api.PaginationResponse.OrderPaginatedRes;
+import com.wits.grofastsupplier.Api.Response.EarningResponse;
 import com.wits.grofastsupplier.Api.Response.OrderResponse;
 import com.wits.grofastsupplier.Api.Retrofirinstance;
 import com.wits.grofastsupplier.R;
@@ -37,7 +41,7 @@ public class EarningPage extends AppCompatActivity {
     RecyclerView recyclerView;
     EarningAdapter earningAdapter;
     LinearLayoutManager layoutManager;
-    private List<OrderModel> orderList = new ArrayList<>();
+    private List<EarningModel> earningList = new ArrayList<>();
     SupplierActivitySession supplierActivitySession;
     private static String TAG = "Earning";
     LinearLayout no_layout, amount_layout;
@@ -46,7 +50,7 @@ public class EarningPage extends AppCompatActivity {
     private int currentPage = 1;
     private int lastPage = 1;
     private int visibleThreshold = 4;
-    private Call<OrderResponse> call;
+    private Call<EarningResponse> call;
     private boolean isLoading = false;
     TextView total_amount_text;
 
@@ -74,7 +78,7 @@ public class EarningPage extends AppCompatActivity {
 
         ShowPageLoader();
 
-        call = Retrofirinstance.getClient(supplierActivitySession.getToken()).create(OrderInterface.class).fetchOrders(currentPage);
+        call = Retrofirinstance.getClient(supplierActivitySession.getToken()).create(HomeInterface.class).getEarning(currentPage);
         loadearning(call);
 
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
@@ -93,38 +97,39 @@ public class EarningPage extends AppCompatActivity {
                     Log.e("TAG", "onScrolled: current page " + currentPage);
 
                     isLoading = true;
-                    call = Retrofirinstance.getClient(supplierActivitySession.getToken()).create(OrderInterface.class).fetchOrders(currentPage);
+                    call = Retrofirinstance.getClient(supplierActivitySession.getToken()).create(HomeInterface.class).getEarning(currentPage);
                     loadearning(call);
                 }
             }
         });
     }
 
-    private void loadearning(Call<OrderResponse> call) {
+    private void loadearning(Call<EarningResponse> call) {
         Log.e("TAG", "getProducts:     last page  " + lastPage);
         Log.e("TAG", "getProducts: curremnt page  " + currentPage);
         if (lastPage >= currentPage) {
-            call.enqueue(new Callback<OrderResponse>() {
+            call.enqueue(new Callback<EarningResponse>() {
                 @Override
-                public void onResponse(Call<OrderResponse> call, Response<OrderResponse> response) {
+                public void onResponse(Call<EarningResponse> call, Response<EarningResponse> response) {
                     HidePageLoader();
                     isLoading = false;
                     if (response.isSuccessful()) {
-                        OrderResponse orderResponse = response.body();
-                        OrderPaginatedRes orderPaginatedRes = orderResponse.getPaginatedOrder();
+                        EarningResponse earningResponse = response.body();
+                        EarningPaginatedRes earningPaginatedRes = earningResponse.getPaginatedRes();
+                        total_amount_text.setText("" + earningResponse.getTotal_earning());
                         if (currentPage == 1) {
-                            orderList = orderPaginatedRes.getOrderlist();
-                            earningAdapter = new EarningAdapter(getApplicationContext(), orderList);
+                            earningList = earningPaginatedRes.getList();
+                            earningAdapter = new EarningAdapter(getApplicationContext(), earningList);
                             recyclerView.setAdapter(earningAdapter);
                         } else {
-                            List<OrderModel> list = orderPaginatedRes.getOrderlist();
-                            for (OrderModel model : list) {
-                                orderList.add(model);
+                            List<EarningModel> list = earningPaginatedRes.getList();
+                            for (EarningModel model : list) {
+                                earningList.add(model);
                                 recyclerView.setAdapter(earningAdapter);
                             }
                         }
                         currentPage++;
-                        lastPage = orderPaginatedRes.getLast_page();
+                        lastPage = earningPaginatedRes.getLast_page();
                     } else if (response.code() == 422) {
                         try {
                             String errorBodyString = response.errorBody().string();
@@ -139,12 +144,12 @@ public class EarningPage extends AppCompatActivity {
                             e.printStackTrace();
                         }
                     } else {
-                       handleApiError(TAG, response, getApplicationContext());
+                        handleApiError(TAG, response, getApplicationContext());
                     }
                 }
 
                 @Override
-                public void onFailure(Call<OrderResponse> call, Throwable t) {
+                public void onFailure(Call<EarningResponse> call, Throwable t) {
                     isLoading = false;
                     HidePageLoader();
                     t.printStackTrace();

@@ -23,6 +23,7 @@
             android:src="@drawable/wallet_coin" />
 
         <TextView
+            android:id="@+id/total_earning_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="30"
@@ -32,11 +33,11 @@
     </LinearLayout>
 
     <TextView
-        android:id="@+id/total_earning_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:text="@string/total_earning"
+        android:text="@string/total_earning_Earning"
+        android:gravity="center"
         android:textColor="@color/textview_text_color"
         android:textSize="@dimen/hint_text_size" />
 
