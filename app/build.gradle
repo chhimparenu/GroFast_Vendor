@@ -6,15 +6,15 @@ plugins {
 }
 
 android {
-    namespace 'com.wits.grofast_vendor'
+    namespace 'com.wits.grofastsupplier'
     compileSdk 34
 
     defaultConfig {
         applicationId "com.wits.grofast_vendor"
         minSdk 24
         targetSdk 34
-        versionCode 11
-        versionName "11.0"
+        versionCode 1
+        versionName "1.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }

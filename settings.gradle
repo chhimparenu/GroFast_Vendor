@@ -20,5 +20,5 @@ dependencyResolutionManagement {
         jcenter()
     }
 }
-rootProject.name = "Grofast_Vendor"
+rootProject.name = "grofastsupplier"
 include ':app'
