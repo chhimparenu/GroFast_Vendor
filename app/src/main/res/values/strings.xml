@@ -34,10 +34,10 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
 
     //Home_Fragment
-    <string name="total_product">Total Product</string>
-    <string name="total_order">Total Order</string>
+    <string name="total_product">Approved \nProduct</string>
+    <string name="total_order">Total \nOrder</string>
     <string name="Resent_order_history">Resent Order History</string>
-    <string name="total_earning">Total Earning</string>
+    <string name="total_earning">Total \nEarning</string>
 
     //Product_Fragment
     <string name="Add_new_product">Add new Product</string>
