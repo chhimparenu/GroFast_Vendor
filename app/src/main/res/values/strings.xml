@@ -38,6 +38,7 @@
     <string name="total_order">Total \nOrder</string>
     <string name="Resent_order_history">Resent Order History</string>
     <string name="total_earning">Total \nEarning</string>
+    <string name="total_earning_Earning">Total Earning</string>
 
     //Product_Fragment
     <string name="Add_new_product">Add new Product</string>
