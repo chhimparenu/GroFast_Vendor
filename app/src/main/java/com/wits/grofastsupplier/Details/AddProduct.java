@@ -253,20 +253,13 @@ public class AddProduct extends AppCompatActivity {
                     addproduct.setEnabled(true);
                     if (response.isSuccessful()) {
                         ProductResponse productResponse = response.body();
-                        Log.e(TAG, "Message " + productResponse.getMessage());
-                        Log.e(TAG, "Status " + productResponse.getStatus());
-                        Log.e(TAG, "Product " + productResponse.getProduct());
                         showSuccessDialog(productResponse.getMessage());
-                    } else {
-                        try {
-                            String errorBody = response.errorBody().string();
-                            Log.d(TAG, "onResponse -> status: " + response.code());
-                            Log.d(TAG, "onResponse -> errorMessage: " + errorBody);
-                        } catch (IOException e) {
-                            e.printStackTrace();
+                        {
+                            Log.e(TAG, "Message " + productResponse.getMessage());
+                            Log.e(TAG, "Status " + productResponse.getStatus());
+                            Log.e(TAG, "ProductName " + productResponse.getProduct().getName());
                         }
-                        handleApiError(TAG, response, getApplicationContext());
-                    }
+                    } else handleApiError(TAG, response, getApplicationContext());
                 }
 
                 @Override
